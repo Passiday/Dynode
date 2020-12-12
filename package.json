@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "tsc": "tsc",
-    "start:dev": "webpack serve"
+    "start:dev": "webpack serve",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
