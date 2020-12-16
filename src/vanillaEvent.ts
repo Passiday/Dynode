@@ -33,7 +33,7 @@ class VEventTarget{
 }
 class VEvent{
     type: string;
-    detail: string | undefined;
+    detail: unknown;
     currentTarget: VEventTarget | undefined;
     target: VEventTarget | undefined;
     constructor(type: string,customEventInit?: any){
