@@ -20,81 +20,84 @@ test('Removing a function that was not added causes an error', () => {
     expect(()=>target.removeEventListener("test", func)).toThrow(Error);
 });
 
-test('Event fires correctly', () => {
+test('Event fires', () => {
     let target = new VEventTarget();
-    let event = new VEvent("test", {detail: ""});
-    let otherEvent = new VEvent("other", {detail: ""});
-    let func = (a:VEvent)=>{a.detail="ok"};
+    let eventFired = false;
+    let func = ()=>{eventFired=true};
 
     target.addEventListener("test", func);
    
-    target.dispatchEvent(otherEvent);
-    expect(event.detail).toBe("");
-    expect(otherEvent.detail).toBe("");
+    target.dispatchEvent(new VEvent("test"));
+    expect(eventFired).toBe(true);
+});
 
-    target.dispatchEvent(event);
-    expect(event.detail).toBe("ok");
-    expect(otherEvent.detail).toBe("");
+test('Event fires correctly', () => {
+    let target = new VEventTarget();
+    let eventFired = false;
+    let func = ()=>{eventFired=true};
+
+    target.addEventListener("test", func);
+   
+    target.dispatchEvent(new VEvent("other"));
+    expect(eventFired).toBe(false);
+
+    target.dispatchEvent(new VEvent("test"));
+    expect(eventFired).toBe(true);
 });
 
 test('Removing an event works', () => {
     let target = new VEventTarget();
-    let event = new VEvent("test", {detail: ""});
-    let func = (a:VEvent)=>{a.detail+="ok"};
+    let counter = 0;
+    let func = ()=>{counter++};
 
     target.addEventListener("test", func);
-    target.dispatchEvent(event);
-    expect(event.detail).toBe("ok");
+    target.dispatchEvent(new VEvent("test"));
+    expect(counter).toBe(1);
 
     target.removeEventListener("test",func);
-    target.dispatchEvent(event);
-    expect(event.detail).toBe("ok");
+    target.dispatchEvent(new VEvent("test"));
+    expect(counter).toBe(1);
 });
 
 test('Events fire correctly', () => {
     let target = new VEventTarget();
-    let event = new VEvent("test", {detail: ""});
-    let otherEvent = new VEvent("other", {detail: ""});
-    let func1 = (a:VEvent)=>{a.detail+="this"};
-    let func2 = (a:VEvent)=>{a.detail+="is"};
-    let func3 = (a:VEvent)=>{a.detail+="not"};
-    let func4 = (a:VEvent)=>{a.detail+="ok"};
+    let message1 = "";
+    let message2 = "";
+    let func1 = ()=>{message1+="this"};
+    let func2 = ()=>{message1+="is"};
+    let func3 = ()=>{message2+="not"};
+    let func4 = ()=>{message1+="ok"};
 
     target.addEventListener("test", func1);
     target.addEventListener("test", func2);
     target.addEventListener("other",func3);
     target.addEventListener("test", func4);
     
-    target.dispatchEvent(event);
-    expect(event.detail).toBe("thisisok");
-    expect(otherEvent.detail).toBe("");
+    target.dispatchEvent(new VEvent("test"));
+    expect(message1).toBe("thisisok");
+    expect(message2).toBe("");
 
-    target.dispatchEvent(otherEvent);
-    expect(event.detail).toBe("thisisok");
-    expect(otherEvent.detail).toBe("not");
+    target.dispatchEvent(new VEvent("other"));
+    expect(message1).toBe("thisisok");
+    expect(message2).toBe("not");
 
-    event.detail = "";
+    message1 = "";
     target.removeEventListener("test",func4);
     target.removeEventListener("other", func3);
     
-    target.dispatchEvent(event);
-    target.dispatchEvent(otherEvent);
-    expect(event.detail).toBe("thisis");
-    expect(otherEvent.detail).toBe("not");
+    target.dispatchEvent(new VEvent("test"));
+    target.dispatchEvent(new VEvent("other"));
+    expect(message1).toBe("thisis");
+    expect(message2).toBe("not");
 });
 
 test('Owner of the called function is the target', () => {
     let target = new VEventTarget();
-    let event = new VEvent("test");
-    class Test {
-        func(a:VEvent){
-            a.detail=this;
-        }
+    let fuctionThis:unknown;
+    function test(this: void,a:VEvent){
+        fuctionThis=this;
     }
-    let testObject = new Test();
-
-    target.addEventListener("test", testObject.func);
-    target.dispatchEvent(event);
-    expect(event.detail).toBe(target);
-
+    target.addEventListener("test", test);
+    target.dispatchEvent(new VEvent("test"));
+    expect(fuctionThis).toBe(target);
 });
