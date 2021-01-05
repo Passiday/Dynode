@@ -1,4 +1,5 @@
 import {VEvent, VEventTarget} from '../src/vanillaEvent';
+import applyMixins from '../src/objectUtils';
 
 
 test('Adding duplicates causes an error', () => {
@@ -100,4 +101,44 @@ test('Owner of the called function is the target', () => {
     target.addEventListener("test", test);
     target.dispatchEvent(new VEvent("test"));
     expect(fuctionThis).toBe(target);
+});
+
+test('Inheritance example', () => {
+    class Cat extends VEventTarget{
+        hunger = 1;
+        name: string;
+        constructor(name: string){
+            super();
+            this.name = name;
+        }
+    }
+    let cat = new Cat("Kitty");
+    cat.addEventListener("feed", function(this: Cat, a:VEvent){this.hunger--});
+    cat.dispatchEvent(new VEvent("feed"));
+    expect(cat.hunger).toBe(0);
+
+});
+test('Multiple class inheritance example', () => {
+    class Animal{
+        hunger = 1;
+        name: string;
+        constructor(name: string){
+            this.name = name;
+        }
+    }
+    class Cat{
+        constructor(name: string){
+            this.name = name;
+        }
+        play(){this.hunger++};
+    };
+    interface Cat extends Animal, VEventTarget {}
+    applyMixins(Cat, [Animal, VEventTarget]);
+
+    let cat = new Cat("Kitty")
+    cat.addEventListener("feed", function(this: Cat, a:VEvent){this.hunger--});
+    cat.play();
+    expect(cat.hunger).toBe(2);
+    cat.dispatchEvent(new VEvent("feed"));
+    expect(cat.hunger).toBe(1);
 });
