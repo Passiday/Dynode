@@ -1,6 +1,8 @@
 import Node from './../node'
 
-// Console.log Node or ClogNode for short
+// Constant-value-Node
+// Outputs constant value
+
 class ConstNode extends Node {
   value: any;
   constructor(value: any) {

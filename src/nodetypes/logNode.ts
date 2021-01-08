@@ -1,9 +1,11 @@
 import Node from './../node'
 
-// Console.log-Node or ClogNode for short
-class ClogNode extends Node {
+// Console.log-Node.
+// Outputs its input to the console
+
+class LogNode extends Node {
   constructor() {
-    super(1, 1, "clog_node");
+    super(1, 1, "log_node");
     super.setLogging(true);
   }
 
@@ -13,4 +15,4 @@ class ClogNode extends Node {
   }
 }
 
-export default ClogNode
+export default LogNode

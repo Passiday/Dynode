@@ -1,38 +1,36 @@
 import Dynode from './dynode';
 import Network from './network';
-import Node from './node';
-import ClogNode from './nodetypes/clogNode'
+import LogNode from './nodetypes/logNode'
 import ConstNode from './nodetypes/constNode'
-import ElarithNode from './nodetypes/elarithNode';
-import DefNode from './nodetypes/defNode';
+import MathNode from './nodetypes/mathNode';
 
 let d = new Dynode();
 let n = new Network();
 
 // Simple counter
-let elarithNode = n.addNode(new ElarithNode("+", 0, 1));
+let mathNode = n.addNode(new MathNode("+", 0, 1));
 let constNode = n.addNode(new ConstNode(1));
-let clogNode = n.addNode(new ClogNode());
+let clogNode = n.addNode(new LogNode());
 clogNode.setName("Counter");
-n.addLink(constNode, elarithNode, 0, 1);
-n.addLink(elarithNode, elarithNode, 0, 0);
-n.addLink(elarithNode, clogNode, 0, 0);
+n.addLink(constNode, mathNode, 0, 1);
+n.addLink(mathNode, mathNode, 0, 0);
+n.addLink(mathNode, clogNode, 0, 0);
 
 // Pi calculator
-let e1 = n.addNode(new ElarithNode("+", -1, 2));
-let e2 = n.addNode(new ElarithNode("/", 4));
-let e3 = n.addNode(new ElarithNode("*", 1, -1));
-let e4 = n.addNode(new ElarithNode("*"));
-let e5 = n.addNode(new ElarithNode("+", 0));
-e5.setName("Pi")
-e5.setLogging(true);
-n.addLink(e1, e1, 0, 0);
-n.addLink(e1, e2, 0, 1);
-n.addLink(e2, e4, 0, 0);
-n.addLink(e3, e4, 0, 1);
-n.addLink(e3, e3, 0, 0);
-n.addLink(e4, e5, 0, 1);
-n.addLink(e5, e5, 0, 0);
+let m1 = n.addNode(new MathNode("+", -1, 2));
+let m2 = n.addNode(new MathNode("/", 4));
+let m3 = n.addNode(new MathNode("*", 1, -1));
+let m4 = n.addNode(new MathNode("*"));
+let m5 = n.addNode(new MathNode("+", 0));
+m5.setName("Pi")
+m5.setLogging(true);
+n.addLink(m1, m1, 0, 0);
+n.addLink(m1, m2, 0, 1);
+n.addLink(m2, m4, 0, 0);
+n.addLink(m3, m4, 0, 1);
+n.addLink(m3, m3, 0, 0);
+n.addLink(m4, m5, 0, 1);
+n.addLink(m5, m5, 0, 0);
 
 n.setPeriod(1000);
 n.setRunning(true);

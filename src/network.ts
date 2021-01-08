@@ -2,13 +2,13 @@ import Link from './link'
 import Node from './node'
 
 class Network {
-  period: number;
+  period: number; // Time (in ms) between each update
   running: boolean;
   links: Link[];
   nodes: Node[];
-  name: string;
+  name: string; // Name is (currently) used to discern different networks in console logs
   constructor(name: string = "network") {
-    this.period = 0;
+    this.period = 0; // Set default clock speed to maximum
     this.running = false;
     this.links = [];
     this.nodes = [];
@@ -32,6 +32,8 @@ class Network {
   setRunning(running: boolean) {
     if(running == true) {
       this.running = true;
+      
+      // Executes the run function after {this.period} milliseconds
       let me = this;
       setTimeout(function() {
         me.run();
@@ -41,21 +43,10 @@ class Network {
     }
   }
 
-  update() {
-    console.log(`--- ${this.name} ---`)
-    // I have absolutely no clue why I should use (... as any), but if I don't, it does not work :(
-    this.nodes.forEach(node => (node as any).update())
-    this.links.forEach(link => (link as any).update())
-  }
-
-  render() {
-    this.nodes.forEach(node => (node as any).render())
-    this.links.forEach(link => (link as any).render())
-  }
-
   run() {
     if(this.running) {
       this.tick();
+      // If network is still running, executes the run function after {this.period} milliseconds
       let me = this;
       setTimeout(function() {
         me.run();
@@ -63,9 +54,12 @@ class Network {
     }
   }
   
+  // One update cycle
   tick() {
-    this.update();
-    this.render();
+    console.log(`--- ${this.name} ---`)
+    // I have absolutely no clue why I should use (... as any), but if I don't, it does not work :(
+    this.nodes.forEach(node => (node as any).update())
+    this.links.forEach(link => (link as any).update())
   }
 }
   

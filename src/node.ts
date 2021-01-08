@@ -1,8 +1,8 @@
 class Node {
   inputs: any[];
   outputs: any[];
-  logging: boolean;
-  name: string;
+  logging: boolean; // Whether node should log its outputs to console after updating
+  name: string; // Name is (currently) used for discerning node outputs in console
   constructor(inputN: number, outputN: number, name: string = "node") {
     this.inputs = new Array<any>(inputN);
     this.outputs = new Array<any>(outputN);
@@ -30,10 +30,6 @@ class Node {
     if(this.logging) {
       console.log(`${this.name}: ${this.outputs}`);
     }
-  }
-
-  render() {
-    
   }
 }
 
