@@ -10,7 +10,7 @@ class LogNode extends Node {
   }
 
   update() {
-    this.outputs[0] = this.inputs[0];
+    this.outputs[0].setValue(this.inputs[0].getValue());
     super.update();
   }
 }

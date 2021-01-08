@@ -11,9 +11,12 @@ class ConstNode extends Node {
   }
 
   update() {
-    this.outputs[0] = this.value;
+    this.outputs[0].setValue(this.value);
     super.update();
   }
+
+  // Needs a function to change the default value for this node
+  // ...
 }
 
 export default ConstNode

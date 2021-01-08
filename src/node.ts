@@ -1,11 +1,19 @@
+import Socket from "./socket";
+
 class Node {
-  inputs: any[];
-  outputs: any[];
+  inputs: Socket[];
+  outputs: Socket[];
   logging: boolean; // Whether node should log its outputs to console after updating
   name: string; // Name is (currently) used for discerning node outputs in console
   constructor(inputN: number, outputN: number, name: string = "node") {
-    this.inputs = new Array<any>(inputN);
-    this.outputs = new Array<any>(outputN);
+    // Initialize input sockets
+    this.inputs = new Array<Socket>();
+    for(let i = 0; i < inputN; i++) {this.inputs.push(new Socket());}
+
+    // Initialize output sockets
+    this.outputs = new Array<Socket>();
+    for(let i = 0; i < outputN; i++) {this.outputs.push(new Socket());} 
+    
     this.logging = false;
     this.name = name;
   }
@@ -19,16 +27,16 @@ class Node {
   }
 
   setInput(value: any, inputN: number) {
-    this.inputs[inputN] = value;
+    this.inputs[inputN].setValue(value);
   }
 
   getOutput(outputN: number) {
-    return this.outputs[outputN];
+    return this.outputs[outputN].getValue();
   }
 
   update() {
     if(this.logging) {
-      console.log(`${this.name}: ${this.outputs}`);
+      console.log(`${this.name}: ${this.outputs.map(output => output.getValue())}`);
     }
   }
 }

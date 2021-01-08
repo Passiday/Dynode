@@ -15,24 +15,24 @@ class MathNode extends Node {
   }
 
   update() {
-    this.outputs[0] = null; // Set default output to null
-    if(this.inputs[0] == null) {this.inputs[0] = this.def0;}
-    if(this.inputs[1] == null) {this.inputs[1] = this.def1;}
-    if(this.inputs[0] != null && this.inputs[1] != null) {
+    this.outputs[0].setValue(null); // Set default output to null
+    if(this.inputs[0].getValue() == null) {this.inputs[0].setValue(this.def0);}
+    if(this.inputs[1].getValue() == null) {this.inputs[1].setValue(this.def1);}
+    if(this.inputs[0].getValue() != null && this.inputs[1].getValue() != null) {
       switch(this.operation) {
-        case '+':
-          this.outputs[0] = this.inputs[0] + this.inputs[1];
+        case '+': // Addition
+          this.outputs[0].setValue(this.inputs[0].getValue() + this.inputs[1].getValue());
           break;
-        case '-':
-          this.outputs[0] = this.inputs[0] - this.inputs[1];
+        case '-': // Substraction
+          this.outputs[0].setValue(this.inputs[0].getValue() - this.inputs[1].getValue());
           break;
-        case '*':
-          this.outputs[0] = this.inputs[0] * this.inputs[1];
+        case '*': // Multiplication
+          this.outputs[0].setValue(this.inputs[0].getValue() * this.inputs[1].getValue());
           break;
-        case '/':
-          if(this.inputs[1] == 0)
+        case '/': // Division
+          if(this.inputs[1].getValue() == 0) // Output default null value when dividing by 0
             break;
-          this.outputs[0] = this.inputs[0] / this.inputs[1];
+          this.outputs[0].setValue(this.inputs[0].getValue() / this.inputs[1].getValue());
           break;
       }
     }
