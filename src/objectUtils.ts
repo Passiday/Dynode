@@ -1,4 +1,4 @@
-declare type NewableType = new() => object;
+declare type NewableType = new(...args: unknown[]) => object;
 
 //Function used to inherit properties and methods
 function applyMixins(derivedCtor: NewableType, constructors: NewableType[]) {
