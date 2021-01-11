@@ -111,12 +111,18 @@ test('Inheritance example', () => {
             super();
             this.name = name;
         }
+        feed() {
+            if (this.hunger > 0) this.hunger--;
+            this.dispatchEvent(new VEvent('update'));
+        }
     }
-    let cat = new Cat("Kitty");
-    cat.addEventListener("feed", function(this: Cat, a:VEvent){this.hunger--});
-    cat.dispatchEvent(new VEvent("feed"));
-    expect(cat.hunger).toBe(0);
-
+    const hungerLevels: {[name: string]: number;} = {};
+    const cat = new Cat('Kitty');
+    cat.addEventListener('update', function(this: Cat, e:VEvent) {
+        hungerLevels[this.name] = this.hunger;
+    });
+    cat.feed();
+    expect(hungerLevels['Kitty']).toBe(0);
 });
 test('Multiple class inheritance example', () => {
     class Animal{
@@ -125,20 +131,31 @@ test('Multiple class inheritance example', () => {
         constructor(name: string){
             this.name = name;
         }
+        feed() {
+            if (this.hunger > 0) this.hunger--;
+            this.dispatchEvent(new VEvent('update'));
+        }
     }
+    interface Animal extends VEventTarget {};
     class Cat{
         constructor(name: string){
             this.name = name;
         }
-        play(){this.hunger++};
+        play(){
+            this.hunger++
+            this.dispatchEvent(new VEvent('update'));
+        };
     };
-    interface Cat extends Animal, VEventTarget {}
+    interface Cat extends Animal, VEventTarget {};
     applyMixins(Cat, [Animal, VEventTarget]);
 
-    let cat = new Cat("Kitty")
-    cat.addEventListener("feed", function(this: Cat, a:VEvent){this.hunger--});
+    const hungerLevels: {[name: string]: number;} = {};
+    const cat = new Cat('Kitty');
+    cat.addEventListener('update', function(this: Cat, e:VEvent) {
+        hungerLevels[this.name] = this.hunger;
+    });
     cat.play();
-    expect(cat.hunger).toBe(2);
-    cat.dispatchEvent(new VEvent("feed"));
-    expect(cat.hunger).toBe(1);
+    expect(hungerLevels['Kitty']).toBe(2);
+    cat.feed();
+    expect(hungerLevels['Kitty']).toBe(1);
 });
