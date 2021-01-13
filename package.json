@@ -7,7 +7,8 @@
     "test": "jest",
     "tsc": "tsc",
     "start:dev": "webpack serve",
-    "build": "webpack"
+    "build": "webpack",
+    "ci": "bash ci-script"
   },
   "keywords": [],
   "author": "",
