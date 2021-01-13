@@ -18,3 +18,6 @@ jobs:
 
       - name: Check test status
         run: npm run test
+
+      - name: Check lint status
+        run: npm run lint
