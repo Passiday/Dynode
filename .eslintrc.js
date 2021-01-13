@@ -7,11 +7,12 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
-    'plugin:import/typescript',
+    'airbnb-typescript/base',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
+    project: "tsconfig.json",
   },
   plugins: [
     '@typescript-eslint',
