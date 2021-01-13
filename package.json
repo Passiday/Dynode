@@ -9,6 +9,7 @@
     "start:dev": "webpack serve",
     "build": "webpack",
     "lint": "npx eslint . --ext .ts",
+    "lint:auto": "npx eslint . --ext .ts --fix",
     "ci": "bash ci-script"
   },
   "keywords": [],
