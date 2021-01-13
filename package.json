@@ -8,6 +8,7 @@
     "tsc": "tsc",
     "start:dev": "webpack serve",
     "build": "webpack",
+    "lint": "npx eslint . --ext .ts",
     "ci": "bash ci-script"
   },
   "keywords": [],
