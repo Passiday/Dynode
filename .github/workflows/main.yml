@@ -13,11 +13,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check build status
-        run: npm run build
+      - name: Check lint status
+        run: npm run lint
 
       - name: Check test status
         run: npm run test
 
-      - name: Check lint status
-        run: npm run lint
+      - name: Check build status
+        run: npm run build
