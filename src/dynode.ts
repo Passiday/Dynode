@@ -4,4 +4,4 @@ class Dynode {
   }
 }
 
-export default Dynode
+export default Dynode;

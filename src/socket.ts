@@ -1,4 +1,4 @@
-import Node from './node'
+import Node from './node';
 
 class Socket {
   value: any;
@@ -16,4 +16,4 @@ class Socket {
   }
 }
 
-export default Socket
+export default Socket;
