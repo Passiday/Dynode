@@ -104,19 +104,19 @@ test('Owner of the called function is the target', () => {
 
 test('Inheritance example', () => {
   class Cat extends VEventTarget {
-        hunger = 1;
+    hunger = 1;
 
-        name: string;
+    name: string;
 
-        constructor(name: string) {
-          super();
-          this.name = name;
-        }
+    constructor(name: string) {
+      super();
+      this.name = name;
+    }
 
-        feed() {
-          if (this.hunger > 0) this.hunger--;
-          this.dispatchEvent(new VEvent('update'));
-        }
+    feed() {
+      if (this.hunger > 0) this.hunger--;
+      this.dispatchEvent(new VEvent('update'));
+    }
   }
   const hungerLevels: {[name: string]: number;} = {};
   const cat = new Cat('Kitty');
@@ -128,40 +128,40 @@ test('Inheritance example', () => {
 });
 test('Multiple class inheritance example', () => {
   class Animal {
-        hunger = 1;
+    hunger = 1;
 
-        name: string;
+    name: string;
 
-        constructor(name: string) {
-          this.name = name;
-        }
-
-        feed() {
-          if (this.hunger > 0) this.hunger--;
-          this.dispatchEvent(new VEvent('update'));
-        }
-  }
-    interface Animal extends VEventTarget {}
-    class Cat {
-      constructor(name: string) {
-        this.name = name;
-      }
-
-      play() {
-        this.hunger++;
-        this.dispatchEvent(new VEvent('update'));
-      }
+    constructor(name: string) {
+      this.name = name;
     }
-    interface Cat extends Animal, VEventTarget {}
-    applyMixins(Cat, [Animal, VEventTarget]);
 
-    const hungerLevels: {[name: string]: number;} = {};
-    const cat = new Cat('Kitty');
-    cat.addEventListener('update', function (this: Cat, e:VEvent) {
-      hungerLevels[this.name] = this.hunger;
-    });
-    cat.play();
-    expect(hungerLevels.Kitty).toBe(2);
-    cat.feed();
-    expect(hungerLevels.Kitty).toBe(1);
+    feed() {
+      if (this.hunger > 0) this.hunger--;
+      this.dispatchEvent(new VEvent('update'));
+    }
+  }
+  interface Animal extends VEventTarget {}
+  class Cat {
+    constructor(name: string) {
+      this.name = name;
+    }
+
+    play() {
+      this.hunger++;
+      this.dispatchEvent(new VEvent('update'));
+    }
+  }
+  interface Cat extends Animal, VEventTarget {}
+  applyMixins(Cat, [Animal, VEventTarget]);
+
+  const hungerLevels: {[name: string]: number;} = {};
+  const cat = new Cat('Kitty');
+  cat.addEventListener('update', function (this: Cat, e:VEvent) {
+    hungerLevels[this.name] = this.hunger;
+  });
+  cat.play();
+  expect(hungerLevels.Kitty).toBe(2);
+  cat.feed();
+  expect(hungerLevels.Kitty).toBe(1);
 });
