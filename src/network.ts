@@ -12,7 +12,7 @@ class Network {
 
   name: string; // Name is (currently) used to discern different networks in console logs
 
-  constructor(name: string = 'network') {
+  constructor(name = 'network') {
     this.period = 0; // Set default clock speed to maximum
     this.running = false;
     this.links = [];

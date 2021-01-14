@@ -141,7 +141,7 @@ test('Multiple class inheritance example', () => {
       this.dispatchEvent(new VEvent('update'));
     }
   }
-  interface Animal extends VEventTarget {}
+  type Animal = VEventTarget;
   class Cat {
     constructor(name: string) {
       this.name = name;

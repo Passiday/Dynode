@@ -9,7 +9,7 @@ class Node {
 
   name: string; // Name is (currently) used for discerning node outputs in console
 
-  constructor(inputN: number, outputN: number, name: string = 'node') {
+  constructor(inputN: number, outputN: number, name = 'node') {
     // Initialize input sockets
     this.inputs = new Array<Socket>();
     for (let i = 0; i < inputN; i++) { this.inputs.push(new Socket()); }
