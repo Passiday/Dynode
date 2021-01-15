@@ -18,8 +18,8 @@ class Link {
     this.inputN = inputN;
   }
 
-  update() {
-    (this.tailNode as any).setInput((this.headNode as any).getOutput(this.outputN), this.inputN);
+  update(): void {
+    this.tailNode.setInput(this.headNode.getOutput(this.outputN), this.inputN);
   }
 }
 
