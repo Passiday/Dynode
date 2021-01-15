@@ -32,5 +32,12 @@ n.addLink(m3, m3, 0, 0);
 n.addLink(m4, m5, 0, 1);
 n.addLink(m5, m5, 0, 0);
 
+/*
 n.setPeriod(1000);
 n.setRunning(true);
+*/  
+
+declare global {function publishToGlobal(assets: Object):void}
+global.publishToGlobal({
+    demoNetwork: n
+});
