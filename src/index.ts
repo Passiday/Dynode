@@ -1,10 +1,8 @@
-import Dynode from './dynode';
 import Network from './network';
 import LogNode from './nodetypes/logNode';
 import ConstNode from './nodetypes/constNode';
 import MathNode from './nodetypes/mathNode';
 
-const d = new Dynode();
 const n = new Network();
 
 // Simple counter
