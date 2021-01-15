@@ -33,9 +33,9 @@ n.addLink(m5, m5, 0, 0);
 /*
 n.setPeriod(1000);
 n.setRunning(true);
-*/  
+*/
 
-declare global {function publishToGlobal(assets: Object):void}
+declare global { function publishToGlobal(assets: Record<string, unknown>):void; }
 global.publishToGlobal({
-    demoNetwork: n
+  demoNetwork: n,
 });
