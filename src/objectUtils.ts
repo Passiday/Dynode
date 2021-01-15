@@ -1,7 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
 declare type NewableType = new(...args: any[]) => object;
 
 // Function used to inherit properties and methods
-function applyMixins(derivedCtor: NewableType, constructors: NewableType[]) {
+function applyMixins(derivedCtor: NewableType, constructors: NewableType[]): void {
   // Copies methods
   constructors.forEach((baseCtor) => {
     Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
@@ -14,8 +15,8 @@ function applyMixins(derivedCtor: NewableType, constructors: NewableType[]) {
     });
   });
   // Copies properties
-  constructors.forEach((baseCtor) => {
-    const empty = new baseCtor();
+  constructors.forEach((BaseCtor) => {
+    const empty = new BaseCtor();
     Object.keys(empty).forEach((name) => {
       Object.defineProperty(
         derivedCtor.prototype,
