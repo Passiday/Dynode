@@ -20,5 +20,8 @@ module.exports = {
     'jest',
   ],
   rules: {
+    'no-console': 'off',
+    'max-classes-per-file': 'off',
+    'no-plusplus': 'off',
   },
 };
