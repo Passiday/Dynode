@@ -22,23 +22,23 @@ class Node {
     this.name = name;
   }
 
-  setName(name: string) {
+  setName(name: string): void {
     this.name = name;
   }
 
-  setLogging(logging: boolean) {
+  setLogging(logging: boolean): void {
     this.logging = logging;
   }
 
-  setInput(value: any, inputN: number) {
+  setInput(value: unknown, inputN: number): void {
     this.inputs[inputN].setValue(value);
   }
 
-  getOutput(outputN: number) {
+  getOutput(outputN: number): Socket {
     return this.outputs[outputN].getValue();
   }
 
-  update() {
+  update(): void {
     if (this.logging) {
       console.log(`${this.name}: ${this.outputs.map((output) => output.getValue())}`);
     }

@@ -20,51 +20,48 @@ class Network {
     this.name = name;
   }
 
-  addNode(node: Node) {
+  addNode(node: Node): Node {
     this.nodes.push(node);
     return this.nodes[this.nodes.length - 1];
   }
 
-  addLink(headNode: Node, tailNode: Node, outputN: number, inputN: number) {
+  addLink(headNode: Node, tailNode: Node, outputN: number, inputN: number): Link {
     this.links.push(new Link(headNode, tailNode, outputN, inputN));
     return this.links[this.links.length - 1];
   }
 
-  setPeriod(period: number) {
+  setPeriod(period: number): void {
     this.period = period;
   }
 
-  setRunning(running: boolean) {
-    if (running == true) {
+  setRunning(running: boolean): void {
+    if (running) {
       this.running = true;
 
       // Executes the run function after {this.period} milliseconds
-      const me = this;
       setTimeout(() => {
-        me.run();
-      }, me.period);
+        this.run();
+      }, this.period);
     } else {
       this.running = false;
     }
   }
 
-  run() {
+  run(): void {
     if (this.running) {
       this.tick();
       // If network is still running, executes the run function after {this.period} milliseconds
-      const me = this;
       setTimeout(() => {
-        me.run();
-      }, me.period);
+        this.run();
+      }, this.period);
     }
   }
 
   // One update cycle
-  tick() {
+  tick(): void {
     console.log(`--- ${this.name} ---`);
-    // I have absolutely no clue why I should use (... as any), but if I don't, it does not work :(
-    this.nodes.forEach((node) => (node as any).update());
-    this.links.forEach((link) => (link as any).update());
+    this.nodes.forEach((node) => node.update());
+    this.links.forEach((link) => link.update());
   }
 }
 

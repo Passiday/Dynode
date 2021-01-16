@@ -1,10 +1,8 @@
-import Dynode from './dynode';
 import Network from './network';
 import LogNode from './nodetypes/logNode';
 import ConstNode from './nodetypes/constNode';
 import MathNode from './nodetypes/mathNode';
 
-const d = new Dynode();
 const n = new Network();
 
 // Simple counter
@@ -35,9 +33,9 @@ n.addLink(m5, m5, 0, 0);
 /*
 n.setPeriod(1000);
 n.setRunning(true);
-*/  
+*/
 
-declare global {function publishToGlobal(assets: Object):void}
+declare global { function publishToGlobal(assets: Record<string, unknown>):void; }
 global.publishToGlobal({
-    demoNetwork: n
+  demoNetwork: n,
 });
