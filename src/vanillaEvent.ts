@@ -1,11 +1,11 @@
-declare type ValidFunction1 = (this:VEventTarget, v:VEvent) => void;
-declare type ValidFunction2 = (v:VEvent) => void;
-declare type ValidFunction = ValidFunction1|ValidFunction2;
+declare type VEventHandlerWithThis = (this:VEventTarget, v:VEvent) => void;
+declare type VEventHandlerWithoutThis = (v:VEvent) => void;
+declare type VEventHandler = VEventHandlerWithThis | VEventHandlerWithoutThis;
 
 class VEventTarget {
-  events: { [key: string]: ValidFunction[]; } = {};
+  events: { [key: string]: VEventHandler[]; } = {};
 
-  addEventListener(type: string, func: ValidFunction): void {
+  addEventListener(type: string, func: VEventHandler): void {
     if (type in this.events) {
       if (this.events[type].indexOf(func) !== -1) {
         throw new Error(`Event listener with the specified type and function: ${type} ${func} already exists`);
@@ -21,13 +21,13 @@ class VEventTarget {
     e.currentTarget = this;
     e.target = this;
     if (e.type in this.events) {
-      this.events[e.type].forEach((func: ValidFunction) => {
+      this.events[e.type].forEach((func: VEventHandler) => {
         func.call(this, e);
       });
     }
   }
 
-  removeEventListener(type: string, func: ValidFunction): void {
+  removeEventListener(type: string, func: VEventHandler): void {
     if (type in this.events) {
       const index = this.events[type].indexOf(func);
       if (index !== -1) {
