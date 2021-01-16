@@ -30,7 +30,7 @@ class Node {
     this.logging = logging;
   }
 
-  setInput(value: any, inputN: number): void {
+  setInput(value: unknown, inputN: number): void {
     this.inputs[inputN].setValue(value);
   }
 
