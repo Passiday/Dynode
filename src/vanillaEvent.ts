@@ -1,5 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare type ValidFunction = (...args: any[]) => void;
+// eslint-disable-next-line @typescript-eslint/ban-types
+declare type ValidFunction1 = (this:object, v:VEvent) => void;
+declare type ValidFunction2 = (v:VEvent) => void;
+declare type ValidFunction = ValidFunction1|ValidFunction2;
 
 class VEventTarget {
   events: { [key: string]: ValidFunction[]; } = {};
