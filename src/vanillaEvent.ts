@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
-declare type ValidFunction1 = (this:object, v:VEvent) => void;
+declare type ValidFunction1 = (this:VEventTarget, v:VEvent) => void;
 declare type ValidFunction2 = (v:VEvent) => void;
 declare type ValidFunction = ValidFunction1|ValidFunction2;
 
