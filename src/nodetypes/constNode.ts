@@ -5,8 +5,9 @@ import Node from '../node';
 
 class ConstNode extends Node {
   value: number|null;
+  
   constructor(value: number|null) {
-    super(0, 1, "const_node");
+    super(0, 1, 'const_node');
     this.value = value;
   }
 
