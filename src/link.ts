@@ -14,7 +14,7 @@ class Link {
     this.inputN = inputN;
   }
 
-  update() {
+  update(): void {
     (this.tailNode as any).setInput((this.headNode as any).getOutput(this.outputN), this.inputN);
   }
 }
