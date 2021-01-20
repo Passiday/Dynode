@@ -1,4 +1,4 @@
-import Node from './../node'
+import Node from '../node';
 
 // Elementary-Arithmetic-Node
 // Capable of performing addition, substraction, multiplication and division
@@ -42,4 +42,4 @@ class MathNode extends Node {
   }
 }
 
-export default MathNode
+export default MathNode;

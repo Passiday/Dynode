@@ -1,13 +1,18 @@
-import Link from './link'
-import Node from './node'
+import Link from './link';
+import Node from './node';
 
 class Network {
   period: number; // Time (in ms) between each update
+
   running: boolean;
+
   links: Link[];
+
   nodes: Node[];
+
   name: string; // Name is (currently) used to discern different networks in console logs
-  constructor(name: string = "network") {
+
+  constructor(name = 'network') {
     this.period = 0; // Set default clock speed to maximum
     this.running = false;
     this.links = [];
@@ -30,14 +35,13 @@ class Network {
   }
 
   setRunning(running: boolean): void {
-    if(running == true) {
+    if(running) {
       this.running = true;
-      
+
       // Executes the run function after {this.period} milliseconds
-      let me = this;
-      setTimeout(function() {
-        me.run();
-      }, me.period);
+      setTimeout(() => {
+        this.run();
+      }, this.period);
     } else {
       this.running = false;
     }
@@ -47,20 +51,18 @@ class Network {
     if(this.running) {
       this.tick();
       // If network is still running, executes the run function after {this.period} milliseconds
-      let me = this;
-      setTimeout(function() {
-        me.run();
-      }, me.period);
+      setTimeout(() => {
+        this.run();
+      }, this.period);
     }
   }
-  
+
   // One update cycle
   tick(): void {
-    console.log(`--- ${this.name} ---`)
-    // I have absolutely no clue why I should use (... as any), but if I don't, it does not work :(
-    this.nodes.forEach(node => (node as any).update())
-    this.links.forEach(link => (link as any).update())
+    console.log(`--- ${this.name} ---`);
+    this.nodes.forEach((node) => node.update());
+    this.links.forEach((link) => link.update());
   }
 }
-  
-export default Network
+
+export default Network;

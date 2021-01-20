@@ -14,4 +14,4 @@ class Socket {
   }
 }
 
-export default Socket
+export default Socket;
