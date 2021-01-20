@@ -35,7 +35,7 @@ class Network {
   }
 
   setRunning(running: boolean): void {
-    if(running) {
+    if (running) {
       this.running = true;
 
       // Executes the run function after {this.period} milliseconds
@@ -48,7 +48,7 @@ class Network {
   }
 
   run(): void {
-    if(this.running) {
+    if (this.running) {
       this.tick();
       // If network is still running, executes the run function after {this.period} milliseconds
       setTimeout(() => {
