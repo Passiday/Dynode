@@ -5,11 +5,11 @@ import Node from '../node';
 
 class MathNode extends Node {
   operation: string; // Valid operations are: ["+", "-", "*", "/"]
-  
+
   def0: number|null;
-  
+
   def1: number|null;
-  
+
   constructor(operation: string, def0: number|null = null, def1: number|null = null) {
     super(2, 1, 'math_node');
     this.operation = operation;
