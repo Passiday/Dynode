@@ -1,18 +1,18 @@
-import Node from './../node'
+import Node from '../node';
 
 // Console.log-Node.
 // Outputs its input to the console
 
 class LogNode extends Node {
   constructor() {
-    super(1, 1, "log_node");
+    super(1, 1, 'log_node');
     super.setLogging(true);
   }
 
-  update() {
+  update(): void {
     this.outputs[0].setValue(this.inputs[0].getValue());
     super.update();
   }
 }
 
-export default LogNode
+export default LogNode;

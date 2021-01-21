@@ -1,12 +1,16 @@
-import Node from './node'
+import Node from './node';
 
 class Link {
   // HeadNode and outputN are attributes of the origin node
   // TailNode and inputN are attributes of the target node
   headNode: Node;
+
   tailNode: Node;
+
   outputN: number;
+
   inputN: number;
+
   constructor(headNode: Node, tailNode: Node, outputN: number, inputN: number) {
     this.headNode = headNode;
     this.tailNode = tailNode;
@@ -14,9 +18,9 @@ class Link {
     this.inputN = inputN;
   }
 
-  update() {
-    (this.tailNode as any).setInput((this.headNode as any).getOutput(this.outputN), this.inputN);
+  update(): void {
+    this.tailNode.setInput(this.headNode.getOutput(this.outputN), this.inputN);
   }
 }
 
-export default Link
+export default Link;
