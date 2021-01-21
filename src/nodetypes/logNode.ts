@@ -9,7 +9,7 @@ class LogNode extends Node {
     super.setLogging(true);
   }
 
-  update() {
+  update(): void {
     this.outputs[0].setValue(this.inputs[0].getValue());
     super.update();
   }

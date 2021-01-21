@@ -1,17 +1,15 @@
-import Node from './node';
-
 class Socket {
-  value: any;
+  value: number|null;
 
   constructor() {
     this.value = null;
   }
 
-  setValue(value: any) {
+  setValue(value: number|null): void {
     this.value = value;
   }
 
-  getValue() {
+  getValue(): number|null {
     return this.value;
   }
 }

@@ -30,11 +30,11 @@ class Node {
     this.logging = logging;
   }
 
-  setInput(value: unknown, inputN: number): void {
+  setInput(value: number|null, inputN: number): void {
     this.inputs[inputN].setValue(value);
   }
 
-  getOutput(outputN: number): Socket {
+  getOutput(outputN: number): number|null {
     return this.outputs[outputN].getValue();
   }
 
