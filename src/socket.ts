@@ -18,7 +18,7 @@ class Socket extends VEventTarget {
     this.hasValue = false;
   }
 
-  setValue(value: unknown): void {
+  setValue(value?: unknown): void {
     if (this.hasValue) throw Error('Value already set');
     if (arguments.length) {
       this.value = value;
