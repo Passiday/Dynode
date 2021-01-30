@@ -17,7 +17,7 @@ test('simpleSocketTest', () => {
   socket.setValue();
 });
 
-/* test('linkedInputSocketTest', () => {
+test('linkedInputSocketTest', () => {
   const outputSocket = new Socket();
   const inputSocket = new InputSocket();
 
@@ -247,4 +247,3 @@ test('quadraticFormulaNetworkTest', () => {
   nodeRoot1.resolve();
   nodeRoot2.resolve();
 });
-*/
