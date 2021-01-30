@@ -22,7 +22,7 @@ class OutputSocket extends Socket {
     this.waiting = false;
   }
 
-  setValue(value: unknown): void {
+  setValue(value?: unknown): void {
     this.waiting = false;
     if (arguments.length) {
       super.setValue(value);

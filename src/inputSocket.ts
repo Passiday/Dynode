@@ -13,7 +13,7 @@ class InputSocket extends Socket {
 
   valueHandler: VEventHandler | undefined;
 
-  setDefaultValue(value: unknown): void {
+  setDefaultValue(value?: unknown): void {
     if (arguments.length) {
       this.defaultValue = value;
       this.defaultNothing = false;
