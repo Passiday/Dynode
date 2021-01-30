@@ -1,6 +1,10 @@
+import Socket from '../src/socket';
+import InputSocket from '../src/inputSocket';
+import OutputSocket from '../src/outputSocket';
+
 test('simpleSocketTest', () => {
   const socket = new Socket();
-  socket.addEventListener('value', function () {
+  socket.addEventListener('value', () => {
     if (this.isNothing()) {
       console.log('Value is nothing.');
     } else {
@@ -26,7 +30,7 @@ test('linkedInputSocketTest', () => {
   console.log('inputSocket value:', inputSocket.isNothing() ? 'nothing' : inputSocket.getValue());
 
   inputSocket.linkSocket(outputSocket);
-  inputSocket.addEventListener('value', function () {
+  inputSocket.addEventListener('value', () => {
     if (this.isNothing()) {
       console.log('Value is nothing.');
     } else {
@@ -48,10 +52,10 @@ test('linkedInputSocketTest', () => {
 test('outputSocketTest', () => {
   const mockNode = {};
   const socket = new OutputSocket(mockNode);
-  mockNode.resolve = function () {
+  mockNode.resolve = () => {
     window.setTimeout(() => socket.setValue(123), 1000);
   };
-  socket.addEventListener('value', function () {
+  socket.addEventListener('value', () => {
     if (this.isNothing()) {
       console.log('Value is nothing.');
     } else {
@@ -71,7 +75,7 @@ test('unlinkedNodeTest', () => {
   const output1 = node.addOutput('one');
   input1.setDefaultValue(123);
   input2.setDefaultValue();
-  output1.addEventListener('value', function () {
+  output1.addEventListener('value', () => {
     if (this.isNothing()) {
       console.log('Value is nothing.');
     } else {
@@ -87,7 +91,7 @@ test('linkedNodesTest', () => {
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
   nodeA.addOutput('one');
-  nodeA.action = function () {
+  nodeA.action = () => {
     if (!this.inputIsNothing('one')) {
       const inputOne = this.getInputValue('one');
       this.setOutputValue('one', inputOne);
@@ -116,7 +120,7 @@ test('quadraticFormulaNetworkTest', () => {
     node.addInput('x');
     node.addInput('y');
     node.addOutput('result');
-    node.action = function () {
+    node.action = () => {
       if (this.inputIsNothing('operation')) return;
       const operation = this.getInputValue('operation');
       if (operation === '+') {
@@ -167,7 +171,7 @@ test('quadraticFormulaNetworkTest', () => {
   nodeParams.addOutput('a');
   nodeParams.addOutput('b');
   nodeParams.addOutput('c');
-  nodeParams.action = function () {
+  nodeParams.action = () => {
     if (this.inputIsNothing('a')) return;
     if (this.inputIsNothing('b')) return;
     if (this.inputIsNothing('c')) return;
