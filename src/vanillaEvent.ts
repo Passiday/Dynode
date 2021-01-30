@@ -59,4 +59,5 @@ class VEvent {
 export {
   VEventTarget,
   VEvent,
+  VEventHandler,
 };
