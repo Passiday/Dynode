@@ -4,7 +4,7 @@ import OutputSocket from '../src/outputSocket';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();
-  socket.addEventListener('value', () => {
+  socket.addEventListener('value', function (this: Socket) { // Fixed part
     if (this.isNothing()) {
       console.log('Value is nothing.');
     } else {
