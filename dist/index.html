@@ -3,10 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <title>Dynode</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>Dynode</h1>
     For now, all the action takes place in the console.
+    <div id="dynodeContainer"></div>
+    <script>function publishToGlobal(assets) {for (assetAlias in assets) window[assetAlias] = assets[assetAlias];}</script>
     <script src="main.js"></script>
   </body>
 </html>

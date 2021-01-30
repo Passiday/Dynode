@@ -1,16 +1,17 @@
-import Node from './../node'
+import Node from '../node';
 
 // Constant-value-Node
 // Outputs constant value
 
 class ConstNode extends Node {
-  value: any;
-  constructor(value: any) {
-    super(0, 1, "const_node");
+  value: number|null;
+
+  constructor(value: number|null) {
+    super(0, 1, 'const_node');
     this.value = value;
   }
 
-  update() {
+  update(): void {
     this.outputs[0].setValue(this.value);
     super.update();
   }
@@ -19,4 +20,4 @@ class ConstNode extends Node {
   // ...
 }
 
-export default ConstNode
+export default ConstNode;
