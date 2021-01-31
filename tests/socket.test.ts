@@ -28,32 +28,38 @@ test('linkedInputSocketTest', () => {
   const outputSocket = new Socket();
   const inputSocket = new InputSocket();
 
-  console.log('inputSocket is set:', inputSocket.isSet());
+  expect(inputSocket.isSet()).toBe(false);
 
   inputSocket.setDefaultValue();
-  console.log('inputSocket is set:', inputSocket.isSet());
-  console.log('inputSocket value:', inputSocket.isNothing() ? 'nothing' : inputSocket.getValue());
-  inputSocket.setDefaultValue(999);
-  console.log('inputSocket value:', inputSocket.isNothing() ? 'nothing' : inputSocket.getValue());
+  expect(inputSocket.isSet()).toBe(true);
+  expect(inputSocket.isNothing()).toBe(true);
 
+  inputSocket.setDefaultValue(999);
+  expect(inputSocket.getValue()).toBe(999);
+
+  let currentItem: unknown;
   inputSocket.linkSocket(outputSocket as any);
   inputSocket.addEventListener('value', function (this: InputSocket) {
     if (this.isNothing()) {
-      console.log('Value is nothing.');
+      currentItem = 'nothing'
     } else {
-      console.log('Value:', this.getValue());
+      currentItem = this.getValue();
     }
   });
+
   outputSocket.setValue(123);
+  expect(currentItem).toBe(123);
 
   inputSocket.init();
   outputSocket.init();
-  console.log('inputSocket is set:', inputSocket.isSet());
+  expect(inputSocket.isSet()).toBe(false);
+
   inputSocket.clearLink();
-  console.log('inputSocket is set:', inputSocket.isSet());
-  console.log('inputSocket value:', inputSocket.isNothing() ? 'nothing' : inputSocket.getValue());
+  expect(inputSocket.isSet()).toBe(true);
+  expect(inputSocket.getValue()).toBe(999);
+  
   inputSocket.clearDefault();
-  console.log('inputSocket is set:', inputSocket.isSet());
+  expect(inputSocket.isSet()).toBe(false);
 });
 
 test('outputSocketTest', () => {

@@ -20,6 +20,7 @@ class InputSocket extends Socket {
     } else {
       this.defaultNothing = true;
     }
+    this.hasDefault = true;
   }
 
   getDefaultValue(): unknown {
