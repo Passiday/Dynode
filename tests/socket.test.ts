@@ -50,10 +50,9 @@ test('linkedInputSocketTest', () => {
 });
 
 test('outputSocketTest', () => {
-  const mockNode: any = {
-    resolve: () => window.setTimeout(() => socket.setValue(123), 1000),
-  };
+  const mockNode: any = {};
   const socket = new OutputSocket(mockNode);
+  mockNode.resolve = () => window.setTimeout(() => socket.setValue(123), 1000);
   socket.addEventListener('value', function (this: OutputSocket) {
     if (this.isNothing()) {
       console.log('Value is nothing.');
