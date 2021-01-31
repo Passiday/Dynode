@@ -4,29 +4,23 @@ import OutputSocket from '../src/outputSocket';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();
-  let currentItem: unknown;
-
-  socket.addEventListener('value', function (this: Socket) {
-    if (this.isNothing()) {
-      currentItem = 'nothing';
-    } else {
-      currentItem = this.getValue();
-    }
-  });
+  const mockFun = jest.fn(function (this: Socket) { return this; });
+  socket.addEventListener('value', mockFun);
 
   socket.setValue(123);
-  expect(currentItem).toBe(123);
+  expect(mockFun.mock.results.slice(-1)[0].value.getValue()).toBe(123);
 
   expect(() => socket.setValue(456)).toThrow();
 
   socket.init();
   socket.setValue();
-  expect(currentItem).toBe('nothing');
+  expect(mockFun.mock.results.slice(-1)[0].value.isNothing()).toBe(true);
 });
 
 test('linkedInputSocketTest', () => {
   const outputSocket = new Socket();
   const inputSocket = new InputSocket();
+  const mockFun = jest.fn(function (this: Socket) { return this; });
 
   expect(inputSocket.isSet()).toBe(false);
 
@@ -39,16 +33,10 @@ test('linkedInputSocketTest', () => {
 
   let currentItem: unknown;
   inputSocket.linkSocket(outputSocket as any);
-  inputSocket.addEventListener('value', function (this: InputSocket) {
-    if (this.isNothing()) {
-      currentItem = 'nothing';
-    } else {
-      currentItem = this.getValue();
-    }
-  });
+  inputSocket.addEventListener('value', mockFun);
 
   outputSocket.setValue(123);
-  expect(currentItem).toBe(123);
+  expect(mockFun.mock.results.slice(-1)[0].value.getValue()).toBe(123);
 
   inputSocket.init();
   outputSocket.init();
