@@ -23,5 +23,6 @@ module.exports = {
     'no-console': 'off',
     'max-classes-per-file': 'off',
     'no-plusplus': 'off',
+    'func-names': 'off',
   },
 };
