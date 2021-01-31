@@ -25,4 +25,13 @@ module.exports = {
     'no-plusplus': 'off',
     'func-names': 'off',
   },
+  overrides: [
+    {
+      // test-specific config
+      files: '*.test.ts',
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    }
+  ],
 };
