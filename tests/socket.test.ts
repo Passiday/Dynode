@@ -41,7 +41,7 @@ test('linkedInputSocketTest', () => {
   inputSocket.linkSocket(outputSocket as any);
   inputSocket.addEventListener('value', function (this: InputSocket) {
     if (this.isNothing()) {
-      currentItem = 'nothing'
+      currentItem = 'nothing';
     } else {
       currentItem = this.getValue();
     }
@@ -57,7 +57,7 @@ test('linkedInputSocketTest', () => {
   inputSocket.clearLink();
   expect(inputSocket.isSet()).toBe(true);
   expect(inputSocket.getValue()).toBe(999);
-  
+
   inputSocket.clearDefault();
   expect(inputSocket.isSet()).toBe(false);
 });
@@ -68,7 +68,7 @@ test('outputSocketTest', () => {
   const mockNode: any = {};
   const socket = new OutputSocket(mockNode);
   mockNode.resolve = jest.fn(
-    () => setTimeout(() => socket.setValue(123), 1000)
+    () => setTimeout(() => socket.setValue(123), 1000),
   );
 
   // Post setValue test
@@ -76,7 +76,7 @@ test('outputSocketTest', () => {
     expect(socket.getValue).toBe(123);
     expect(socket.waiting).toBe(false);
   });
-  
+
   expect(socket.waiting).toBe(false);
   socket.pull();
   expect(socket.waiting).toBe(true);
