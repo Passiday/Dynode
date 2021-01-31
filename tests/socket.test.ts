@@ -50,9 +50,11 @@ test('linkedInputSocketTest', () => {
 });
 
 test('outputSocketTest', () => {
+  jest.useFakeTimers();
+
   const mockNode: any = {};
   const socket = new OutputSocket(mockNode);
-  mockNode.resolve = () => window.setTimeout(() => socket.setValue(123), 1000);
+  mockNode.resolve = () => setTimeout(() => socket.setValue(123), 1000);
   socket.addEventListener('value', function (this: OutputSocket) {
     if (this.isNothing()) {
       console.log('Value is nothing.');
