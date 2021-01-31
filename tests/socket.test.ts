@@ -4,17 +4,24 @@ import OutputSocket from '../src/outputSocket';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();
+  let currentItem: unknown;
+
   socket.addEventListener('value', function (this: Socket) {
     if (this.isNothing()) {
-      console.log('Value is nothing.');
+      currentItem = 'nothing';
     } else {
-      console.log('Value:', this.getValue());
+      currentItem = this.getValue();
     }
   });
+
   socket.setValue(123);
-  // socket.setValue(456); // Exception
+  expect(currentItem).toBe(123);
+
+  expect(() => socket.setValue(456)).toThrow();
+
   socket.init();
   socket.setValue();
+  expect(currentItem).toBe('nothing');
 });
 
 test('linkedInputSocketTest', () => {
