@@ -29,7 +29,7 @@ test('linkedInputSocketTest', () => {
   inputSocket.setDefaultValue(999);
   console.log('inputSocket value:', inputSocket.isNothing() ? 'nothing' : inputSocket.getValue());
 
-  inputSocket.linkSocket(outputSocket);
+  inputSocket.linkSocket(outputSocket as any);
   inputSocket.addEventListener('value', function (this: InputSocket) {
     if (this.isNothing()) {
       console.log('Value is nothing.');
@@ -50,11 +50,10 @@ test('linkedInputSocketTest', () => {
 });
 
 test('outputSocketTest', () => {
-  const mockNode = {};
-  const socket = new OutputSocket(mockNode);
-  mockNode.resolve = () => {
-    window.setTimeout(() => socket.setValue(123), 1000);
+  const mockNode: any = {
+    resolve: () => window.setTimeout(() => socket.setValue(123), 1000),
   };
+  const socket = new OutputSocket(mockNode);
   socket.addEventListener('value', function (this: OutputSocket) {
     if (this.isNothing()) {
       console.log('Value is nothing.');
