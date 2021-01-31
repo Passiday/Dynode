@@ -67,18 +67,19 @@ test('outputSocketTest', () => {
 
   const mockNode: any = {};
   const socket = new OutputSocket(mockNode);
-  mockNode.resolve = () => setTimeout(() => socket.setValue(123), 1000);
-  socket.addEventListener('value', function (this: OutputSocket) {
-    if (this.isNothing()) {
-      console.log('Value is nothing.');
-    } else {
-      console.log('Value:', this.getValue());
-    }
-    console.log('Socket waiting:', this.waiting);
+  mockNode.resolve = jest.fn(
+    () => setTimeout(() => socket.setValue(123), 1000)
+  );
+
+  // Post setValue test
+  socket.addEventListener('value', () => {
+    expect(socket.getValue).toBe(123);
+    expect(socket.waiting).toBe(false);
   });
-  console.log('Socket waiting:', socket.waiting);
+  
+  expect(socket.waiting).toBe(false);
   socket.pull();
-  console.log('Socket waiting:', socket.waiting);
+  expect(socket.waiting).toBe(true);
 });
 
 // test('unlinkedNodeTest', () => {
