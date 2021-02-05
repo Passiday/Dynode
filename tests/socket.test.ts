@@ -69,4 +69,3 @@ test('outputSocketTest', () => {
   socket.pull();
   expect(socket.waiting).toBe(true);
 });
-

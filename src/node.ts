@@ -7,7 +7,7 @@ class Node extends VEventTarget {
 
   constructor(name: string) {
     super();
-    this.name = name ? name : 'Untitled';
+    this.name = name || 'Untitled';
   }
 
   // Input business
@@ -15,9 +15,9 @@ class Node extends VEventTarget {
     [key: string]: InputSocket,
   } = {};
 
-  inputCount: number = 0;
+  inputCount = 0;
 
-  resolvedInputs: number = 0;
+  resolvedInputs = 0;
 
   addInput(name: string): InputSocket {
     if (name in this.inputs) throw Error('Input name already exists');
@@ -25,7 +25,7 @@ class Node extends VEventTarget {
     this.inputs[name] = socket;
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
-      if (this.resolvedInputs == this.inputCount) {
+      if (this.resolvedInputs === this.inputCount) {
         this.ready();
       }
     });
@@ -38,9 +38,9 @@ class Node extends VEventTarget {
     throw Error(`Input "${name}" not found`);
   }
 
-  removeInput(name: string): void {
-    //TODO
-  }
+  // removeInput(name: string): void {
+  //   //TODO
+  // }
 
   getInputValue(name: string): unknown {
     const input = this.getInput(name);
@@ -50,7 +50,7 @@ class Node extends VEventTarget {
   inputIsNothing(name: string): boolean {
     const input = this.getInput(name);
     return input.isNothing();
-  }  
+  }
 
   linkInput(name: string, outputSocket: OutputSocket): void {
     const input = this.getInput(name);
@@ -64,10 +64,10 @@ class Node extends VEventTarget {
 
   dumpInputs(): void {
     console.log('*** Input dump ***');
-    for (let inputName in this.inputs) {
+    Object.keys(this.inputs).forEach((inputName) => {
       const input = this.getInput(inputName);
       console.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
-    }
+    });
   }
 
   // Output business
@@ -87,9 +87,9 @@ class Node extends VEventTarget {
     throw Error('Output not found');
   }
 
-  removeOutput(name: string): void {
-    //TODO
-  }
+  // removeOutput(name: string): void {
+  //   //TODO
+  // }
 
   setOutputValue(name: string, value: unknown): void {
     const output = this.getOutput(name);
@@ -102,16 +102,16 @@ class Node extends VEventTarget {
 
   dumpOutputs(): void {
     console.log('*** Output dump ***');
-    for (let outputName in this.outputs) {
+    Object.keys(this.outputs).forEach((outputName) => {
       const output = this.getOutput(outputName);
       console.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
-    }
+    });
   }
 
   // All other business
-  busy: boolean = false;
+  busy = false;
 
-  resolved: boolean = false;
+  resolved = false;
 
   preResolve(): void {
     this.busy = false;
@@ -122,7 +122,7 @@ class Node extends VEventTarget {
     if (this.busy) return;
     this.busy = true;
     this.resolvedInputs = 0;
-    for (let inputName in this.inputs) {
+    Object.keys(this.inputs).forEach((inputName) => {
       const input = this.getInput(inputName);
       if (!input.isValid()) throw Error('Input is not linked and has no default.');
       if (input.isSet()) {
@@ -130,9 +130,9 @@ class Node extends VEventTarget {
       } else {
         input.pull();
       }
-    }
-    if (!this.resolved && this.resolvedInputs == this.inputCount) {
-      this.ready();    
+    });
+    if (!this.resolved && this.resolvedInputs === this.inputCount) {
+      this.ready();
     }
   }
 
@@ -141,18 +141,18 @@ class Node extends VEventTarget {
     this.dumpInputs();
     this.action();
     // Set all unset outputs
-    for (let outputName in this.outputs) {
+    Object.keys(this.outputs).forEach((outputName) => {
       const output = this.getOutput(outputName);
       if (!output.isSet()) output.setValue();
-    }
+    });
     this.dumpOutputs();
     this.busy = false;
     this.resolved = true;
   }
 
-  action(): void {
+  action = (): void => {
     // Do something with inputs, set some outputs
-  }
+  };
 }
 
-export default Node
+export default Node;
