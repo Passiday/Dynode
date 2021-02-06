@@ -23,5 +23,15 @@ module.exports = {
     'no-console': 'off',
     'max-classes-per-file': 'off',
     'no-plusplus': 'off',
+    'func-names': 'off',
   },
+  overrides: [
+    {
+      // test-specific config
+      files: '*.test.ts',
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    }
+  ],
 };
