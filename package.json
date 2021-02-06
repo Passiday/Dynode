@@ -10,6 +10,7 @@
     "build": "webpack",
     "lint": "npx eslint . --ext .ts",
     "lint:auto": "npx eslint . --ext .ts --fix",
+    "doc": "typedoc src/inputSocket.ts --theme minimal",
     "ci": "bash ci-script"
   },
   "keywords": [],
