@@ -3,8 +3,14 @@ import Socket from './socket';
 import { VEventHandler, VEvent } from './vanillaEvent';
 
 class InputSocket extends Socket {
+  /**
+   * Value used if the socket doesn't have a socket linked to it.
+   */
   defaultValue: unknown;
 
+  /**
+   * If true, mark socket's default to be nothing.
+   */
   defaultNothing = false;
 
   hasDefault = false;
@@ -13,6 +19,11 @@ class InputSocket extends Socket {
 
   valueHandler: VEventHandler | undefined;
 
+  /**
+   * Provide a default value to socket.
+   *
+   * @param value  The new value. If omitted, defaultValue is set to nothing.
+   */
   setDefaultValue(value?: unknown): void {
     if (arguments.length) {
       this.defaultValue = value;
