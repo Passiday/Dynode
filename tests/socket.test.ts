@@ -31,7 +31,6 @@ test('linkedInputSocketTest', () => {
   inputSocket.setDefaultValue(999);
   expect(inputSocket.getValue()).toBe(999);
 
-  let currentItem: unknown;
   inputSocket.linkSocket(outputSocket as any);
   inputSocket.addEventListener('value', mockFun);
 

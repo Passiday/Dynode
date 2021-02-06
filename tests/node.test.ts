@@ -1,6 +1,5 @@
-import Node from '../src/node'
-import OutputSocket from '../src/outputSocket'
-import InputSocket from '../src/inputSocket'
+import Node from '../src/node';
+import OutputSocket from '../src/outputSocket';
 
 test('unlinkedNodeTest', () => {
   const node = new Node('Node-A');
