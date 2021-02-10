@@ -1,4 +1,4 @@
-import { VEventTarget } from './vanillaEvent';
+import { VEvent, VEventTarget } from './vanillaEvent';
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
 
@@ -8,6 +8,8 @@ class Node extends VEventTarget {
   constructor(name: string) {
     super();
     this.name = name || 'Untitled';
+    // this.dispatchEvent(new VEvent('nodeCreated'));
+    // The dispatchEvent is commented, becouse the event will always fire before added handlers.
   }
 
   // Input business
@@ -30,6 +32,7 @@ class Node extends VEventTarget {
       }
     });
     this.inputCount++;
+    this.dispatchEvent(new VEvent('addInput'));
     return socket;
   }
 
@@ -55,11 +58,13 @@ class Node extends VEventTarget {
   linkInput(name: string, outputSocket: OutputSocket): void {
     const input = this.getInput(name);
     input.linkSocket(outputSocket);
+    this.dispatchEvent(new VEvent('linkInput'));
   }
 
   unlinkInput(name: string): void {
     const input = this.getInput(name);
     input.clearLink();
+    this.dispatchEvent(new VEvent('unlinkInput'));
   }
 
   dumpInputs(): void {
@@ -68,6 +73,7 @@ class Node extends VEventTarget {
       const input = this.getInput(inputName);
       console.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
     });
+    this.dispatchEvent(new VEvent('dumpInputs'));
   }
 
   // Output business
@@ -79,6 +85,7 @@ class Node extends VEventTarget {
     if (name in this.outputs) throw Error('Output name already exists');
     const socket = new OutputSocket(this);
     this.outputs[name] = socket;
+    this.dispatchEvent(new VEvent('addOutput'));
     return socket;
   }
 
@@ -98,6 +105,7 @@ class Node extends VEventTarget {
     } else {
       output.setValue();
     }
+    this.dispatchEvent(new VEvent('setOutputValue'));
   }
 
   dumpOutputs(): void {
@@ -106,6 +114,16 @@ class Node extends VEventTarget {
       const output = this.getOutput(outputName);
       console.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
     });
+    this.dispatchEvent(new VEvent('dumpOutputs'));
+  }
+
+  returnOutputs() : string {
+    let s = '';
+    Object.keys(this.outputs).forEach((outputName) => {
+      const output = this.getOutput(outputName);
+      s += `Output ${outputName}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
+    });
+    return s;
   }
 
   // All other business
@@ -134,6 +152,7 @@ class Node extends VEventTarget {
     if (!this.resolved && this.resolvedInputs === this.inputCount) {
       this.ready();
     }
+    this.dispatchEvent(new VEvent('resolve'));
   }
 
   ready(): void {
@@ -148,6 +167,7 @@ class Node extends VEventTarget {
     this.dumpOutputs();
     this.busy = false;
     this.resolved = true;
+    this.dispatchEvent(new VEvent('ready'));
   }
 
   action = (): void => {
