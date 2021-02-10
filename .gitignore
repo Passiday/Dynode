@@ -2,3 +2,4 @@
 /dist/*
 !/dist/index.html
 !/dist/styles.css
+!/dist/SVGBuilder.js
