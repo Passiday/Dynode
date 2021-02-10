@@ -31,7 +31,7 @@ class NodeController {
   }
 }
 
-class DynodeController {
+class NetworkController {
   model: Network;
 
   view: HTMLElement;
@@ -55,4 +55,4 @@ class DynodeController {
   }
 }
 
-export { DynodeController, NodeController };
+export { NetworkController, NodeController };

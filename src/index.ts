@@ -1,11 +1,11 @@
 import Network from './network';
 import Node from './node';
-import { DynodeController } from './dynodeController';
+import { NetworkController } from './dynodeController';
 
 const n = new Network();
 const htmlElement = document.getElementById('dynodeContainer');
 if (htmlElement === null) throw Error('HTMLElement is null');
-const controller = new DynodeController(n, htmlElement);
+const controller = new NetworkController(n, htmlElement);
 
 const sumNode = new Node('Sum'); // Creates sum node;
 sumNode.addInput('x');
