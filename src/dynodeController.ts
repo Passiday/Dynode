@@ -19,14 +19,19 @@ class NodeController {
       view.innerHTML = `Name: ${this.name}; `;
     }
     function resolved(this: Node): void {
-      view.innerHTML = `Name: ${this.name}; ${this.returnOutputs()} \n`;
+      let s = '';
+      Object.keys(this.outputs).forEach((outputName) => {
+        const output = this.getOutput(outputName);
+        s += `Output ${outputName}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
+      });
+      view.innerHTML = `Name: ${this.name}; ${s} \n`;
     }
     function removed(this: Node): void {
       const parent = view.parentElement;
       parent?.removeChild(view);
     }
     this.model.addEventListener('nodeAdded', created);
-    this.model.addEventListener('resolve', resolved);
+    this.model.addEventListener('afterResolve', resolved);
     this.model.addEventListener('nodeRemoved', removed);
   }
 }

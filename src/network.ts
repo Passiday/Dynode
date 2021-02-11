@@ -14,7 +14,7 @@ class Network extends VEventTarget {
 
   addNode(node: Node): Node {
     this.nodes.push(node);
-    this.dispatchEvent(new VEvent('addNode'));
+    this.dispatchEvent(new VEvent('addNode', { detail: { node } }));
     return node;
   }
 
