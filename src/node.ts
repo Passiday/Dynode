@@ -1,4 +1,4 @@
-import { VEventTarget } from './vanillaEvent';
+import { VEvent, VEventTarget } from './vanillaEvent';
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
 
@@ -8,6 +8,7 @@ class Node extends VEventTarget {
   constructor(name: string) {
     super();
     this.name = name || 'Untitled';
+    this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 
   // Input business
@@ -30,6 +31,7 @@ class Node extends VEventTarget {
       }
     });
     this.inputCount++;
+    this.dispatchEvent(new VEvent('addInput', { detail: { inputName: name } }));
     return socket;
   }
 
@@ -55,11 +57,13 @@ class Node extends VEventTarget {
   linkInput(name: string, outputSocket: OutputSocket): void {
     const input = this.getInput(name);
     input.linkSocket(outputSocket);
+    this.dispatchEvent(new VEvent('linkInput', { detail: { inputName: name } }));
   }
 
   unlinkInput(name: string): void {
     const input = this.getInput(name);
     input.clearLink();
+    this.dispatchEvent(new VEvent('unlinkInput', { detail: { inputName: name } }));
   }
 
   dumpInputs(): void {
@@ -68,6 +72,7 @@ class Node extends VEventTarget {
       const input = this.getInput(inputName);
       console.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
     });
+    this.dispatchEvent(new VEvent('dumpInputs'));
   }
 
   // Output business
@@ -79,6 +84,7 @@ class Node extends VEventTarget {
     if (name in this.outputs) throw Error('Output name already exists');
     const socket = new OutputSocket(this);
     this.outputs[name] = socket;
+    this.dispatchEvent(new VEvent('addOutput', { detail: { outputName: name } }));
     return socket;
   }
 
@@ -98,6 +104,7 @@ class Node extends VEventTarget {
     } else {
       output.setValue();
     }
+    // this.dispatchEvent(new VEvent('setOutputValue')); TODO event bubbling
   }
 
   dumpOutputs(): void {
@@ -106,6 +113,7 @@ class Node extends VEventTarget {
       const output = this.getOutput(outputName);
       console.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
     });
+    this.dispatchEvent(new VEvent('dumpOutputs'));
   }
 
   // All other business
@@ -120,6 +128,7 @@ class Node extends VEventTarget {
 
   resolve(): void {
     if (this.busy) return;
+    this.dispatchEvent(new VEvent('beforeResolve'));
     this.busy = true;
     this.resolvedInputs = 0;
     Object.keys(this.inputs).forEach((inputName) => {
@@ -134,6 +143,7 @@ class Node extends VEventTarget {
     if (!this.resolved && this.resolvedInputs === this.inputCount) {
       this.ready();
     }
+    this.dispatchEvent(new VEvent('afterResolve'));
   }
 
   ready(): void {
@@ -148,6 +158,7 @@ class Node extends VEventTarget {
     this.dumpOutputs();
     this.busy = false;
     this.resolved = true;
+    this.dispatchEvent(new VEvent('ready'));
   }
 
   action = (): void => {
