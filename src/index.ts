@@ -18,8 +18,19 @@ function SVGPlayground() {
   p.addPoint({cmd:'Z'});
   p.update();
   p.translate(400, 200);
+  const fog = svg.addGroup();
+  fog.translate(50, 30);
+  const fo = fog.addForeignObject({width:400, height:200});
+  const foDiv = document.createElement('div');
+  foDiv.innerHTML = 'Hello, <b>World</b>. This is plain HTML in a &lt;foreignObject&gt; SVG element.';
+  foDiv.style.backgroundColor = 'rgba(255,255,255,0.5)';
+  foDiv.style.position = 'absolute';
+  foDiv.style.top = '0px';
+  foDiv.style.bottom = '0px';
+  fo.element.appendChild(foDiv);
   svg.draggable(r);
   svg.draggable(p);
+  svg.draggable(fog);
   return svg;
 }
 

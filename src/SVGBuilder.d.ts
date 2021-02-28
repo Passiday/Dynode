@@ -91,20 +91,21 @@ export interface SVGFile extends SVGElement {
 
 export interface SVGContainer extends SVGElement {
   new(): SVGContainer;
-  addRect(attr: SVGElementAttrs): SVGRect;
-  addCircle(attr: SVGElementAttrs): SVGCircle;
-  addEllipse(attr: SVGElementAttrs): SVGEllipse;
-  addLine(attr: SVGElementAttrs): SVGLine;
-  addPolyline(attr: SVGElementAttrs, points?: [{[string]:number|string}]): SVGPolyline;
-  addPolygon(attr: SVGElementAttrs, points?: [{[string]:number|string}]): SVGPolygon;
-  addPath(attr: SVGElementAttrs, points?: [{[string]:number|string}]): SVGPath;
-  addText(attr: SVGElementAttrs, value: string): SVGText;
-  addGroup(attr: SVGElementAttrs): SVGGroup;
-  addDefs(attr: SVGElementAttrs): SVGDefs;
-  addUse(attr: SVGElementAttrs, href: string): SVGUse
-  addClipPath(attr: SVGElementAttrs): SVGClipPath;
-  addImage(attr, imgURL: string, onLoaded?: function, onError?: function): SVGImage;
-  addSVGFile(attr, svgURL: string, onLoaded?: function, onError?: function): SVGFile;
+  addRect(attr?: SVGElementAttrs): SVGRect;
+  addCircle(attr?: SVGElementAttrs): SVGCircle;
+  addEllipse(attr?: SVGElementAttrs): SVGEllipse;
+  addLine(attr?: SVGElementAttrs): SVGLine;
+  addPolyline(attr?: SVGElementAttrs, points?: [{[string]:number|string}]): SVGPolyline;
+  addPolygon(attr?: SVGElementAttrs, points?: [{[string]:number|string}]): SVGPolygon;
+  addPath(attr?: SVGElementAttrs, points?: [{[string]:number|string}]): SVGPath;
+  addText(attr?: SVGElementAttrs, value: string): SVGText;
+  addGroup(attr?: SVGElementAttrs): SVGGroup;
+  addForeignObject(attr?: SVGElementAttrs): SVGForeignObject;
+  addDefs(attr?: SVGElementAttrs): SVGDefs;
+  addUse(attr?: SVGElementAttrs, href: string): SVGUse
+  addClipPath(attr?: SVGElementAttrs): SVGClipPath;
+  addImage(attr: SVGElementAttrs, imgURL: string, onLoaded?: function, onError?: function): SVGImage;
+  addSVGFile(attr: SVGElementAttrs, svgURL: string, onLoaded?: function, onError?: function): SVGFile;
 }
 
 export interface SVGBuilder extends SVGContainer {
@@ -115,6 +116,10 @@ export interface SVGBuilder extends SVGContainer {
 
 export interface SVGGroup extends SVGContainer {
   new(attr: SVGElementAttrs): SVGGroup;
+}
+
+export interface SVGForeignObject extends SVGContainer {
+  new(attr: SVGElementAttrs): SVGForeignObject;
 }
 
 export interface SVGClipPath extends SVGContainer {

@@ -712,6 +712,12 @@ class SVGContainer extends SVGElement {
     return svgObject;
   }
 
+  addForeignObject(attr) {
+    var svgObject = new SVGForeignObject(attr);
+    svgObject.insert(this.element);
+    return svgObject;
+  }
+
   addDefs(attr) {
     var svgObject = new SVGDefs(attr);
     svgObject.insert(this.element);
@@ -988,6 +994,8 @@ class SVGBuilder extends SVGContainer {
       svgObject = new SVGText();
     } else if (nodeName == "g") {
       svgObject = new SVGGroup();
+    } else if (nodeName == "foreignObject") {
+      svgObject = new SVGForeignObject();
     } else if (nodeName == "defs") {
       svgObject = new SVGDefs();
     } else if (nodeName == "clipPath") {
@@ -1006,6 +1014,15 @@ class SVGGroup extends SVGContainer {
   constructor(attr) {
     super();
     this.init("g", attr);
+  }
+}
+
+/* class SVGForeignObject *************************************************************************************************************************/
+
+class SVGForeignObject extends SVGContainer {
+  constructor(attr) {
+    super();
+    this.init("foreignObject", attr, ["x", "y", "width", "height"]);
   }
 }
 
