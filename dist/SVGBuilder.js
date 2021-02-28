@@ -1,6 +1,6 @@
-/* class SVGElement ***************************************************************************************************************************/
+/* class SVGBElement ***************************************************************************************************************************/
 
-class SVGElement {
+class SVGBElement {
   // Base class for all svg elements
   constructor() {
     this.debugMode = false;
@@ -22,7 +22,7 @@ class SVGElement {
     return this.element;
   }
 
-  wrapElement(targetNode) {
+  captureElement(targetNode) {
     this.element = targetNode;
   }
 
@@ -96,7 +96,7 @@ class SVGElement {
   }
 
   getTransform(template) {
-    if (!this.transform) this.transform = new SVGTransform(this.element, template);
+    if (!this.transform) this.transform = new SVGBTransform(this.element, template);
     return this.transform;
   }
 
@@ -172,9 +172,9 @@ class SVGElement {
   }
 }
 
-/* class SVGTransform *********************************************************************************************************************/
+/* class SVGBTransform *********************************************************************************************************************/
 
-class SVGTransform {
+class SVGBTransform {
   constructor(targetNode, template) {
     this.targetNode = targetNode;
     this.list = []; // List of transform definitions
@@ -213,45 +213,45 @@ class SVGTransform {
   }
 }
 
-/* class SVGRect **************************************************************************************************************************/
+/* class SVGBRect **************************************************************************************************************************/
 
-class SVGRect extends SVGElement {
+class SVGBRect extends SVGBElement {
   constructor(attr) {
     super();
     this.init("rect", attr, ["x", "y", "width", "height", "rx", "ry"]);
   }
 }
 
-/* class SVGCircle ************************************************************************************************************************/
+/* class SVGBCircle ************************************************************************************************************************/
 
-class SVGCircle extends SVGElement {
+class SVGBCircle extends SVGBElement {
   constructor(attr) {
     super();
     this.init("circle", attr, ["cx", "cy", "r"]);
   }
 }
 
-/* class SVGEllipse ***********************************************************************************************************************/
+/* class SVGBEllipse ***********************************************************************************************************************/
 
-class SVGEllipse extends SVGElement {
+class SVGBEllipse extends SVGBElement {
   constructor(attr) {
     super();
     this.init("ellipse", attr, ["cx", "cy", "rx", "ry"]);
   }
 }
 
-/* class SVGLine **************************************************************************************************************************/
+/* class SVGBLine **************************************************************************************************************************/
 
-class SVGLine extends SVGElement {
+class SVGBLine extends SVGBElement {
   constructor(attr) {
     super();
     this.init("line", attr, ["x1", "y1", "x2", "y2"]);
   }
 }
 
-/* class SVGPolyline **********************************************************************************************************************/
+/* class SVGBPolyline **********************************************************************************************************************/
 
-class SVGPolyline extends SVGElement {
+class SVGBPolyline extends SVGBElement {
   constructor(attr, points) {
     super();
     this.init("polyline", attr);
@@ -279,15 +279,15 @@ class SVGPolyline extends SVGElement {
     return c;
   }
 
-  wrapElement(targetNode) {
-    super.wrapElement(targetNode);
+  captureElement(targetNode) {
+    super.captureElement(targetNode);
     // TODO: parse the "points" attribute 
   }
 }
 
-/* class SVGPolygon ***********************************************************************************************************************/
+/* class SVGBPolygon ***********************************************************************************************************************/
 
-class SVGPolygon extends SVGPolyline {
+class SVGBPolygon extends SVGBPolyline {
   constructor(attr, points) {
     super();
     this.init("polygon", attr);
@@ -296,11 +296,11 @@ class SVGPolygon extends SVGPolyline {
   }
 }
 
-/* class SVGPath **************************************************************************************************************************/
+/* class SVGBPath **************************************************************************************************************************/
 
 // Reference: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
 
-class SVGPath extends SVGElement  {
+class SVGBPath extends SVGBElement  {
   constructor(attr, points) {
     super();
     this.init("path", attr);
@@ -525,24 +525,24 @@ class SVGPath extends SVGElement  {
     return c;
   }
 
-  wrapElement(targetNode) {
-    super.wrapElement(targetNode);
+  captureElement(targetNode) {
+    super.captureElement(targetNode);
     // TODO: parse the "d" attribute 
   }
 }
 
-/* class SVGText **************************************************************************************************************************/
+/* class SVGBText **************************************************************************************************************************/
 
-class SVGText extends SVGElement {
+class SVGBText extends SVGBElement {
   constructor(attr, value) {
     super();
     this.init("text", attr, ["x", "y", "text-anchor"], value);
   }
 }
 
-/* class SVGUse **************************************************************************************************************************/
+/* class SVGBUse **************************************************************************************************************************/
 
-class SVGUse extends SVGElement {
+class SVGBUse extends SVGBElement {
   constructor(attr, href) {
     super();
     this.init("use", attr, ["x", "y"]);
@@ -556,7 +556,7 @@ class SVGUse extends SVGElement {
 
 /* class SVGImage **************************************************************************************************************************/
 
-class SVGImage extends SVGElement {
+class SVGImage extends SVGBElement {
   constructor(attr, imgURL) {
     super();
     this.init("image", attr, ["x", "y", "width", "height", "preserveAspectRatio"]);
@@ -585,9 +585,9 @@ class SVGImage extends SVGElement {
   }
 }
 
-/* class SVGFile **************************************************************************************************************************/
+/* class SVGBFile **************************************************************************************************************************/
 
-class SVGFile extends SVGElement {
+class SVGBFile extends SVGBElement {
   constructor(attr, svgURL) {
     super();
     this.attr = attr;
@@ -620,7 +620,7 @@ class SVGFile extends SVGElement {
   }
 
   getElement(id) {
-    // Find an element with corresponding id attribute and return a corresponding SVGElement instance
+    // Find an element with corresponding id attribute and return a corresponding SVGBElement instance
     if (!this.element) return null;
 
     var node = this.element.querySelector('#' + id);
@@ -630,9 +630,9 @@ class SVGFile extends SVGElement {
   }
 }
 
-/* class SVGContainer *************************************************************************************************************************/
+/* class SVGBContainer *************************************************************************************************************************/
 
-class SVGContainer extends SVGElement {
+class SVGBContainer extends SVGBElement {
   constructor() {
     // Superclass constructor
     super();
@@ -647,7 +647,7 @@ class SVGContainer extends SVGElement {
   addRect(attr) {
     // Add new rect element
     this.log("Adding rect element, attr=", attr);
-    var svgObject = new SVGRect(attr);
+    var svgObject = new SVGBRect(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -655,7 +655,7 @@ class SVGContainer extends SVGElement {
   addCircle(attr) {
     // Add new circle element
     this.log("Adding circle element, attr=", attr);
-    var svgObject = new SVGCircle(attr);
+    var svgObject = new SVGBCircle(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -663,7 +663,7 @@ class SVGContainer extends SVGElement {
   addEllipse(attr) {
     // Add new ellipse element
     this.log("Adding ellipse element, attr=", attr);
-    var svgObject = new SVGEllipse(attr);
+    var svgObject = new SVGBEllipse(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -671,7 +671,7 @@ class SVGContainer extends SVGElement {
   addLine(attr) {
     // Add new line element
     this.log("Adding line element, attr=", attr);
-    var svgObject = new SVGLine(attr);
+    var svgObject = new SVGBLine(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -679,7 +679,7 @@ class SVGContainer extends SVGElement {
   addPolyline(attr, points) {
     // Add new plolyline element
     this.log("Adding polyline element, attr=", attr, " points=", points);
-    var svgObject = new SVGPolyline(attr, points);
+    var svgObject = new SVGBPolyline(attr, points);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -687,7 +687,7 @@ class SVGContainer extends SVGElement {
   addPolygon(attr, points) {
     // Add new plolygon element
     this.log("Adding polygon element, attr=", attr, " points=", points);
-    var svgObject = new SVGPolygon(attr, points);
+    var svgObject = new SVGBPolygon(attr, points);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -695,43 +695,43 @@ class SVGContainer extends SVGElement {
   addPath(attr, points) {
     // Add new plolygon element
     this.log("Adding path element, attr=", attr, " points=", points);
-    var svgObject = new SVGPath(attr, points);
+    var svgObject = new SVGBPath(attr, points);
     svgObject.insert(this.element);
     return svgObject;
   }
 
   addText(attr, value) {
-    var svgObject = new SVGText(attr, value);
+    var svgObject = new SVGBText(attr, value);
     svgObject.insert(this.element);
     return svgObject;
   }
 
   addGroup(attr) {
-    var svgObject = new SVGGroup(attr);
+    var svgObject = new SVGBGroup(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
 
   addForeignObject(attr) {
-    var svgObject = new SVGForeignObject(attr);
+    var svgObject = new SVGBForeignObject(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
 
   addDefs(attr) {
-    var svgObject = new SVGDefs(attr);
+    var svgObject = new SVGBDefs(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
 
   addUse(attr, href) {
-    var svgObject = new SVGUse(attr, href);
+    var svgObject = new SVGBUse(attr, href);
     svgObject.insert(this.element);
     return svgObject;
   }
 
   addClipPath(attr) {
-    var svgObject = new SVGClipPath(attr);
+    var svgObject = new SVGBClipPath(attr);
     svgObject.insert(this.element);
     return svgObject;
   }
@@ -750,8 +750,8 @@ class SVGContainer extends SVGElement {
     return svgObject;
   }
 
-  addSVGFile(attr, svgURL, onLoaded, onError) {
-    var svgObject = new SVGFile(attr, svgURL);
+  addSVGBFile(attr, svgURL, onLoaded, onError) {
+    var svgObject = new SVGBFile(attr, svgURL);
     var container = this.element;
     svgObject.load(function() {
       this.insert(container);
@@ -767,7 +767,7 @@ class SVGContainer extends SVGElement {
 
 /* class SVGBuilder ***********************************************************************************************************************/
 
-class SVGBuilder extends SVGContainer {
+class SVGBuilder extends SVGBContainer {
   constructor(attr) {
     super();
     this.init("svg", attr, ["viewBox"]);
@@ -977,76 +977,76 @@ class SVGBuilder extends SVGContainer {
     var nodeName = targetNode.nodeName.toLowerCase();
     var svgObject;
     if (nodeName == "rect") {
-      svgObject = new SVGRect();
+      svgObject = new SVGBRect();
     } else if (nodeName == "circle") {
-      svgObject = new SVGCircle();
+      svgObject = new SVGBCircle();
     } else if (nodeName == "ellipse") {
-      svgObject = new SVGEllipse();
+      svgObject = new SVGBEllipse();
     } else if (nodeName == "line") {
-      svgObject = new SVGLine();
+      svgObject = new SVGBLine();
     } else if (nodeName == "polyline") {
-      svgObject = new SVGPolyline();
+      svgObject = new SVGBPolyline();
     } else if (nodeName == "polygon") {
-      svgObject = new SVGPolygon();
+      svgObject = new SVGBPolygon();
     } else if (nodeName == "path") {
-      svgObject = new SVGPath();
+      svgObject = new SVGBPath();
     } else if (nodeName == "text") {
-      svgObject = new SVGText();
+      svgObject = new SVGBText();
     } else if (nodeName == "g") {
-      svgObject = new SVGGroup();
+      svgObject = new SVGBGroup();
     } else if (nodeName == "foreignObject") {
-      svgObject = new SVGForeignObject();
+      svgObject = new SVGBForeignObject();
     } else if (nodeName == "defs") {
-      svgObject = new SVGDefs();
+      svgObject = new SVGBDefs();
     } else if (nodeName == "clipPath") {
-      svgObject = new SVGClipPath();
+      svgObject = new SVGBClipPath();
     } else {
-      svgObject = new SVGElement();
+      svgObject = new SVGBElement();
     }
-    svgObject.wrapElement(targetNode);
+    svgObject.captureElement(targetNode);
     return svgObject;
   }
 }
 
-/* class SVGGroup *************************************************************************************************************************/
+/* class SVGBGroup *************************************************************************************************************************/
 
-class SVGGroup extends SVGContainer {
+class SVGBGroup extends SVGBContainer {
   constructor(attr) {
     super();
     this.init("g", attr);
   }
 }
 
-/* class SVGForeignObject *************************************************************************************************************************/
+/* class SVGBForeignObject *************************************************************************************************************************/
 
-class SVGForeignObject extends SVGContainer {
+class SVGBForeignObject extends SVGBContainer {
   constructor(attr) {
     super();
     this.init("foreignObject", attr, ["x", "y", "width", "height"]);
   }
 }
 
-/* class SVGClipPath *************************************************************************************************************************/
+/* class SVGBClipPath *************************************************************************************************************************/
 
-class SVGClipPath extends SVGContainer {
+class SVGBClipPath extends SVGBContainer {
   constructor(attr) {
     super();
     this.init("clipPath", attr);
   }
 }
 
-/* class SVGDefs *************************************************************************************************************************/
+/* class SVGBDefs *************************************************************************************************************************/
 
-class SVGDefs extends SVGContainer {
+class SVGBDefs extends SVGBContainer {
   constructor(attr) {
     super();
     this.init("defs", attr);
   }
 }
 
-/* SVGSprite and SVGSpriteInstance *************************************************************************************************************************/
+/* SVGBSprite and SVGBSpriteInstance *************************************************************************************************************************/
 
-class SVGSprite {
+class SVGBSprite {
   constructor(svg, spriteWidth, spriteHeight) {
     this.spriteWidth = spriteWidth;
     this.spriteHeight = spriteHeight;
@@ -1054,8 +1054,8 @@ class SVGSprite {
 
     var defs = svg.element.ownerDocument.getElementById("defs-" + this.id);
     if (defs) {
-      this.defs = new SVGDefs();
-      this.defs.wrapElement(defs);
+      this.defs = new SVGBDefs();
+      this.defs.captureElement(defs);
     } else {
       this.defs = svg.addDefs({id:"defs-" + this.id});
     }
@@ -1066,22 +1066,22 @@ class SVGSprite {
     this.loaded = false;
   }
 
-  loadSpritesheet(svgFileURL, cols, frames) {
+  loadSpritesheet(SVGBFileURL, cols, frames) {
     this.cols = cols;
     this.frames = frames;
     if (this.spriteSheet) this.spriteSheet.remove();
     this.spriteSheet = this.defs.addGroup({id:"spriteSheet-" + this.id});
-    this.spriteSheet.addSVGFile({}, svgFileURL, () => this.loaded = true);
+    this.spriteSheet.addSVGBFile({}, SVGBFileURL, () => this.loaded = true);
   }
 
   create(container, x, y) {
-    var instance = new SVGSpriteInstance(container, this);
+    var instance = new SVGBSpriteInstance(container, this);
     instance.translate(x, y);
     return instance;
   }
 }
 
-class SVGSpriteInstance extends SVGGroup {
+class SVGBSpriteInstance extends SVGBGroup {
 
   constructor(container, source) {
     super();
