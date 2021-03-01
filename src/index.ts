@@ -4,9 +4,9 @@ import { NetworkController } from './dynodeController';
 
 const n = new Network();
 
-function controllerExample() {
+function controllerExample(): NetworkController {
   const htmlElement = document.getElementById('dynodeContainer');
-  if (htmlElement === null) throw Error('HTMLElement is null');
+  if (htmlElement === null) throw Error('Can\'t find the dynodeContainer element.');
   const controller = new NetworkController(n, htmlElement);
 
   const sumNode = new Node('Sum'); // Creates sum node;
@@ -39,9 +39,9 @@ function controllerExample() {
   // n.resolve();
   // n.removeNode(sumNode);
   // n.removeNode(nodeParams);
+  return controller;
 }
 
-declare global { function publishToGlobal(assets: Record<string, unknown>):void; }
 global.publishToGlobal({
   demoNetwork: n,
   controllerExample,

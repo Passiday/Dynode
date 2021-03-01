@@ -1,6 +1,31 @@
 #dynodeContainer {
     left: 10px;
-    right: 10px;
-    height: 400px;
+    width: 1200px;
+    height: 600px;
     background-color: #bbb;
+}
+
+#dynodeContainer svg {
+    width: 1200px;
+    height: 600px;
+}
+
+g.node rect.body {
+    fill: rgba(255, 255, 255, 0.5);
+}
+
+g.node rect.titleBar {
+    fill: rgba(0, 0, 100);
+}
+
+g.node text.titleBarText {
+    cursor: default;
+    fill: white;
+}
+
+g.node div.nodeInfo {
+  cursor: default;
+  padding: 5px;
+  font-size: 20px;
+  color: #888;
 }

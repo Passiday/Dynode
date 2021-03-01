@@ -5,34 +5,51 @@ import { VEvent } from './vanillaEvent';
 class NodeController {
   model: Node;
 
-  view: HTMLElement;
+  view: SVGBGroup;
 
-  constructor(model: Node, _view: HTMLElement) {
+  nodeBody: HTMLElement;
+
+  constructor(model: Node, view: SVGBGroup) {
     this.model = model;
-    this.view = _view;
+    this.view = view;
     this.addHandlers();
+    this.nodeBody = document.createElement('div');
   }
 
-  addHandlers(): void { // Function that assigns handlers for diffrent events of the model
-    const { view } = this;
-    function created(this: Node): void {
-      view.innerHTML = `Name: ${this.name}; `;
-    }
-    function resolved(this: Node): void {
+  addHandlers(): void { // Function that assigns handlers for model events
+    const { view: nodeView, nodeBody } = this;
+    function afterResolve(this: Node): void {
       let s = '';
       Object.keys(this.outputs).forEach((outputName) => {
         const output = this.getOutput(outputName);
         s += `Output ${outputName}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
       });
-      view.innerHTML = `Name: ${this.name}; ${s} \n`;
+      nodeBody.innerHTML = s;
     }
-    function removed(this: Node): void {
-      const parent = view.parentElement;
-      parent?.removeChild(view);
+    function nodeRemoved(this: Node): void {
+      nodeView.remove();
     }
-    this.model.addEventListener('nodeAdded', created);
-    this.model.addEventListener('afterResolve', resolved);
-    this.model.addEventListener('nodeRemoved', removed);
+    this.model.addEventListener('afterResolve', afterResolve);
+    this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
+  }
+
+  update(): void {
+    // Redraw the node
+    this.view.wipe();
+    this.view.addRect({
+      x: 0, y: 0, width: 200, height: 150, class: 'body',
+    });
+    this.view.addRect({
+      x: 0, y: 0, width: 200, height: 25, class: 'titleBar',
+    });
+    this.view.addText({ x: 5, y: 20, class: 'titleBarText' }, `Name: ${this.model.name}; `);
+    const fo = this.view.addForeignObject({
+      x: 0, y: 25, width: 200, height: 125,
+    });
+    this.nodeBody = document.createElement('div');
+    fo.element.appendChild(this.nodeBody);
+    this.nodeBody.classList.add('nodeInfo');
+    this.nodeBody.innerHTML = 'Hello, <strong>World</strong>. This is plain HTML in a <em>&lt;foreignObject&gt;</em> SVG element.';
   }
 }
 
@@ -41,22 +58,28 @@ class NetworkController {
 
   view: HTMLElement;
 
-  constructor(model: Network, _view: HTMLElement) {
+  svgb: SVGBuilder;
+
+  constructor(model: Network, view: HTMLElement) {
     this.model = model;
-    this.view = _view;
+    this.view = view;
+    this.svgb = new SVGBuilder();
+    this.svgb.insert(this.view);
     this.addHandlers();
+    // TODO implement controller initialization for already populated network
   }
 
   addHandlers(): void { // Function that assigns handlers for diffrent events of the model
-    const { view } = this;
-    function created(this: Network): void {
-      const div = document.createElement('div'); // Creates a new element to represent a node
-      const node = this.nodes[this.nodes.length - 1]; // Finds the added node
-      const nodeCont = new NodeController(node, div); // Creates nodecontroller
-      view.appendChild(div);
-      node.dispatchEvent(new VEvent('nodeAdded')); // Dispatches an event inside a node
+    const { svgb } = this;
+    function addNode(this: Network): void {
+      const nodeView = svgb.addGroup({ class: 'node' }); // Creates a new SVG group to represent a node
+      svgb.draggable(nodeView);
+      // TODO: the node id should be received from event data
+      const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
+      const nodeCont = new NodeController(nodeModel, nodeView); // Creates nodecontroller
+      nodeCont.update();
     }
-    this.model.addEventListener('addNode', created);
+    this.model.addEventListener('addNode', addNode);
   }
 }
 
