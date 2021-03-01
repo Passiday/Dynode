@@ -1,4 +1,3 @@
-import { resolvePlugin } from '@babel/core';
 import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
 
