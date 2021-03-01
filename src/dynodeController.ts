@@ -17,17 +17,17 @@ class NodeController {
   }
 
   addHandlers(): void { // Function that assigns handlers for model events
-    const { view: nodeView, nodeBody } = this;
+    const ctr = { t: this };
     function afterResolve(this: Node): void {
       let s = '';
       Object.keys(this.outputs).forEach((outputName) => {
         const output = this.getOutput(outputName);
         s += `Output ${outputName}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
       });
-      nodeBody.innerHTML = s;
+      ctr.t.nodeBody.innerHTML = s;
     }
     function nodeRemoved(this: Node): void {
-      nodeView.remove();
+      ctr.t.view.remove();
     }
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
