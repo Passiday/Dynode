@@ -1,67 +1,34 @@
-import Link from './link';
 import Node from './node';
+import { VEventTarget, VEvent } from './vanillaEvent';
 
-class Network {
-  period: number; // Time (in ms) between each update
-
-  running: boolean;
-
-  links: Link[];
-
+class Network extends VEventTarget {
   nodes: Node[];
 
   name: string; // Name is (currently) used to discern different networks in console logs
 
   constructor(name = 'network') {
-    this.period = 0; // Set default clock speed to maximum
-    this.running = false;
-    this.links = [];
+    super();
     this.nodes = [];
     this.name = name;
   }
 
   addNode(node: Node): Node {
     this.nodes.push(node);
-    return this.nodes[this.nodes.length - 1];
+    this.dispatchEvent(new VEvent('addNode', { detail: { node } }));
+    return node;
   }
 
-  addLink(headNode: Node, tailNode: Node, outputN: number, inputN: number): Link {
-    this.links.push(new Link(headNode, tailNode, outputN, inputN));
-    return this.links[this.links.length - 1];
+  removeNode(node: Node): void {
+    const index = this.nodes.indexOf(node);
+    if (index === -1) throw Error(`Network doesn't contain node ${node}`);
+    node.dispatchEvent(new VEvent('nodeRemoved'));
+    this.nodes.splice(index, 1);
   }
 
-  setPeriod(period: number): void {
-    this.period = period;
-  }
-
-  setRunning(running: boolean): void {
-    if (running) {
-      this.running = true;
-
-      // Executes the run function after {this.period} milliseconds
-      setTimeout(() => {
-        this.run();
-      }, this.period);
-    } else {
-      this.running = false;
-    }
-  }
-
-  run(): void {
-    if (this.running) {
-      this.tick();
-      // If network is still running, executes the run function after {this.period} milliseconds
-      setTimeout(() => {
-        this.run();
-      }, this.period);
-    }
-  }
-
-  // One update cycle
-  tick(): void {
+  resolve(): void {
     console.log(`--- ${this.name} ---`);
-    this.nodes.forEach((node) => node.update());
-    this.links.forEach((link) => link.update());
+    this.nodes.forEach((node) => node.resolve());
+    this.dispatchEvent(new VEvent('resolve'));
   }
 }
 

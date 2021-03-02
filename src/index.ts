@@ -1,41 +1,48 @@
 import Network from './network';
-import LogNode from './nodetypes/logNode';
-import ConstNode from './nodetypes/constNode';
-import MathNode from './nodetypes/mathNode';
+import Node from './node';
+import { NetworkController } from './dynodeController';
 
 const n = new Network();
 
-// Simple counter
-const mathNode = n.addNode(new MathNode('+', 0, 1));
-const constNode = n.addNode(new ConstNode(1));
-const clogNode = n.addNode(new LogNode());
-clogNode.setName('Counter');
-n.addLink(constNode, mathNode, 0, 1);
-n.addLink(mathNode, mathNode, 0, 0);
-n.addLink(mathNode, clogNode, 0, 0);
+function controllerExample(): NetworkController {
+  const htmlElement = document.getElementById('dynodeContainer');
+  if (htmlElement === null) throw Error('Can\'t find the dynodeContainer element.');
+  const controller = new NetworkController(n, htmlElement);
 
-// Pi calculator
-const m1 = n.addNode(new MathNode('+', -1, 2));
-const m2 = n.addNode(new MathNode('/', 4));
-const m3 = n.addNode(new MathNode('*', 1, -1));
-const m4 = n.addNode(new MathNode('*'));
-const m5 = n.addNode(new MathNode('+', 0));
-m5.setName('Pi');
-m5.setLogging(true);
-n.addLink(m1, m1, 0, 0);
-n.addLink(m1, m2, 0, 1);
-n.addLink(m2, m4, 0, 0);
-n.addLink(m3, m4, 0, 1);
-n.addLink(m3, m3, 0, 0);
-n.addLink(m4, m5, 0, 1);
-n.addLink(m5, m5, 0, 0);
+  const sumNode = new Node('Sum'); // Creates sum node;
+  sumNode.addInput('x');
+  sumNode.addInput('y');
+  sumNode.addOutput('result');
+  sumNode.action = function (this: Node) {
+    if (this.inputIsNothing('x')) return;
+    if (this.inputIsNothing('y')) return;
+    const x = this.getInputValue('x') as number;
+    const y = this.getInputValue('y') as number;
+    this.setOutputValue('result', x + y);
+  };
+  n.addNode(sumNode);
 
-/*
-n.setPeriod(1000);
-n.setRunning(true);
-*/
+  const nodeParams: Node = new Node('Params'); // Creates param node;
+  nodeParams.addInput('x').setDefaultValue(4);
+  nodeParams.addInput('y').setDefaultValue(3);
+  nodeParams.addOutput('x');
+  nodeParams.addOutput('y');
+  nodeParams.action = function (this: Node) {
+    if (this.inputIsNothing('x')) return;
+    if (this.inputIsNothing('y')) return;
+    this.setOutputValue('x', this.getInputValue('x'));
+    this.setOutputValue('y', this.getInputValue('y'));
+  };
+  sumNode.linkInput('x', nodeParams.getOutput('x'));
+  sumNode.linkInput('y', nodeParams.getOutput('y'));
+  n.addNode(nodeParams);
+  // n.resolve();
+  // n.removeNode(sumNode);
+  // n.removeNode(nodeParams);
+  return controller;
+}
 
-declare global { function publishToGlobal(assets: Record<string, unknown>):void; }
 global.publishToGlobal({
   demoNetwork: n,
+  controllerExample,
 });
