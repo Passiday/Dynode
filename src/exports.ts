@@ -1,4 +1,5 @@
+import Socket from './socket'
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
 
-export { InputSocket, OutputSocket };
+export { Socket, InputSocket, OutputSocket };
