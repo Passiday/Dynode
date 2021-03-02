@@ -143,7 +143,6 @@ class Node extends VEventTarget {
     if (!this.resolved && this.resolvedInputs === this.inputCount) {
       this.inputsReady();
     }
-    this.dispatchEvent(new VEvent('afterResolve'));
   }
 
   inputsReady(): void {
@@ -178,7 +177,7 @@ class Node extends VEventTarget {
     this.dumpOutputs();
     this.busy = false;
     this.resolved = true;
-    this.dispatchEvent(new VEvent('ready'));
+    this.dispatchEvent(new VEvent('afterResolve'));
   }
 
   action = (): void | Promise<void> => {
@@ -186,7 +185,7 @@ class Node extends VEventTarget {
   };
 
   actionError = (err: Error): void => {
-    throw err;
+    this.dispatchEvent(new VEvent('error', { detail: { errorData: err } }));
   };
 }
 

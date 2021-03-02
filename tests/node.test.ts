@@ -41,19 +41,21 @@ test('linkedNodesTest', () => {
   nodeB.resolve();
   expect(inputB1.getValue()).toBe(123);
 });
-test('linkedNodesTestAsync', () => {
+test('linkedNodesTestAsync', (done) => {
   // Node A: one input, one output
   const nodeA = new Node('Node-A');
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
   const outputA1 = nodeA.addOutput('one');
   nodeA.action = () => {
-    const p = new Promise((resolve: (value:void) => void) => {
-      if (!nodeA.inputIsNothing('one')) {
-        const inputOne = nodeA.getInputValue('one');
-        nodeA.setOutputValue('one', inputOne);
-      }
-      resolve();
+    const p = new Promise<void>((resolv) => {
+      setTimeout(() => {
+        if (!nodeA.inputIsNothing('one')) {
+          const inputOne = nodeA.getInputValue('one');
+          nodeA.setOutputValue('one', inputOne);
+        }
+        resolv();
+      }, 0);
     });
     return p;
   };
@@ -68,7 +70,15 @@ test('linkedNodesTestAsync', () => {
   nodeB.resolve();
   expect(inputB1.getValue()).toBe(456);
 
+  // eslint-disable-next-line no-inner-declarations
+  const check = () => {
+    expect(inputB1.getValue()).toBe(123);
+    done();
+  };
   inputB1.linkSocket(outputA1);
+  inputB1.addEventListener('value', check);
   nodeB.resolve();
-  expect(inputB1.getValue()).toBe(123);
+  expect(nodeB.busy).toBe(true);
+  expect(nodeB.resolved).toBe(false); // doesn't pass
+  expect(() => inputB1.getValue()).toThrow(Error);
 });
