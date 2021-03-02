@@ -2,7 +2,6 @@ import OutputSocket from './outputSocket';
 import Socket from './socket';
 import { VEventHandler, VEvent } from './vanillaEvent';
 
-
 /**
  * Socket class that handles inputs.
  */
