@@ -148,23 +148,23 @@ class Node extends VEventTarget {
   inputsReady(): void {
     console.log('Node action:', this.name);
     this.dumpInputs();
-    const p = this.action();
-    if (p instanceof Promise) {
-      p
-        .then(
-          () => {
-            this.actionReady();
-          },
-        )
-        .catch(
-          (err) => { this.actionError(err); },
-        );
-    } else {
-      try {
+    try {
+      const p = this.action();
+      if (p instanceof Promise) {
+        p
+          .then(
+            () => {
+              this.actionReady();
+            },
+          )
+          .catch(
+            (err) => { this.actionError(err); },
+          );
+      } else {
         this.actionReady();
-      } catch (err) {
-        this.actionError(err);
       }
+    } catch (err) {
+      this.actionError(err);
     }
   }
 
@@ -185,7 +185,7 @@ class Node extends VEventTarget {
   };
 
   actionError = (err: Error): void => {
-    this.dispatchEvent(new VEvent('error', { detail: { errorData: err } }));
+    this.dispatchEvent(new VEvent('error', { detail: { error: err } }));
   };
 }
 
