@@ -148,23 +148,21 @@ class Node extends VEventTarget {
   inputsReady(): void {
     console.log('Node action:', this.name);
     this.dumpInputs();
+    let p;
     try {
-      const p = this.action();
-      if (p instanceof Promise) {
-        p
-          .then(
-            () => {
-              this.actionReady();
-            },
-          )
-          .catch(
-            (err) => { this.actionError(err); },
-          );
-      } else {
-        this.actionReady();
-      }
+      p = this.action();
     } catch (err) {
       this.actionError(err);
+      return;
+    }
+    if (p instanceof Promise) {
+      p
+        .then(
+          () => { this.actionReady(); },
+          (err) => { this.actionError(err); },
+        );
+    } else {
+      this.actionReady();
     }
   }
 

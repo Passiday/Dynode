@@ -1,6 +1,5 @@
 import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
-import { VEvent } from '../src/vanillaEvent';
 
 test('unlinkedNodeTest', () => {
   const node = new Node('Node-A');
@@ -87,23 +86,26 @@ test('NodeError', () => {
   const nodeA = new Node('Node-A');
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
-  const outputA1 = nodeA.addOutput('one');
   nodeA.action = () => {
-    throw Error('TestError');
+    throw new Error('TestError');
   };
 
-  let errorHappened = false;
-  // Node B: one input, no outputs
-  const nodeB = new Node('Node-B');
-  const inputB1 = nodeB.addInput('one');
-  inputB1.setDefaultValue(456);
-  inputB1.linkSocket(outputA1);
-  nodeA.addEventListener('error', () => {
-    errorHappened = true;
-  });
-  nodeB.resolve();
+  const outcome = jest.fn();
 
-  expect(errorHappened).toBe(true);
+  function endTest() {
+    expect(outcome).toHaveBeenCalledTimes(1);
+    expect(outcome).toHaveBeenCalledWith(false);
+  }
+
+  nodeA.addEventListener('afterResolve', () => {
+    outcome(true);
+    endTest();
+  });
+  nodeA.addEventListener('error', () => {
+    outcome(false);
+    endTest();
+  });
+  nodeA.resolve();
 });
 
 test('NodeErrorAsync', (done) => {
@@ -111,12 +113,10 @@ test('NodeErrorAsync', (done) => {
   const nodeA = new Node('Node-A');
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
-  const outputA1 = nodeA.addOutput('one');
   nodeA.action = () => {
     const p = new Promise<void>((resolve, reject) => {
       setTimeout(() => {
-        resolve();
-        // reject(new Error('TestError'));
+        reject(new Error('TestError'));
       }, 0);
     });
     return p;
@@ -124,18 +124,19 @@ test('NodeErrorAsync', (done) => {
 
   const outcome = jest.fn();
 
-  function finnaly() {
+  function endTest() {
+    expect(outcome).toHaveBeenCalledTimes(1);
     expect(outcome).toHaveBeenCalledWith(false);
     done();
   }
 
-  outputA1.addEventListener('value', () => {
+  nodeA.addEventListener('afterResolve', () => {
     outcome(true);
-    finnaly();
+    endTest();
   });
   nodeA.addEventListener('error', () => {
     outcome(false);
-    finnaly();
+    endTest();
   });
   nodeA.resolve();
 });
