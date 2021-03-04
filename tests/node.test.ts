@@ -115,28 +115,27 @@ test('NodeErrorAsync', (done) => {
   nodeA.action = () => {
     const p = new Promise<void>((resolve, reject) => {
       setTimeout(() => {
-        reject(new Error('TestError'));
+        resolve();
+        // reject(new Error('TestError'));
       }, 0);
     });
     return p;
   };
 
-  // Node B: one input, no outputs
-  const nodeB = new Node('Node-B');
-  const inputB1 = nodeB.addInput('one');
-  inputB1.setDefaultValue(456);
-  let errorHappened = false;
+  const outcome = jest.fn();
 
-  const check = () => {
-    expect(errorHappened).toBe(true);
+  function finnaly() {
+    expect(outcome).toHaveBeenCalledWith(false);
     done();
-  };
+  }
 
-  inputB1.linkSocket(outputA1);
-  nodeA.addEventListener('error', () => {
-    errorHappened = true;
-    check();
+  outputA1.addEventListener('value', () => {
+    outcome(true);
+    finnaly();
   });
-  nodeB.preResolve();
-  nodeB.resolve();
+  nodeA.addEventListener('error', () => {
+    outcome(false);
+    finnaly();
+  });
+  nodeA.resolve();
 });
