@@ -82,7 +82,7 @@ test('linkedNodesTestAsync', (done) => {
 });
 
 test('NodeError', () => {
-  // Node A: one input, one output
+  // Node A: one input
   const nodeA = new Node('Node-A');
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
@@ -109,7 +109,7 @@ test('NodeError', () => {
 });
 
 test('NodeErrorAsync', (done) => {
-  // Node A: one input, one output
+  // Node A: one input
   const nodeA = new Node('Node-A');
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
