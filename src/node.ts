@@ -27,7 +27,7 @@ class Node extends VEventTarget {
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
       if (this.resolvedInputs === this.inputCount) {
-        this.ready();
+        this.inputsReady();
       }
     });
     this.inputCount++;
@@ -141,15 +141,32 @@ class Node extends VEventTarget {
       }
     });
     if (!this.resolved && this.resolvedInputs === this.inputCount) {
-      this.ready();
+      this.inputsReady();
     }
-    this.dispatchEvent(new VEvent('afterResolve'));
   }
 
-  ready(): void {
+  inputsReady(): void {
     console.log('Node action:', this.name);
     this.dumpInputs();
-    this.action();
+    let p;
+    try {
+      p = this.action();
+    } catch (err) {
+      this.actionError(err);
+      return;
+    }
+    if (p instanceof Promise) {
+      p
+        .then(
+          () => { this.actionReady(); },
+          (err) => { this.actionError(err); },
+        );
+    } else {
+      this.actionReady();
+    }
+  }
+
+  actionReady(): void {
     // Set all unset outputs
     Object.keys(this.outputs).forEach((outputName) => {
       const output = this.getOutput(outputName);
@@ -158,11 +175,15 @@ class Node extends VEventTarget {
     this.dumpOutputs();
     this.busy = false;
     this.resolved = true;
-    this.dispatchEvent(new VEvent('ready'));
+    this.dispatchEvent(new VEvent('afterResolve'));
   }
 
-  action = (): void => {
+  action = (): void | Promise<void> => {
     // Do something with inputs, set some outputs
+  };
+
+  actionError = (err: Error): void => {
+    this.dispatchEvent(new VEvent('error', { detail: { error: err } }));
   };
 }
 
