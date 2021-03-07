@@ -2,9 +2,21 @@ declare type VEventHandlerWithThis = (this:VEventTarget, v:VEvent) => void;
 declare type VEventHandlerWithoutThis = (v:VEvent) => void;
 declare type VEventHandler = VEventHandlerWithThis | VEventHandlerWithoutThis;
 
+/**
+ * TODO
+ */
 class VEventTarget {
+  /**
+   * A collection of registered events.
+   */
   events: { [key: string]: VEventHandler[]; } = {};
 
+  /**
+   * Attach an event listener to this object.
+   *
+   * @param type  Name of the event type.
+   * @param func  Function that will handle the provided event type.
+   */
   addEventListener(type: string, func: VEventHandler): void {
     if (type in this.events) {
       if (this.events[type].indexOf(func) !== -1) {
@@ -17,6 +29,11 @@ class VEventTarget {
     }
   }
 
+  /**
+   * Send an event to every registered event listener.
+   *
+   * @param e Event that is going to be sent.
+   */
   dispatchEvent(e: VEvent): void {
     e.currentTarget = this;
     e.target = this;
@@ -27,6 +44,12 @@ class VEventTarget {
     }
   }
 
+  /**
+   * Detach an event listener to this object.
+   *
+   * @param type  Name of the event type.
+   * @param func  Handler reference which is going to be remvoed.
+   */
   removeEventListener(type: string, func: VEventHandler): void {
     if (type in this.events) {
       const index = this.events[type].indexOf(func);
@@ -41,6 +64,7 @@ class VEventTarget {
 interface CustomEventInit{
   detail: unknown;
 }
+
 class VEvent {
   type: string;
 
