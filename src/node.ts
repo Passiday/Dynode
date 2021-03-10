@@ -276,7 +276,7 @@ class Node extends VEventTarget {
   };
 
   /**
-   * Method, that dispatches log event with given data
+   * Method, that dispatches log event with given data.
    *
    * @param data All the passed arguments to the method as an array.
    * Event's detail contains the array as a property.
