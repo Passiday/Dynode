@@ -1,5 +1,6 @@
 import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
+import { VEvent } from '../src/vanillaEvent';
 
 test('unlinkedNodeTest', () => {
   const node = new Node('Node-A');
@@ -139,4 +140,23 @@ test('NodeErrorAsync', (done) => {
     endTest();
   });
   nodeA.resolve();
+});
+
+test('NodeLog', () => {
+  const data = [123, 'test', { a: 5, b: [5, 6] }];
+  const NodeA = new Node('Node-A');
+
+  const mockFunc = jest.fn();
+
+  NodeA.addEventListener('log', (e: VEvent) => {
+    if (typeof e.detail === 'object' && e.detail !== null && 'data' in e.detail) {
+      mockFunc(e.detail.data);
+    }
+  });
+
+  NodeA.log(...data);
+  NodeA.log('test');
+  expect(mockFunc).toBeCalledTimes(2);
+  expect(mockFunc).toHaveBeenNthCalledWith(1, data);
+  expect(mockFunc).toHaveBeenNthCalledWith(2, ['test']);
 });
