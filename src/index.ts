@@ -1,13 +1,16 @@
 import Network from './network';
 import Node from './node';
 import { NetworkController } from './dynodeController';
+import { StageUI } from './DynodeUI';
 
-const n = new Network();
+// For some time, the network and stage will be published to the global scope so they can be manipulated from the console
+const network = new Network();
+const stageContainer = document.getElementById('dynodeContainer');
+if (stageContainer === null) throw new Error('dynodeContainer element does not exist.');
+const stage = new StageUI(stageContainer);
 
 function controllerExample(): NetworkController {
-  const htmlElement = document.getElementById('dynodeContainer');
-  if (htmlElement === null) throw Error('Can\'t find the dynodeContainer element.');
-  const controller = new NetworkController(n, htmlElement);
+  const controller = new NetworkController(network, stage);
 
   const sumNode = new Node('Sum'); // Creates sum node;
   sumNode.addInput('x');
@@ -20,7 +23,7 @@ function controllerExample(): NetworkController {
     const y = this.getInputValue('y') as number;
     this.setOutputValue('result', x + y);
   };
-  n.addNode(sumNode);
+  network.addNode(sumNode);
 
   const nodeParams: Node = new Node('Params'); // Creates param node;
   nodeParams.addInput('x').setDefaultValue(4);
@@ -35,7 +38,7 @@ function controllerExample(): NetworkController {
   };
   sumNode.linkInput('x', nodeParams.getOutput('x'));
   sumNode.linkInput('y', nodeParams.getOutput('y'));
-  n.addNode(nodeParams);
+  network.addNode(nodeParams);
   // n.resolve();
   // n.removeNode(sumNode);
   // n.removeNode(nodeParams);
@@ -43,6 +46,7 @@ function controllerExample(): NetworkController {
 }
 
 global.publishToGlobal({
-  demoNetwork: n,
+  demoNetwork: network,
+  demoStage: stage,
   controllerExample,
 });
