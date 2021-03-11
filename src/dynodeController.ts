@@ -50,7 +50,7 @@ class NetworkController {
     function addNode(this: Network): void {
       // TODO: the node id should be received from event data
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
-      const nodeUI = stage.addNode(nodeModel.name);
+      const nodeUI = new NodeUI(stage, nodeModel.name);
       const nodeCont = new NodeController(nodeModel, nodeUI); // Creates node controller
     }
     this.model.addEventListener('addNode', addNode);

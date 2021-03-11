@@ -3,7 +3,9 @@ import Node from './node';
 import { NetworkController } from './dynodeController';
 import { StageUI } from './DynodeUI';
 
-// For some time, the network and stage will be published to the global scope so they can be manipulated from the console
+// Temporarily, the network and stage will be published to the global scope
+// so they can be manipulated from the console
+
 const network = new Network();
 const stageContainer = document.getElementById('dynodeContainer');
 if (stageContainer === null) throw new Error('dynodeContainer element does not exist.');

@@ -1,7 +1,6 @@
-import { StageUI } from './stageUI';
+import StageUI from './stageUI';
 
 class NodeUI {
-
   stage: StageUI;
 
   name: string;
@@ -42,7 +41,7 @@ class NodeUI {
     socketContainer.appendChild(this.outputsContainer);
 
     this.infoBox = document.createElement('div');
-    this.infoBox.classList.add('infoBox');    
+    this.infoBox.classList.add('infoBox');
     this.infoBox.innerHTML = 'Hello, <strong>World</strong>. This is plain HTML in a <em>&lt;foreignObject&gt;</em> SVG element.';
 
     this.body.appendChild(this.infoBox);
@@ -52,7 +51,7 @@ class NodeUI {
     this.redraw();
   }
 
-  addInput(inputName: string, inputValue: string) {
+  addInput(inputName: string, inputValue: string): void {
     // Create input container
     const inputContainer = document.createElement('div');
     inputContainer.classList.add('input');
@@ -69,47 +68,47 @@ class NodeUI {
     textbox.setAttribute('value', inputValue);
     inputContainer.appendChild(label);
     // Bind the events
-    textbox.addEventListener('change', function(this:HTMLInputElement) {
+    textbox.addEventListener('change', function (this:HTMLInputElement) {
       console.log('Input [', inputName, '] new value:', this.value);
-    })
+    });
     // Register
     this.inputs.push(inputContainer);
     this.inputsContainer.appendChild(inputContainer);
-    this.updateHeight()
+    this.updateHeight();
   }
 
-  setInfo(contents: string) {
+  setInfo(contents: string): void {
     this.infoBox.innerHTML = contents;
   }
 
-  redraw() {
+  redraw(): void {
     // Redraw the node UI
     this.container.wipe();
     this.frame = this.container.addRect({
-        x: 0, y: 0, width: 200, height: 150, class: 'body',
+      x: 0, y: 0, width: 200, height: 150, class: 'body',
     });
     const titleBar = this.container.addRect({
-        x: 0, y: 0, width: 200, height: 25, class: 'titleBar',
+      x: 0, y: 0, width: 200, height: 25, class: 'titleBar',
     });
     this.stage.svgb.draggable(titleBar, null, this.container);
 
     this.container.addText({ x: 5, y: 20, class: 'titleBarText' }, this.name);
     const fo = this.container.addForeignObject({
-        x: 0, y: 25, width: 200, height: 125,
+      x: 0, y: 25, width: 200, height: 125,
     });
-    fo.element.appendChild(this.body);    
+    fo.element.appendChild(this.body);
   }
 
-  updateHeight() {
+  updateHeight(): void {
     const fo = this.body.parentElement;
     if (!fo) return;
-    fo.setAttribute('height', this.body.clientHeight + '');
-    this.frame?.setAttributes({'height': this.body.clientHeight + 20});
+    fo.setAttribute('height', `${this.body.clientHeight + 20}`);
+    this.frame?.setAttributes({ height: `${this.body.clientHeight + 20}` });
   }
 
-  remove() {
+  remove(): void {
     this.container.remove();
   }
 }
 
-export { NodeUI };
+export default NodeUI;
