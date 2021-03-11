@@ -48,7 +48,7 @@ class VEventTarget {
    * Detach an event listener to this object.
    *
    * @param type  Name of the event type.
-   * @param func  Handler reference which is going to be remvoed.
+   * @param func  Handler reference which is going to be removed.
    */
   removeEventListener(type: string, func: VEventHandler): void {
     if (type in this.events) {
