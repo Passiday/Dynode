@@ -931,8 +931,13 @@ class SVGBuilder extends SVGBContainer {
           xObject : ds.xTOffset + ds.dxLocal,
           yObject : ds.yTOffset + ds.dyLocal
         }
+        let correctedPos = null;
         if (ds.callback) {
-          ds.callback("move", ds.selected, dragInfo);
+          correctedPos = ds.callback("move", ds.selected, dragInfo);
+          if (correctedPos) {
+            if ("x" in correctedPos) dragInfo.xObject = correctedPos.x;
+            if ("y" in correctedPos) dragInfo.yObject = correctedPos.y;
+          }
         }
         // Move the draggable object
         ds.selected.translate(dragInfo.xObject, dragInfo.yObject);

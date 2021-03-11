@@ -1,7 +1,7 @@
 import Network from './network';
 import Node from './node';
 import { NetworkController } from './dynodeController';
-import { StageUI } from './DynodeUI';
+import { StageUI, NodeUI, LinkUI } from './DynodeUI';
 
 // Temporarily, the network and stage will be published to the global scope
 // so they can be manipulated from the console
@@ -50,5 +50,7 @@ function controllerExample(): NetworkController {
 global.publishToGlobal({
   demoNetwork: network,
   demoStage: stage,
+  NodeUI,
+  LinkUI,
   controllerExample,
 });

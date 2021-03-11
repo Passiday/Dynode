@@ -66,3 +66,14 @@ g.node div.input input[type="text"] {
 g.node div.outputs {
   grid-area: outputs;
 }
+
+g.link g.socket circle {
+  fill: white;
+  stroke: black;
+  stroke-width: 1px;
+}
+
+g.link line {
+  stroke: black;
+  stroke-width: 2px;
+}
