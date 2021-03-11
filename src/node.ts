@@ -276,14 +276,14 @@ class Node extends VEventTarget {
   };
 
   /**
-   * Method, that dispatches log event with given data.
+   * Method, that dispatches log event with given args.
    *
-   * @param data All the passed arguments to the method as an array.
+   * @param args All the passed arguments to the method as an array.
    * Event's detail contains the array as a property.
    *
    */
-  log = (...data: unknown[]): void => {
-    this.dispatchEvent(new VEvent('log', { detail: { data } }));
+  log = (...args: unknown[]): void => {
+    this.dispatchEvent(new VEvent('log', { detail: { args } }));
   };
 }
 

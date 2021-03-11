@@ -62,13 +62,13 @@ class VEventTarget {
   }
 }
 interface CustomEventInit{
-  detail: Record<string, unknown>;
+  detail: unknown;
 }
 
 class VEvent {
   type: string;
 
-  detail: Record<string, unknown> | undefined;
+  detail: unknown;
 
   currentTarget: VEventTarget | undefined;
 

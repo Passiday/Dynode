@@ -1,6 +1,7 @@
 import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
 import { VEvent } from '../src/vanillaEvent';
+import { hasOwnProperty } from '../src/objectUtils';
 
 test('unlinkedNodeTest', () => {
   const node = new Node('Node-A');
@@ -149,8 +150,8 @@ test('NodeLog', () => {
   const mockFunc = jest.fn();
 
   NodeA.addEventListener('log', (e: VEvent) => {
-    if (typeof e.detail === 'object' && e.detail !== null && 'data' in e.detail) {
-      mockFunc(e.detail.data);
+    if (typeof e.detail === 'object' && e.detail !== null && hasOwnProperty(e.detail, 'args')) {
+      mockFunc(e.detail.args);
     }
   });
 

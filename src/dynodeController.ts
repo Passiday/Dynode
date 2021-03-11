@@ -69,7 +69,7 @@ class NetworkController {
     // TODO implement controller initialization for already populated network
   }
 
-  addHandlers(): void { // Function that assigns handlers for diffrent events of the model
+  addHandlers(): void { // Function that assigns handlers for different events of the model
     const { svgb } = this;
     function addNode(this: Network): void {
       const nodeView = svgb.addGroup({ class: 'node' }); // Creates a new SVG group to represent a node
