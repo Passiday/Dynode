@@ -117,12 +117,13 @@ class Node extends VEventTarget {
 
   /**
    * Print the object's inputs to console.
+   *
    */
   dumpInputs(): void {
-    console.log('*** Input dump ***');
+    this.log('*** Input dump ***');
     Object.keys(this.inputs).forEach((inputName) => {
       const input = this.getInput(inputName);
-      console.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
+      this.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
     });
     this.dispatchEvent(new VEvent('dumpInputs'));
   }
@@ -182,10 +183,10 @@ class Node extends VEventTarget {
    * Print the object's outputs to console.
    */
   dumpOutputs(): void {
-    console.log('*** Output dump ***');
+    this.log('*** Output dump ***');
     Object.keys(this.outputs).forEach((outputName) => {
       const output = this.getOutput(outputName);
-      console.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
+      this.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
     });
     this.dispatchEvent(new VEvent('dumpOutputs'));
   }
@@ -231,7 +232,7 @@ class Node extends VEventTarget {
   }
 
   inputsReady(): void {
-    console.log('Node action:', this.name);
+    this.log('Node action:', this.name);
     this.dumpInputs();
     let p;
     try {
@@ -272,6 +273,17 @@ class Node extends VEventTarget {
 
   actionError = (err: Error): void => {
     this.dispatchEvent(new VEvent('error', { detail: { error: err } }));
+  };
+
+  /**
+   * Method, that dispatches log event with given args.
+   *
+   * @param args All the passed arguments to the method as an array.
+   * Event's detail contains the array as a property.
+   *
+   */
+  log = (...args: unknown[]): void => {
+    this.dispatchEvent(new VEvent('log', { detail: { args } }));
   };
 }
 

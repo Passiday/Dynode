@@ -1,31 +1,79 @@
 #dynodeContainer {
-    left: 10px;
-    width: 1200px;
-    height: 600px;
-    background-color: #bbb;
+  left: 10px;
+  width: 1200px;
+  height: 600px;
+  background-color: #bbb;
 }
 
 #dynodeContainer svg {
-    width: 1200px;
-    height: 600px;
+  width: 1200px;
+  height: 600px;
 }
 
 g.node rect.body {
-    fill: rgba(255, 255, 255, 0.5);
+  fill: rgba(255, 255, 255, 0.5);
 }
 
 g.node rect.titleBar {
-    fill: rgba(0, 0, 100);
+  fill: rgba(0, 0, 100);
 }
 
 g.node text.titleBarText {
-    cursor: default;
-    fill: white;
+  cursor: default;
+  fill: white;
+  pointer-events: none;
 }
 
-g.node div.nodeInfo {
-  cursor: default;
+g.node div.body {
+  user-select: none;
   padding: 5px;
+}
+
+g.node div.infoBox {
+  cursor: default;
   font-size: 20px;
   color: #888;
+}
+
+g.node div.socketContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas: "inputs outputs";
+}
+
+g.node div.inputs {
+  grid-area: inputs;
+}
+
+g.node div.input {
+  height: 20px;
+  white-space: nowrap;
+}
+
+g.node div.input div {
+  float: left;
+  box-sizing: border-box;
+  width: 50%;
+}
+
+g.node div.input input[type="text"] {
+  box-sizing: border-box;
+  width: 50%;
+}
+
+g.node div.outputs {
+  grid-area: outputs;
+}
+
+g.link g.socket circle {
+  fill: white;
+  stroke: black;
+  stroke-width: 1px;
+}
+
+g.link line {
+  stroke: black;
+  stroke-width: 2px;
 }

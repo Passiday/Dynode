@@ -27,5 +27,20 @@ function applyMixins(derivedCtor: NewableType, constructors: NewableType[]): voi
     });
   });
 }
+/**
+ * Function, that checks if a property exists on object.
+*
+* @param obj The object ,that needs to be checked.
+* @param prop The property, that needs to be checked.
+*
+*/
+// eslint-disable-next-line @typescript-eslint/ban-types
+function hasOwnProperty<X extends {}
+, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown> {
+  return prop in obj;
+}
 
-export default applyMixins;
+export {
+  applyMixins,
+  hasOwnProperty,
+};
