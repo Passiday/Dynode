@@ -2,6 +2,7 @@ import Network from './network';
 import Node from './node';
 import { NetworkController } from './dynodeController';
 import { StageUI, NodeUI, LinkUI } from './DynodeUI';
+import './main.scss';
 
 // Temporarily, the network and stage will be published to the global scope
 // so they can be manipulated from the console

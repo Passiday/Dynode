@@ -1,0 +1,94 @@
+@function hsb($h-hsb, $s-hsb, $b-hsb, $a: 1) {
+  @if $b-hsb == 0 {
+    @return hsla(0, 0, 0, $a)
+  } @else {
+    $l-hsl: ($b-hsb/2) * (2 - ($s-hsb/100));
+    $s-hsl: ($b-hsb * $s-hsb) / if($l-hsl < 50, $l-hsl * 2, 200 - $l-hsl * 2);
+    @return hsla($h-hsb, $s-hsl, $l-hsl, $a);
+  }
+}
+
+#dynodeContainer {
+  left: 10px;
+  width: 1200px;
+  height: 600px;
+  background-color: hsb(0, 0, 70%);
+
+  svg {
+    width: 1200px;
+    height: 600px;
+  }
+}
+
+g.node {
+  rect.body {
+    fill: hsb(0, 0, 100%, 50%);
+  }
+
+  rect.titleBar {
+    fill: hsb(240, 100%, 50%);
+  }
+
+  text.titleBarText {
+    cursor: default;
+    fill: white;
+    pointer-events: none;
+  }
+
+  div.body {
+    user-select: none;
+    padding: 5px;
+  }
+
+  div.infoBox {
+    cursor: default;
+    font-size: 20px;
+    color: hsb(0, 0, 50%);
+  }
+
+  div.socketContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas: "inputs outputs";
+  }
+
+  div.inputs {
+    grid-area: inputs;
+  }
+
+  div.input {
+    height: 20px;
+    white-space: nowrap;
+
+    div {
+      float: left;
+      box-sizing: border-box;
+      width: 50%;
+    }
+
+    input[type="text"] {
+      box-sizing: border-box;
+      width: 50%;
+    }
+  }
+
+  div.outputs {
+    grid-area: outputs;
+  }
+}
+
+
+g.link {
+  g.socket circle {
+    fill: white;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+  line {
+    stroke: black;
+    stroke-width: 2px;
+  }
+}
