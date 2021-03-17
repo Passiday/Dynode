@@ -99,3 +99,24 @@ describe('addSocket', () => {
     expect(() => sc.addSocket(i2)).toThrow();
   });
 });
+
+describe('getAllSockets', () => {
+  test('given empty collection, return empty array', () => {
+    const sc = new SocketCollection();
+
+    expect(sc.getAllSockets()).toEqual([]);
+  });
+
+  test('given some sockets, ensure correctly ordered array', () => {
+    const sc = new SocketCollection();
+    const expected: InputSocket[] = [];
+    for (let i = 0; i < 5; i++) {
+      const socket = new InputSocket();
+      socket.accessName = `i${i}`;
+      expected.push(socket);
+      sc.addSocket(socket);
+    }
+
+    expect(sc.getAllSockets()).toEqual(expected);
+  });
+});
