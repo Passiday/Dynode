@@ -59,11 +59,22 @@ describe('getSocketByIndex', () => {
   });
 });
 
-test('Test access by name', () => {
-  const sc = new SocketCollection();
-  const i1 = new InputSocket();
-  i1.accessName = 'someInput';
-  sc.addSocket(i1);
+describe('getSocketByName', () => {
+  test('properly obtain item in 1 item collection', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+    i1.accessName = 'someInput';
+    sc.addSocket(i1);
 
-  expect(sc.getSocketByName('someInput')).toBe(i1);
+    expect(sc.getSocketByName('someInput')).toBe(i1);
+  });
+
+  test('given non-existent name, throw', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+    i1.accessName = 'someInput';
+    sc.addSocket(i1);
+
+    expect(() => sc.getSocketByName('wrong')).toThrow();
+  });
 });

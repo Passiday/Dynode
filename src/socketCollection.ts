@@ -40,6 +40,9 @@ class SocketCollection<T extends Socket> {
    * @return  A socket that corresponds to `name`.
    */
   public getSocketByName(name: string): T {
+    if (!this.socketsOrder.includes(name)) {
+      throw new Error(`${name} does not exist in this collection!`);
+    }
     return this.socketsObject[name];
   }
 
