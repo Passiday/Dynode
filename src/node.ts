@@ -1,6 +1,7 @@
 import { VEvent, VEventTarget } from './vanillaEvent';
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
+import SocketCollection from './socketCollection';
 
 /**
  * Class that does processing, using InputSocket and OutputSocket.
@@ -23,9 +24,7 @@ class Node extends VEventTarget {
   /**
    * A collection of InputSocket objects.
    */
-  inputs: {
-    [key: string]: InputSocket,
-  } = {};
+  inputs = new SocketCollection<InputSocket>();
 
   /**
    * The size of stored inputs.
@@ -38,6 +37,11 @@ class Node extends VEventTarget {
   resolvedInputs = 0;
 
   /**
+   * A collection of OutputSocket objects.
+   */
+  outputs = new SocketCollection<OutputSocket>();
+
+  /**
    * Register a new input.
    *
    * @param name  Name of the inputSocket to generate
@@ -46,7 +50,8 @@ class Node extends VEventTarget {
   addInput(name: string): InputSocket {
     if (name in this.inputs) throw Error('Input name already exists');
     const socket = new InputSocket();
-    this.inputs[name] = socket;
+    socket.accessName = name;
+    this.inputs.addSocket(socket);
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
       if (this.resolvedInputs === this.inputCount) {
@@ -64,8 +69,7 @@ class Node extends VEventTarget {
    * @param name  The name of the input to be found.
    */
   getInput(name: string): InputSocket {
-    if (name in this.inputs) return this.inputs[name];
-    throw Error(`Input "${name}" not found`);
+    return this.inputs.getSocketByName(name);
   }
 
   // removeInput(name: string): void {
@@ -129,22 +133,16 @@ class Node extends VEventTarget {
   }
 
   /**
-   * A collection of OutputSocket objects.
-   */
-  outputs: {
-    [key: string]: OutputSocket,
-  } = {};
-
-  /**
    * Register a new output
    *
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
   addOutput(name: string): OutputSocket {
-    if (name in this.outputs) throw Error('Output name already exists');
     const socket = new OutputSocket(this);
-    this.outputs[name] = socket;
+    socket.accessName = name;
+    this.outputs.addSocket(socket);
+
     this.dispatchEvent(new VEvent('addOutput', { detail: { outputName: name } }));
     return socket;
   }
@@ -155,8 +153,7 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to be found.
    */
   getOutput(name: string): OutputSocket {
-    if (name in this.outputs) return this.outputs[name];
-    throw Error('Output not found');
+    return this.outputs.getSocketByName(name);
   }
 
   // removeOutput(name: string): void {
