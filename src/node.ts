@@ -125,9 +125,11 @@ class Node extends VEventTarget {
    */
   dumpInputs(): void {
     this.log('*** Input dump ***');
-    Object.keys(this.inputs).forEach((inputName) => {
-      const input = this.getInput(inputName);
-      this.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
+    this.inputs.getAllSockets().forEach((input) => {
+      this.log(
+        `Input ${input.accessName}:`,
+        input.isNothing() ? 'nothing' : input.getValue(),
+      );
     });
     this.dispatchEvent(new VEvent('dumpInputs'));
   }
@@ -181,9 +183,11 @@ class Node extends VEventTarget {
    */
   dumpOutputs(): void {
     this.log('*** Output dump ***');
-    Object.keys(this.outputs).forEach((outputName) => {
-      const output = this.getOutput(outputName);
-      this.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
+    this.outputs.getAllSockets().forEach((output) => {
+      this.log(
+        `Output ${output.accessName}:`,
+        output.isNothing() ? 'nothing' : output.getValue(),
+      );
     });
     this.dispatchEvent(new VEvent('dumpOutputs'));
   }
@@ -214,8 +218,7 @@ class Node extends VEventTarget {
     this.dispatchEvent(new VEvent('beforeResolve'));
     this.busy = true;
     this.resolvedInputs = 0;
-    Object.keys(this.inputs).forEach((inputName) => {
-      const input = this.getInput(inputName);
+    this.inputs.getAllSockets().forEach((input) => {
       if (!input.isValid()) throw Error('Input is not linked and has no default.');
       if (input.isSet()) {
         this.resolvedInputs++;
@@ -251,8 +254,7 @@ class Node extends VEventTarget {
 
   actionReady(): void {
     // Set all unset outputs
-    Object.keys(this.outputs).forEach((outputName) => {
-      const output = this.getOutput(outputName);
+    this.outputs.getAllSockets().forEach((output) => {
       if (!output.isSet()) output.setValue();
     });
     this.dumpOutputs();

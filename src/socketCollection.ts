@@ -52,6 +52,14 @@ class SocketCollection<T extends Socket> {
   public getSocketByIndex(idx: number): T {
     return this.socketsObject[this.socketsOrder[idx]];
   }
+
+  public getAllSockets(): T[] {
+    const arr: T[] = [];
+    this.socketsOrder.forEach(
+      (name) => arr.push(this.getSocketByName(name)),
+    );
+    return arr;
+  }
 }
 
 export default SocketCollection;
