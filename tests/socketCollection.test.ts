@@ -2,21 +2,21 @@ import InputSocket from '../src/inputSocket';
 import SocketCollection from '../src/socketCollection';
 
 describe('addSocket', () => {
-  test('given socket with no accessName, throw', () => {
+  test('given socket with no name, throw', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
 
     expect(() => sc.addSocket(i1)).toThrow();
   });
 
-  test('given sockets with same accessName, throw', () => {
+  test('given sockets with same name, throw', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'duplicate';
+    i1.name = 'duplicate';
     sc.addSocket(i1);
 
     const i2 = new InputSocket();
-    i2.accessName = 'duplicate';
+    i2.name = 'duplicate';
 
     expect(() => sc.addSocket(i2)).toThrow();
   });
@@ -26,7 +26,7 @@ describe('getSocketByName', () => {
   test('properly obtain item in 1 item collection', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'someInput';
+    i1.name = 'someInput';
     sc.addSocket(i1);
 
     expect(sc.getSocketByName('someInput')).toBe(i1);
@@ -35,7 +35,7 @@ describe('getSocketByName', () => {
   test('given non-existent name, throw', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'someInput';
+    i1.name = 'someInput';
     sc.addSocket(i1);
 
     expect(() => sc.getSocketByName('wrong')).toThrow();
@@ -46,7 +46,7 @@ describe('getSocketByIndex', () => {
   test('properly index socket collection with 1 input', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'something';
+    i1.name = 'something';
     sc.addSocket(i1);
 
     expect(sc.getSocketByIndex(0)).toBe(i1);
@@ -57,7 +57,7 @@ describe('getSocketByIndex', () => {
     const inputs: InputSocket[] = [];
     for (let i = 0; i < 3; i++) {
       const socket = new InputSocket();
-      socket.accessName = `s${i}`;
+      socket.name = `s${i}`;
       inputs.push(socket);
       sc.addSocket(socket);
     }
@@ -75,7 +75,7 @@ describe('getSocketByIndex', () => {
   test('given out-of-bounds index to throw', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'something';
+    i1.name = 'something';
     sc.addSocket(i1);
 
     expect(() => sc.getSocketByIndex(1)).toThrow();
@@ -84,7 +84,7 @@ describe('getSocketByIndex', () => {
   test('given negative index to throw', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'something';
+    i1.name = 'something';
     sc.addSocket(i1);
 
     expect(() => sc.getSocketByIndex(-1)).toThrow();
@@ -93,7 +93,7 @@ describe('getSocketByIndex', () => {
   test('given float index to throw', () => {
     const sc = new SocketCollection();
     const i1 = new InputSocket();
-    i1.accessName = 'something';
+    i1.name = 'something';
     sc.addSocket(i1);
 
     expect(() => sc.getSocketByIndex(0.3)).toThrow();
@@ -112,7 +112,7 @@ describe('getAllSockets', () => {
     const expected: InputSocket[] = [];
     for (let i = 0; i < 5; i++) {
       const socket = new InputSocket();
-      socket.accessName = `i${i}`;
+      socket.name = `i${i}`;
       expected.push(socket);
       sc.addSocket(socket);
     }

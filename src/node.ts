@@ -50,7 +50,7 @@ class Node extends VEventTarget {
   addInput(name: string): InputSocket {
     if (name in this.inputs) throw Error('Input name already exists');
     const socket = new InputSocket();
-    socket.accessName = name;
+    socket.name = name;
     this.inputs.addSocket(socket);
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
@@ -127,7 +127,7 @@ class Node extends VEventTarget {
     this.log('*** Input dump ***');
     this.inputs.getAllSockets().forEach((input) => {
       this.log(
-        `Input ${input.accessName}:`,
+        `Input ${input.name}:`,
         input.isNothing() ? 'nothing' : input.getValue(),
       );
     });
@@ -142,7 +142,7 @@ class Node extends VEventTarget {
    */
   addOutput(name: string): OutputSocket {
     const socket = new OutputSocket(this);
-    socket.accessName = name;
+    socket.name = name;
     this.outputs.addSocket(socket);
 
     this.dispatchEvent(new VEvent('addOutput', { detail: { outputName: name } }));
@@ -185,7 +185,7 @@ class Node extends VEventTarget {
     this.log('*** Output dump ***');
     this.outputs.getAllSockets().forEach((output) => {
       this.log(
-        `Output ${output.accessName}:`,
+        `Output ${output.name}:`,
         output.isNothing() ? 'nothing' : output.getValue(),
       );
     });

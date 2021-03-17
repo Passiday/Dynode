@@ -16,7 +16,7 @@ class SocketCollection<T extends Socket> {
   /**
    * Variable that keeps `socketsObject` ordered.
    *
-   * It stores Socket's `accessName` properties.
+   * It stores Socket's `name` properties.
    */
   private socketsOrder: string[] = [];
 
@@ -26,14 +26,14 @@ class SocketCollection<T extends Socket> {
    * @param socket  Socket that will be added.
    */
   public addSocket(socket: T): void {
-    if (socket.accessName === null) {
-      throw Error('socket needs an accessName to be added!');
+    if (socket.name === null) {
+      throw Error('socket needs a name to be added!');
     }
-    if (this.socketsOrder.includes(socket.accessName)) {
-      throw Error(`Collection already has a socket with accessName ${socket.accessName} !`);
+    if (this.socketsOrder.includes(socket.name)) {
+      throw Error(`Collection already has a socket with name ${socket.name} !`);
     }
-    this.socketsObject[socket.accessName] = socket;
-    this.socketsOrder.push(socket.accessName);
+    this.socketsObject[socket.name] = socket;
+    this.socketsOrder.push(socket.name);
   }
 
   /**
