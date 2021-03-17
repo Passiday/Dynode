@@ -50,6 +50,12 @@ class SocketCollection<T extends Socket> {
    * @return  A socket that corresponds to `idx`.
    */
   public getSocketByIndex(idx: number): T {
+    if (idx % 1 !== 0) {
+      throw new Error('Index must be an integer!');
+    }
+    if (idx >= this.socketsOrder.length || idx < 0) {
+      throw new Error('Index out of bounds!');
+    }
     return this.socketsObject[this.socketsOrder[idx]];
   }
 
