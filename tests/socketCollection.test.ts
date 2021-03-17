@@ -1,6 +1,47 @@
 import InputSocket from '../src/inputSocket';
 import SocketCollection from '../src/socketCollection';
 
+describe('addSocket', () => {
+  test('given socket with no accessName, throw', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+
+    expect(() => sc.addSocket(i1)).toThrow();
+  });
+
+  test('given sockets with same accessName, throw', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+    i1.accessName = 'duplicate';
+    sc.addSocket(i1);
+
+    const i2 = new InputSocket();
+    i2.accessName = 'duplicate';
+
+    expect(() => sc.addSocket(i2)).toThrow();
+  });
+});
+
+describe('getSocketByName', () => {
+  test('properly obtain item in 1 item collection', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+    i1.accessName = 'someInput';
+    sc.addSocket(i1);
+
+    expect(sc.getSocketByName('someInput')).toBe(i1);
+  });
+
+  test('given non-existent name, throw', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+    i1.accessName = 'someInput';
+    sc.addSocket(i1);
+
+    expect(() => sc.getSocketByName('wrong')).toThrow();
+  });
+});
+
 describe('getSocketByIndex', () => {
   test('properly index socket collection with 1 input', () => {
     const sc = new SocketCollection();
@@ -56,47 +97,6 @@ describe('getSocketByIndex', () => {
     sc.addSocket(i1);
 
     expect(() => sc.getSocketByIndex(0.3)).toThrow();
-  });
-});
-
-describe('getSocketByName', () => {
-  test('properly obtain item in 1 item collection', () => {
-    const sc = new SocketCollection();
-    const i1 = new InputSocket();
-    i1.accessName = 'someInput';
-    sc.addSocket(i1);
-
-    expect(sc.getSocketByName('someInput')).toBe(i1);
-  });
-
-  test('given non-existent name, throw', () => {
-    const sc = new SocketCollection();
-    const i1 = new InputSocket();
-    i1.accessName = 'someInput';
-    sc.addSocket(i1);
-
-    expect(() => sc.getSocketByName('wrong')).toThrow();
-  });
-});
-
-describe('addSocket', () => {
-  test('given socket with no accessName, throw', () => {
-    const sc = new SocketCollection();
-    const i1 = new InputSocket();
-
-    expect(() => sc.addSocket(i1)).toThrow();
-  });
-
-  test('given sockets with same accessName, throw', () => {
-    const sc = new SocketCollection();
-    const i1 = new InputSocket();
-    i1.accessName = 'duplicate';
-    sc.addSocket(i1);
-
-    const i2 = new InputSocket();
-    i2.accessName = 'duplicate';
-
-    expect(() => sc.addSocket(i2)).toThrow();
   });
 });
 

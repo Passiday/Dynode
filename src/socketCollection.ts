@@ -65,6 +65,11 @@ class SocketCollection<T extends Socket> {
     return this.socketsObject[this.socketsOrder[idx]];
   }
 
+  /**
+   * Retrieve all sockets in order.
+   *
+   * @return  Ordered socket array.
+   */
   public getAllSockets(): T[] {
     const arr: T[] = [];
     this.socketsOrder.forEach(
