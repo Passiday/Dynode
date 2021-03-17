@@ -19,6 +19,16 @@ class Socket extends VEventTarget {
    */
   hasValue = false;
 
+  /**
+   * A name used to retrieve the socket.
+   */
+  accessName: string | null = null ;
+
+  /**
+   * A name used for display.
+   */
+  humanReadableName: string | null = null;
+
   constructor() {
     super();
     this.init();
