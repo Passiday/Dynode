@@ -2,13 +2,15 @@ import Socket from './socket';
 
 /**
  * Class that handles related socket management.
+ *
+ * @typeParam T  Class of sockets that will be managed.
  */
-class SocketCollection {
+class SocketCollection<T extends Socket> {
   /**
    * A dictionary of sockets.
    */
   private socketsObject: {
-    [key: string]: Socket,
+    [key: string]: T,
   } = {};
 
   /**
@@ -23,7 +25,7 @@ class SocketCollection {
    *
    * @param socket  Socket that will be added.
    */
-  public addSocket(socket: Socket): void {
+  public addSocket(socket: T): void {
     if (socket.accessName === null) {
       throw Error('socket needs an accessName to be added!');
     }
@@ -37,7 +39,7 @@ class SocketCollection {
    * @param name  Socket's name in the collection.
    * @return  A socket that corresponds to `name`.
    */
-  public getSocketByName(name: string): Socket {
+  public getSocketByName(name: string): T {
     return this.socketsObject[name];
   }
 
@@ -47,7 +49,7 @@ class SocketCollection {
    * @param idx  Socket's index in the collection.
    * @return  A socket that corresponds to `idx`.
    */
-  public getSocketByIndex(idx: number): Socket {
+  public getSocketByIndex(idx: number): T {
     return this.socketsObject[this.socketsOrder[idx]];
   }
 }
