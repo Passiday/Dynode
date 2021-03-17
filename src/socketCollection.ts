@@ -29,6 +29,9 @@ class SocketCollection<T extends Socket> {
     if (socket.accessName === null) {
       throw Error('socket needs an accessName to be added!');
     }
+    if (this.socketsOrder.includes(socket.accessName)) {
+      throw Error(`Collection already has a socket with accessName ${socket.accessName} !`);
+    }
     this.socketsObject[socket.accessName] = socket;
     this.socketsOrder.push(socket.accessName);
   }

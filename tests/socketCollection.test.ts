@@ -78,3 +78,24 @@ describe('getSocketByName', () => {
     expect(() => sc.getSocketByName('wrong')).toThrow();
   });
 });
+
+describe('addSocket', () => {
+  test('given socket with no accessName, throw', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+
+    expect(() => sc.addSocket(i1)).toThrow();
+  });
+
+  test('given sockets with same accessName, throw', () => {
+    const sc = new SocketCollection();
+    const i1 = new InputSocket();
+    i1.accessName = 'duplicate';
+    sc.addSocket(i1);
+
+    const i2 = new InputSocket();
+    i2.accessName = 'duplicate';
+
+    expect(() => sc.addSocket(i2)).toThrow();
+  });
+});
