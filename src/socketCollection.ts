@@ -7,18 +7,9 @@ import Socket from './socket';
  */
 class SocketCollection<T extends Socket> {
   /**
-   * A dictionary of sockets.
+   * Main storage for sockets.
    */
-  private socketsObject: {
-    [key: string]: T,
-  } = {};
-
-  /**
-   * Variable that keeps `socketsObject` ordered.
-   *
-   * It stores Socket's `name` properties.
-   */
-  private socketsOrder: string[] = [];
+  private sockets: T[] = [];
 
   /**
    * Register a socket to the collection.
@@ -29,11 +20,14 @@ class SocketCollection<T extends Socket> {
     if (socket.name === null) {
       throw Error('socket needs a name to be added!');
     }
-    if (this.socketsOrder.includes(socket.name)) {
-      throw Error(`Collection already has a socket with name ${socket.name} !`);
+
+    for (const existingSocket of this.sockets) {
+      if (existingSocket.name === socket.name) {
+        throw Error(`Collection already has a socket with name ${socket.name} !`);
+      }
     }
-    this.socketsObject[socket.name] = socket;
-    this.socketsOrder.push(socket.name);
+
+    this.sockets.push(socket);
   }
 
   /**
@@ -43,10 +37,11 @@ class SocketCollection<T extends Socket> {
    * @return  A socket that corresponds to `name`.
    */
   public getSocketByName(name: string): T {
-    if (!this.socketsOrder.includes(name)) {
-      throw new Error(`${name} does not exist in this collection!`);
+    for (const socket of this.sockets) {
+      if (socket.name === name) return socket;
     }
-    return this.socketsObject[name];
+
+    throw new Error(`${name} does not exist in this collection!`);
   }
 
   /**
@@ -59,10 +54,10 @@ class SocketCollection<T extends Socket> {
     if (idx % 1 !== 0) {
       throw new Error('Index must be an integer!');
     }
-    if (idx >= this.socketsOrder.length || idx < 0) {
+    if (idx >= this.sockets.length || idx < 0) {
       throw new Error('Index out of bounds!');
     }
-    return this.socketsObject[this.socketsOrder[idx]];
+    return (this.sockets)[idx];
   }
 
   /**
@@ -71,11 +66,7 @@ class SocketCollection<T extends Socket> {
    * @return  Ordered socket array.
    */
   public getAllSockets(): T[] {
-    const arr: T[] = [];
-    this.socketsOrder.forEach(
-      (name) => arr.push(this.getSocketByName(name)),
-    );
-    return arr;
+    return [...this.sockets];
   }
 }
 

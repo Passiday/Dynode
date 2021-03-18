@@ -119,4 +119,32 @@ describe('getAllSockets', () => {
 
     expect(sc.getAllSockets()).toEqual(expected);
   });
+
+  test('returned array is not a reference to an internal', () => {
+    const sc = new SocketCollection();
+    const expected: InputSocket[] = [];
+    for (const i of [1, 2, 3]) {
+      const socket = new InputSocket();
+      socket.name = `i${i}`;
+      sc.addSocket(socket);
+      expected.push(socket);
+    }
+
+    const values = sc.getAllSockets();
+    values.splice(2, 1);
+    expect(sc.getAllSockets()).toEqual(expected);
+  });
+});
+
+test('changed node name should be reflected in SocketCollection', () => {
+  const sc = new SocketCollection();
+  const s1 = new InputSocket();
+  s1.name = 'old';
+  sc.addSocket(s1);
+
+  expect(sc.getSocketByName('old')).toBe(s1);
+
+  s1.name = 'new';
+  expect(() => sc.getSocketByName('old')).toThrow();
+  expect(sc.getSocketByName('new')).toBe(s1);
 });
