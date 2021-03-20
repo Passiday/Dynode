@@ -24,6 +24,7 @@ module.exports = {
     'max-classes-per-file': 'off',
     'no-plusplus': 'off',
     'func-names': 'off',
+    'no-restricted-syntax': ['off', 'ForOfStatement'],
   },
   overrides: [
     {
