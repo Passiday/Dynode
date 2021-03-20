@@ -28,56 +28,40 @@ class LinkUI {
 
     this.container = stage.svgb.addGroup({ class: 'link' });
 
-    this.link = this.container.addLine({
+    const linkLine = this.container.addLine({
       x1: this.x1,
       y1: this.y1,
       x2: this.x2,
       y2: this.y2,
     });
+    this.link = linkLine;
     this.p1 = this.container.addGroup({ class: 'socket' });
     this.p1.addCircle({ x: 0, y: 0, r: 5 });
-    this.stage.svgb.draggable(
-      this.p1,
-      (
-        state: string,
-        body: SVGBElement,
-        dragInfo: { [name: string]: any },
-      ): { x: number, y: number } | null => {
-        if (state === 'move') {
-          this.link.setAttributes({
-            x1: Math.round(dragInfo.xLocal),
-            y1: Math.round(dragInfo.yLocal),
-          });
-          return {
-            x: Math.round(dragInfo.xLocal),
-            y: Math.round(dragInfo.yLocal),
-          };
-        }
-        return null;
-      },
-    );
+    const p1d = this.stage.svgb.draggable(this.p1);
+    p1d.addEventListener('move', function (this: SVGBDraggable, evt: SVGBDraggableEvent) {
+      linkLine.setAttributes({
+        x1: Math.round(this.xLocal),
+        y1: Math.round(this.yLocal),
+      });
+      this.setPosition({
+        x: Math.round(this.xLocal),
+        y: Math.round(this.yLocal),
+      });
+    });
+
     this.p2 = this.container.addGroup({ class: 'socket' });
     this.p2.addCircle({ x: 0, y: 0, r: 5 });
-    this.stage.svgb.draggable(
-      this.p2,
-      (
-        state: string,
-        body: SVGBElement,
-        dragInfo: { [name: string]: any },
-      ): { x: number, y: number } | null => {
-        if (state === 'move') {
-          this.link.setAttributes({
-            x2: Math.round(dragInfo.xLocal),
-            y2: Math.round(dragInfo.yLocal),
-          });
-          return {
-            x: Math.round(dragInfo.xLocal),
-            y: Math.round(dragInfo.yLocal),
-          };
-        }
-        return null;
-      },
-    );
+    const p2d = this.stage.svgb.draggable(this.p2);
+    p2d.addEventListener('move', function (this:SVGBDraggable, evt: SVGBDraggableEvent) {
+      linkLine.setAttributes({
+        x2: Math.round(this.xLocal),
+        y2: Math.round(this.yLocal),
+      });
+      this.setPosition({
+        x: Math.round(this.xLocal),
+        y: Math.round(this.yLocal),
+      });
+    });
 
     this.update();
   }

@@ -765,6 +765,154 @@ class SVGBContainer extends SVGBElement {
   }
 }
 
+/* class SVGBDraggable ********************************************************************************************************************/
+
+class SVGBDraggableEvent {
+  constructor(type) {
+    this.type = type;
+    this.currentTarget = null;
+    this.target = null;
+  }
+}
+
+class SVGBDraggable {
+  constructor(body) {
+    this.body = body;
+    this.active = false; // true when the draggable body is being dragged, false when not
+
+    // Retrieve the current translation
+    const position = this.getPosition();
+    this.xObject = position.x; // current body origin point x coordinate relative to the parent;
+    this.yObject = position.y; // current body origin point y coordinate relative to the parent;
+
+    this.xStart   = this.xObject; // body x coordinate at start;
+    this.yStart   = this.yObject; // body y coordinate at start;
+    this.xScreen  = 0; // mouse pointer x coordinate in the screen coordinate space;
+    this.yScreen  = 0; // mouse pointer y coordinate in the screen coordinate space;
+    this.dxScreen = 0; // x component of the drag vector from the drag start point, in the screen coordinate space;
+    this.dyScreen = 0; // y component of the drag vector from the drag start point, in the screen coordinate space;
+    this.xLocal   = 0; // mouse pointer x coordinate in the local coordinate space (that might be translated and rotated);
+    this.yLocal   = 0; // mouse pointer y coordinate in the local coordinate space;
+    this.dxLocal  = 0; // x component of the drag vector from the drag start point, in local coordinate space;
+    this.dyLocal  = 0; // y component of the drag vector from the drag start point, in local coordinate space;
+
+    this.onStartDrag = null; // the event handler to launch when mouse is pressed on the draggable body
+    this.handle = null; // the SVGBElement where the mouse pressed element is registered
+
+    this.eventListeners = {
+      "start": [],
+      "move" : [],
+      "stop" : []
+    };
+  }
+
+  getPosition() {
+    const t = this.body.getTransform("TRS");
+    if (t.template != "TRS") throw new Error("This SVGBuilder object has custom transform definitions that prevent reliable position detection.");
+    const txParams = t.list[0].params;
+    return {
+      x: txParams[0],
+      y: txParams[1]
+    };
+  }
+
+  setPosition(newPosition) {
+    // Adjust position of the draggable object, in the local coordinate space
+    // This can be called from within move event handler, to constrain the dragged body movement
+    if ("x" in newPosition) this.xObject = newPosition.x;
+    if ("y" in newPosition) this.yObject = newPosition.y;
+  }
+
+  getLocalCoords(xScreen, yScreen, dxScreen, dyScreen) {
+    const xform = this.body.element.parentNode.getScreenCTM().inverse();
+    return {
+      x: xform.a * xScreen + xform.c * yScreen + xform.e,
+      y: xform.b * xScreen + xform.d * yScreen + xform.f,
+      dx: xform.a * dxScreen + xform.c * dyScreen,
+      dy: xform.b * dxScreen + xform.d * dyScreen
+    }
+  }
+
+  enable(handle, onStartDrag) {
+    // Enable the dragging behaviour
+    if (!handle) handle = this.handle;
+    if (!onStartDrag) onStartDrag = this.onStartDrag;
+    if (!handle || !onStartDrag) return;
+    this.handle = handle;
+    this.onStartDrag = onStartDrag;
+    this.handle.element.addEventListener("mousedown", this.onStartDrag);
+  }
+
+  disable() {
+    // Disable the dragging behaviour. It can be later re-enabled by calling the enable() method.
+    if (!this.handle || !this.onStartDrag) return;
+    this.handle.element.removeEventListener("mousedown", this.onStartDrag);
+  }
+
+  isActive() {
+    return this.active;
+  }
+
+  start() {
+    this.active = true;
+    this.xStart = this.xObject;
+    this.yStart = this.yObject;
+    this.dispatchEvent(new SVGBDraggableEvent("start"));
+    this.body.translate(this.xObject, this.yObject);
+  }
+
+  move() {
+    this.dispatchEvent(new SVGBDraggableEvent("move"));
+    this.body.translate(this.xObject, this.yObject);
+  }
+
+  release() {
+    // Stop the dragging while the mouse button is still down. Leave the draggable body where it is now.
+    if (!this.active) return;
+    this.stop();
+  }
+
+  cancel() {
+    // Stop the dragging while the mouse button is still down. Move the draggable body where it was before the dragging.
+    this.setPosition({
+      x: this.xStart,
+      y: this.yStart
+    });
+    this.release();
+  }
+
+  stop() {
+    this.dispatchEvent(new SVGBDraggableEvent("stop"));
+    this.body.translate(this.xObject, this.yObject);
+    this.active = false;
+  }
+
+  addEventListener(eventType, eventListener) {
+    if (!(eventType in this.eventListeners)) return;
+    const eventListeners = this.eventListeners[eventType];
+    if (eventListeners.includes(eventListener)) return;
+    eventListeners.push(eventListener);
+  }
+
+  removeEventListener(eventType, eventListener) {
+    if (!(eventType in this.eventListeners)) return;
+    const eventListeners = this.eventListeners[eventType];
+    const index = eventListeners.indexOf(eventListener);
+    if (index == -1) return;
+    eventListeners.splice(index, 1);
+  }
+
+  dispatchEvent(draggableEvent) {
+    draggableEvent.currentTarget = this;
+    draggableEvent.target = this;
+    if (draggableEvent.type in this.eventListeners) {
+      this.eventListeners[draggableEvent.type].forEach((listener) => {
+        listener.call(this, draggableEvent);
+      });
+    }
+  }
+}
+
 /* class SVGBuilder ***********************************************************************************************************************/
 
 class SVGBuilder extends SVGBContainer {
@@ -830,152 +978,147 @@ class SVGBuilder extends SVGBContainer {
     this.setAttributes({viewBox:newViewBox, preserveAspectRatio:newPreserveAspectRatio}, true);
   }
 
-  draggable(handle, callback, body) {
+  draggable(handle, body) {
     // handle   - the object that captures the mousedown event
-    // callback - optional function(state, body, dragInfo) called when the dragging takes place
     // body     - optional object that is dragged around. By default, it's the handle. But it can be another element, for example a group object that contains the handle object
+    const draggable = new SVGBDraggable(body ? body : handle);
 
+    // draggableStore property is global to an SVGBuilder object. It keeps track of all essential dragging-related data
     if (!this.draggableStore) {
       this.draggableStore = {
-        selected: null, // The object currently being dragged
-        callback: null, // The callback function to be called when dragging takes place
-        xStart  : 0, // Start point x, at screen coordinates
-        yStart  : 0, // Start point y, at screen coordinates
-        dxScreen: 0, // X distance dragged, at screen coordinates
-        dyScreen: 0, // Y distance dragged, at screen coordinates
-        xLocal  : 0, // Pointer x, at local coordinates
-        yLocal  : 0, // Pointer y, at local coordinates
-        dxLocal : 0, // Horizontal distance dragged, at local coordinates
-        dyLocal : 0, // Y distance dragged, at local coordinates
-        xTOffset: 0, // X translation, at drag start
-        yTOffset: 0, // Y translation, at drag start
+        draggable: null, // The draggable object currently being dragged
+        xStart   : 0, // Start point x, at screen coordinates
+        yStart   : 0, // Start point y, at screen coordinates
+        dxScreen : 0, // X distance dragged, at screen coordinates
+        dyScreen : 0, // Y distance dragged, at screen coordinates
+        xLocal   : 0, // Pointer x, at local coordinates
+        yLocal   : 0, // Pointer y, at local coordinates
+        dxLocal  : 0, // Horizontal distance dragged, at local coordinates
+        dyLocal  : 0, // Y distance dragged, at local coordinates
+        xTOffset : 0, // X translation, at drag start
+        yTOffset : 0, // Y translation, at drag start
       }
     }
 
-    var startDrag = (evt) => {
-      var ds = this.draggableStore;
+    /*
+    There are three functions:
+    - onStartDrag - run when the mouse button is pressed wile cursor is on the handle;
+    - onDrag      - run when the mouse is moved while the mouse button is still pressed;
+    - onStopDrag   - run when the mouse button is released or the cursor has left the svg element area;
+
+    Only the startDrag function is registered as an event listener for the handle element. The two other functions
+    drag and onStopDrag are registered as event listeners on the svg element, only once.
+    */
+
+    const onStartDrag = (evt) => {
       evt.preventDefault();
 
-      var mousePos = {
+      const ds = this.draggableStore;
+      ds.draggable = draggable;
+
+      const mousePos = {
         x: evt.clientX,
         y: evt.clientY
       };
-      ds.selected = body ? body : handle;
       ds.xStart = mousePos.x;
       ds.yStart = mousePos.y;
 
       // Retrieve the current translation
-      var t = ds.selected.getTransform("TRS");
-      if (t.template != "TRS") {
-        ds.selected = null;
-        throw new Error("This SVGBuilder object has custom transform definitions. Drag is not enabled.");
+      try {
+        const position = ds.draggable.getPosition();
+        ds.xTOffset = position.x;
+        ds.yTOffset = position.y;
       }
-      var txParams = t.list[0].params;
-      ds.xTOffset = txParams[0];
-      ds.yTOffset = txParams[1];
-
-      var xform = ds.selected.element.parentNode.getScreenCTM().inverse();
-      ds.xLocal = xform.a * mousePos.x + xform.c * mousePos.y + xform.e;
-      ds.yLocal = xform.b * mousePos.x + xform.d * mousePos.y + xform.f;
-
-      ds.callback = callback ? callback : null;
-      if (ds.callback) {
-        var dragInfo = {
-          xScreen : mousePos.x,
-          yScreen : mousePos.y,
-          dxScreen: 0,
-          dyScreen: 0,
-          xLocal  : ds.xLocal,
-          yLocal  : ds.yLocal,
-          dxLocal : 0,
-          dyLocal : 0,
-          xObject : ds.xTOffset,
-          yObject : ds.yTOffset
-        }
-        ds.callback("start", ds.selected, dragInfo);
+      catch {
+        ds.draggable = null;
+        return;
       }
+
+      const pointerLocalCoords = ds.draggable.getLocalCoords(mousePos.x, mousePos.y);
+      ds.xLocal = pointerLocalCoords.x;
+      ds.yLocal = pointerLocalCoords.y;
+
+      // Update the draggable object properties, dispatch the start event
+      ds.draggable.xObject  = ds.xTOffset;
+      ds.draggable.yObject  = ds.yTOffset;
+      ds.draggable.xScreen  = mousePos.x;
+      ds.draggable.yScreen  = mousePos.y;
+      ds.draggable.dxScreen = 0;
+      ds.draggable.dyScreen = 0;
+      ds.draggable.xLocal   = ds.xLocal;
+      ds.draggable.yLocal   = ds.yLocal;
+      ds.draggable.dxLocal  = 0;
+      ds.draggable.dyLocal  = 0;
+      ds.draggable.start();
     }
 
-    var drag = (evt) => {
-      var ds = this.draggableStore;
-      if (ds.selected) {
-        evt.preventDefault();
-        // Estimate the drag distance, in the screen coordinate space
-        var mousePos = {
-          x: evt.clientX,
-          y: evt.clientY
-        };
-        ds.dxScreen = mousePos.x - ds.xStart;
-        ds.dyScreen = mousePos.y - ds.yStart;
-        // Calculate the pointer coors in the draggable object coordinate space
-        var xform = ds.selected.element.parentNode.getScreenCTM().inverse();
-        ds.xLocal = xform.a * mousePos.x + xform.c * mousePos.y + xform.e;
-        ds.yLocal = xform.b * mousePos.x + xform.d * mousePos.y + xform.f;
-        // Calculate the drag vector in the draggable object coordinate space
-        ds.dxLocal = xform.a * ds.dxScreen + xform.c * ds.dyScreen;
-        ds.dyLocal = xform.b * ds.dxScreen + xform.d * ds.dyScreen;
-        var localPos = {
-          x: ds.xTOffset + ds.dxLocal, 
-          y: ds.yTOffset + ds.dyLocal
-        }
-        // Call the optional callback, it has power to change (constrain) the local translation
-        var dragInfo = {
-          xScreen : mousePos.x,
-          yScreen : mousePos.y,
-          dxScreen: ds.dxScreen,
-          dyScreen: ds.dyScreen,
-          xLocal  : ds.xLocal,
-          yLocal  : ds.yLocal,
-          dxLocal : ds.dxLocal,
-          dyLocal : ds.dyLocal,
-          xObject : ds.xTOffset + ds.dxLocal,
-          yObject : ds.yTOffset + ds.dyLocal
-        }
-        let correctedPos = null;
-        if (ds.callback) {
-          correctedPos = ds.callback("move", ds.selected, dragInfo);
-          if (correctedPos) {
-            if ("x" in correctedPos) dragInfo.xObject = correctedPos.x;
-            if ("y" in correctedPos) dragInfo.yObject = correctedPos.y;
-          }
-        }
-        // Move the draggable object
-        ds.selected.translate(dragInfo.xObject, dragInfo.yObject);
-      }
-    }
-    var endDrag = (evt) => {
-      var ds = this.draggableStore;
-      if (ds.selected) {
-        if (ds.callback) {
-          var dragInfo = {
-            xScreen : evt.clientX,
-            yScreen : evt.clientY,
-            dxScreen: ds.dxScreen,
-            dyScreen: ds.dyScreen,
-            xLocal  : ds.xLocal,
-            yLocal  : ds.yLocal,
-            dxLocal : ds.dxLocal,
-            dyLocal : ds.dyLocal,
-            xObject : ds.xTOffset + ds.dxLocal,
-            yObject : ds.yTOffset + ds.dyLocal
-          }
-          ds.callback("end", ds.selected, dragInfo);
-        }
-        // Clear the selected draggable
-        ds.selected = null;
-        ds.callback = null;
-      }
+    draggable.enable(handle, onStartDrag);
+
+    if (this.element.getAttribute("draggable-init")) return draggable;
+
+    // This is the first time the svgb.draggable() function is called, so the global events must be initialized
+
+    const onDrag = (evt) => {
+      const ds = this.draggableStore;
+      if (!ds.draggable || !ds.draggable.isActive()) return;
+
+      evt.preventDefault();
+      // Estimate the drag distance, in the screen coordinate space
+      const mousePos = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+      ds.dxScreen = mousePos.x - ds.xStart;
+      ds.dyScreen = mousePos.y - ds.yStart;
+      // Calculate the pointer coords and drag vector in the draggable object coordinate space
+      const pointerLocalCoords = ds.draggable.getLocalCoords(mousePos.x, mousePos.y, ds.dxScreen, ds.dyScreen);
+      ds.xLocal = pointerLocalCoords.x;
+      ds.yLocal = pointerLocalCoords.y;
+      ds.dxLocal = pointerLocalCoords.dx;
+      ds.dyLocal = pointerLocalCoords.dy;
+
+      // Update the draggable object properties, dispatch the move event
+      ds.draggable.xObject  = ds.xTOffset + ds.dxLocal;
+      ds.draggable.yObject  = ds.yTOffset + ds.dyLocal;
+      ds.draggable.xScreen  = mousePos.x;
+      ds.draggable.yScreen  = mousePos.y;
+      ds.draggable.dxScreen = ds.dxScreen;
+      ds.draggable.dyScreen = ds.dyScreen;
+      ds.draggable.xLocal   = ds.xLocal;
+      ds.draggable.yLocal   = ds.yLocal;
+      ds.draggable.dxLocal  = ds.dxLocal;
+      ds.draggable.dyLocal  = ds.dyLocal;
+      ds.draggable.move();
     }
 
-    if (!this.element.getAttribute("draggable-init")) {
-      // This is the first time draggable() is called: register the onmousemove, onmouseup and onmouseleave events on the main svg element
-      this.element.setAttribute("draggable-init", 1);
-      this.element.addEventListener("mousemove", drag);
-      this.element.addEventListener("mouseleave", endDrag);
-      this.element.addEventListener("mouseup", endDrag);
+    var onStopDrag = (evt) => {
+      const ds = this.draggableStore;
+      if (!ds.draggable || !ds.draggable.isActive()) return;
+
+      // Update the draggable object properties, dispatch the end event
+      ds.draggable.xObject  = ds.xTOffset + ds.dxLocal;
+      ds.draggable.yObject  = ds.yTOffset + ds.dyLocal;
+      ds.draggable.xScreen  = evt.clientX;
+      ds.draggable.yScreen  = evt.clientY;
+      ds.draggable.dxScreen = 0;
+      ds.draggable.dyScreen = 0;
+      ds.draggable.xLocal   = ds.xLocal;
+      ds.draggable.yLocal   = ds.yLocal;
+      ds.draggable.dxLocal  = 0;
+      ds.draggable.dyLocal  = 0;
+      ds.draggable.stop();
+
+      // Clear the selected draggable
+      ds.draggable = null;
     }
 
-    handle.element.addEventListener("mousedown", startDrag);
+    // Register the event handlers
+    this.element.setAttribute("draggable-init", 1);
+    this.element.addEventListener("mousemove", onDrag);
+    this.element.addEventListener("mouseleave", onStopDrag);
+    this.element.addEventListener("mouseup", onStopDrag);
+
+    return draggable;
   }
 
   static fromElement(targetNode) {

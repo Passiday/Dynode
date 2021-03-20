@@ -90,7 +90,7 @@ class NodeUI {
     const titleBar = this.container.addRect({
       x: 0, y: 0, width: 200, height: 25, class: 'titleBar',
     });
-    this.stage.svgb.draggable(titleBar, null, this.container);
+    this.stage.svgb.draggable(titleBar, this.container);
 
     this.container.addText({ x: 5, y: 20, class: 'titleBarText' }, this.name);
     const fo = this.container.addForeignObject({

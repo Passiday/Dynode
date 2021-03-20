@@ -117,10 +117,66 @@ declare class SVGBContainer extends SVGBElement {
   ): SVGBFile;
 }
 
+declare class SVGBDraggableEvent {
+  constructor(type: string);
+}
+
+declare class SVGBDraggable {
+  xObject: number;
+
+  yObject: number;
+
+  xStart: number;
+
+  yStart: number;
+
+  xScreen: number;
+
+  yScreen: number;
+
+  dxScreen: number;
+
+  dyScreen: number;
+
+  xLocal: number;
+
+  yLocal: number;
+
+  dxLocal: number;
+
+  dyLocal: number;
+
+  constructor(body: SVGBElement);
+  getPosition(): void;
+  setPosition({ x: number, y: number }): void;
+  getLocalCoords(
+    xScreen: number,
+    yScreen: number,
+    dxScreen: number,
+    dyScreen: number,
+  ): {
+    x: number,
+    y: number,
+    dx: number,
+    dy: number,
+  };
+  enable(handle: SVGBElement, onStartDrag: (e: Event) => void): void;
+  disable(): void;
+  isActive(): boolean;
+  start(): void;
+  move(): void;
+  release(): void;
+  cancel(): void;
+  stop(): void;
+  addEventListener(eventType: string, eventListener: (e: SVGBDraggableEvent) => void): void;
+  removeEventListener(eventType: string, eventListener: (e: SVGBDraggableEvent) => void): void;
+  dispatchEvent(draggableEvent: SVGBDraggableEvent): void;
+}
+
 declare class SVGBuilder extends SVGBContainer {
   constructor(attr?:SVGBElementAttrs);
   setViewBox(params: {[string]:number|string}): void;
-  draggable(handle: SVGBElement, callback?: function, body?: SVGBElement): void;
+  draggable(handle: SVGBElement, body?: SVGBElement): SVGBDraggable;
 }
 
 declare class SVGBGroup extends SVGBContainer {
