@@ -644,6 +644,24 @@ class SVGBContainer extends SVGBElement {
     }
   }
 
+  addElement(name, attr, attrList, nodeValue) {
+    // Add an arbitrary SVG element. This is provided to enable elements that are not supported with a dedicated class class in SVG Builder lib.
+    this.log(`Adding ${name} element, attr=`, attr);
+    var svgObject = new SVGBElement();
+    svgObject.init(name, attr, attrList, nodeValue);
+    svgObject.insert(this.element);
+    return svgObject;
+  }
+
+  addContainerElement(name, attr, attrList, nodeValue) {
+    // Add an arbitrary SVG container element. This is provided to enable container elements that are not supported with a dedicated class class in SVG Builder lib.
+    this.log(`Adding ${name} element, attr=`, attr);
+    var svgObject = new SVGBContainer();
+    svgObject.init(name, attr, attrList, nodeValue);
+    svgObject.insert(this.element);
+    return svgObject;
+  }
+
   addRect(attr) {
     // Add new rect element
     this.log("Adding rect element, attr=", attr);
@@ -785,6 +803,10 @@ class SVGBDraggable {
     this.xObject = position.x; // current body origin point x coordinate relative to the parent;
     this.yObject = position.y; // current body origin point y coordinate relative to the parent;
 
+    this.xSnap = 0;
+    this.ySnap = 0;
+    this.snapped = false; // true when the object is snapped to (xSnap, ySnap) coordinates;
+
     this.xStart   = this.xObject; // body x coordinate at start;
     this.yStart   = this.yObject; // body y coordinate at start;
     this.xScreen  = 0; // mouse pointer x coordinate in the screen coordinate space;
@@ -806,6 +828,20 @@ class SVGBDraggable {
     };
   }
 
+  isActive() {
+    return this.active;
+  }
+
+  getLocalCoords(xScreen, yScreen, dxScreen, dyScreen) {
+    const xform = this.body.element.parentNode.getScreenCTM().inverse();
+    return {
+      x: xform.a * xScreen + xform.c * yScreen + xform.e,
+      y: xform.b * xScreen + xform.d * yScreen + xform.f,
+      dx: xform.a * dxScreen + xform.c * dyScreen,
+      dy: xform.b * dxScreen + xform.d * dyScreen
+    }
+  }
+
   getPosition() {
     const t = this.body.getTransform("TRS");
     if (t.template != "TRS") throw new Error("This SVGBuilder object has custom transform definitions that prevent reliable position detection.");
@@ -823,14 +859,21 @@ class SVGBDraggable {
     if ("y" in newPosition) this.yObject = newPosition.y;
   }
 
-  getLocalCoords(xScreen, yScreen, dxScreen, dyScreen) {
-    const xform = this.body.element.parentNode.getScreenCTM().inverse();
-    return {
-      x: xform.a * xScreen + xform.c * yScreen + xform.e,
-      y: xform.b * xScreen + xform.d * yScreen + xform.f,
-      dx: xform.a * dxScreen + xform.c * dyScreen,
-      dy: xform.b * dxScreen + xform.d * dyScreen
+  snap(position) {
+    // Hold the draggable object in the provided coordinates. Cancel this effect by calling the unsnap() method.
+    if (position) {
+      this.xSnap = ("x" in position) ? position.x : this.xObject;
+      this.ySnap = ("y" in position) ? position.y : this.yObject;
+    } else {
+      this.xSnap = position.xObject;
+      this.ySnap = position.yObject;
     }
+    this.setPosition({x: this.xSnap, y: this.ySnap});
+    this.snapped = true;
+  }
+
+  unsnap() {
+    this.snapped = false;
   }
 
   enable(handle, onStartDrag) {
@@ -849,20 +892,18 @@ class SVGBDraggable {
     this.handle.element.removeEventListener("mousedown", this.onStartDrag);
   }
 
-  isActive() {
-    return this.active;
-  }
-
   start() {
     this.active = true;
     this.xStart = this.xObject;
     this.yStart = this.yObject;
     this.dispatchEvent(new SVGBDraggableEvent("start"));
+    if (this.snapped) return;
     this.body.translate(this.xObject, this.yObject);
   }
 
   move() {
     this.dispatchEvent(new SVGBDraggableEvent("move"));
+    if (this.snapped) return;
     this.body.translate(this.xObject, this.yObject);
   }
 
@@ -883,8 +924,9 @@ class SVGBDraggable {
 
   stop() {
     this.dispatchEvent(new SVGBDraggableEvent("stop"));
-    this.body.translate(this.xObject, this.yObject);
     this.active = false;
+    if (this.snapped) return;
+    this.body.translate(this.xObject, this.yObject);
   }
 
   addEventListener(eventType, eventListener) {

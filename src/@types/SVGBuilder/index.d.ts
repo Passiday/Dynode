@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-declare type SVGBElementAttrs = {[name: string]: any};
+declare type SVGBElementAttrs = { [name: string]: any };
+
+declare type SVGBPointPartial = { x?: number, y?: number };
 
 declare class SVGBElement {
   constructor();
@@ -96,6 +98,8 @@ declare class SVGBFile extends SVGBElement {
 declare class SVGBContainer extends SVGBElement {
   constructor();
   wipe(): void;
+  addElement(elementName: string, attr: SVGBElementAttrs, attrList: [string], nodeValue?: string): SVGBElement;
+  addContainerElement(elementName: string, attr: SVGBElementAttrs, attrList: [string], nodeValue?: string): SVGBContainer;
   addRect(attr?: SVGBElementAttrs): SVGBRect;
   addCircle(attr?: SVGBElementAttrs): SVGBCircle;
   addEllipse(attr?: SVGBElementAttrs): SVGBEllipse;
@@ -147,8 +151,7 @@ declare class SVGBDraggable {
   dyLocal: number;
 
   constructor(body: SVGBElement);
-  getPosition(): void;
-  setPosition({ x: number, y: number }): void;
+  isActive(): boolean;
   getLocalCoords(
     xScreen: number,
     yScreen: number,
@@ -160,9 +163,12 @@ declare class SVGBDraggable {
     dx: number,
     dy: number,
   };
+  getPosition(): void;
+  setPosition(point: SVGBPointPartial): void;
+  snap(point?: SVGBPointPartial): void;
+  unsnap(): void;
   enable(handle: SVGBElement, onStartDrag: (e: Event) => void): void;
   disable(): void;
-  isActive(): boolean;
   start(): void;
   move(): void;
   release(): void;
