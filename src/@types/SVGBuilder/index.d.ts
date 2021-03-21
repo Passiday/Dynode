@@ -98,8 +98,12 @@ declare class SVGBFile extends SVGBElement {
 declare class SVGBContainer extends SVGBElement {
   constructor();
   wipe(): void;
-  addElement(elementName: string, attr: SVGBElementAttrs, attrList: [string], nodeValue?: string): SVGBElement;
-  addContainerElement(elementName: string, attr: SVGBElementAttrs, attrList: [string], nodeValue?: string): SVGBContainer;
+  addElement(
+    elementName: string, attr: SVGBElementAttrs, attrList: [string], nodeValue?: string
+  ): SVGBElement;
+  addContainerElement(
+    elementName: string, attr: SVGBElementAttrs, attrList: [string], nodeValue?: string
+  ): SVGBContainer;
   addRect(attr?: SVGBElementAttrs): SVGBRect;
   addCircle(attr?: SVGBElementAttrs): SVGBCircle;
   addEllipse(attr?: SVGBElementAttrs): SVGBEllipse;
