@@ -1,6 +1,7 @@
 import { VEvent, VEventTarget } from './vanillaEvent';
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
+import SocketCollection from './socketCollection';
 
 /**
  * Class that does processing, using InputSocket and OutputSocket.
@@ -23,9 +24,7 @@ class Node extends VEventTarget {
   /**
    * A collection of InputSocket objects.
    */
-  inputs: {
-    [key: string]: InputSocket,
-  } = {};
+  inputs = new SocketCollection<InputSocket>();
 
   /**
    * The size of stored inputs.
@@ -38,6 +37,11 @@ class Node extends VEventTarget {
   resolvedInputs = 0;
 
   /**
+   * A collection of OutputSocket objects.
+   */
+  outputs = new SocketCollection<OutputSocket>();
+
+  /**
    * Register a new input.
    *
    * @param name  Name of the inputSocket to generate
@@ -46,7 +50,8 @@ class Node extends VEventTarget {
   addInput(name: string): InputSocket {
     if (name in this.inputs) throw Error('Input name already exists');
     const socket = new InputSocket();
-    this.inputs[name] = socket;
+    socket.name = name;
+    this.inputs.addSocket(socket);
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
       if (this.resolvedInputs === this.inputCount) {
@@ -64,8 +69,7 @@ class Node extends VEventTarget {
    * @param name  The name of the input to be found.
    */
   getInput(name: string): InputSocket {
-    if (name in this.inputs) return this.inputs[name];
-    throw Error(`Input "${name}" not found`);
+    return this.inputs.getSocketByName(name);
   }
 
   // removeInput(name: string): void {
@@ -121,19 +125,14 @@ class Node extends VEventTarget {
    */
   dumpInputs(): void {
     this.log('*** Input dump ***');
-    Object.keys(this.inputs).forEach((inputName) => {
-      const input = this.getInput(inputName);
-      this.log(`Input ${inputName}:`, input.isNothing() ? 'nothing' : input.getValue());
+    this.inputs.getAllSockets().forEach((input) => {
+      this.log(
+        `Input ${input.name}:`,
+        input.isNothing() ? 'nothing' : input.getValue(),
+      );
     });
     this.dispatchEvent(new VEvent('dumpInputs'));
   }
-
-  /**
-   * A collection of OutputSocket objects.
-   */
-  outputs: {
-    [key: string]: OutputSocket,
-  } = {};
 
   /**
    * Register a new output
@@ -142,9 +141,10 @@ class Node extends VEventTarget {
    * @return  Newly created OutputSocket object.
    */
   addOutput(name: string): OutputSocket {
-    if (name in this.outputs) throw Error('Output name already exists');
     const socket = new OutputSocket(this);
-    this.outputs[name] = socket;
+    socket.name = name;
+    this.outputs.addSocket(socket);
+
     this.dispatchEvent(new VEvent('addOutput', { detail: { outputName: name } }));
     return socket;
   }
@@ -155,8 +155,7 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to be found.
    */
   getOutput(name: string): OutputSocket {
-    if (name in this.outputs) return this.outputs[name];
-    throw Error('Output not found');
+    return this.outputs.getSocketByName(name);
   }
 
   // removeOutput(name: string): void {
@@ -184,9 +183,11 @@ class Node extends VEventTarget {
    */
   dumpOutputs(): void {
     this.log('*** Output dump ***');
-    Object.keys(this.outputs).forEach((outputName) => {
-      const output = this.getOutput(outputName);
-      this.log(`Output ${outputName}:`, output.isNothing() ? 'nothing' : output.getValue());
+    this.outputs.getAllSockets().forEach((output) => {
+      this.log(
+        `Output ${output.name}:`,
+        output.isNothing() ? 'nothing' : output.getValue(),
+      );
     });
     this.dispatchEvent(new VEvent('dumpOutputs'));
   }
@@ -217,8 +218,7 @@ class Node extends VEventTarget {
     this.dispatchEvent(new VEvent('beforeResolve'));
     this.busy = true;
     this.resolvedInputs = 0;
-    Object.keys(this.inputs).forEach((inputName) => {
-      const input = this.getInput(inputName);
+    this.inputs.getAllSockets().forEach((input) => {
       if (!input.isValid()) throw Error('Input is not linked and has no default.');
       if (input.isSet()) {
         this.resolvedInputs++;
@@ -254,8 +254,7 @@ class Node extends VEventTarget {
 
   actionReady(): void {
     // Set all unset outputs
-    Object.keys(this.outputs).forEach((outputName) => {
-      const output = this.getOutput(outputName);
+    this.outputs.getAllSockets().forEach((output) => {
       if (!output.isSet()) output.setValue();
     });
     this.dumpOutputs();
