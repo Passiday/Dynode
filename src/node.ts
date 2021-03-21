@@ -37,6 +37,17 @@ class Node extends VEventTarget {
   resolvedInputs = 0;
 
   /**
+   * The state of the node.
+   */
+  state: { [key: string]: unknown; } = {};
+
+  /**
+   * A boolean used to determine if the state gets reset before the next cycle
+   * @private
+   */
+  resetState = true;
+
+  /**
    * A collection of OutputSocket objects.
    */
   outputs = new SocketCollection<OutputSocket>();
@@ -234,6 +245,7 @@ class Node extends VEventTarget {
   inputsReady(): void {
     this.log('Node action:', this.name);
     this.dumpInputs();
+    this.resetState = true;
     let p;
     try {
       p = this.action();
@@ -241,6 +253,7 @@ class Node extends VEventTarget {
       this.actionError(err);
       return;
     }
+    if (this.resetState === true) this.state = {};
     if (p instanceof Promise) {
       p
         .then(
@@ -283,6 +296,13 @@ class Node extends VEventTarget {
    */
   log = (...args: unknown[]): void => {
     this.dispatchEvent(new VEvent('log', { detail: { args } }));
+  };
+
+  /**
+   * Method that sets resetState to false
+   */
+  keepState = (): void => {
+    this.resetState = false;
   };
 }
 

@@ -16,6 +16,16 @@ class Network extends VEventTarget {
   name: string;
 
   /**
+   * Denotes whether the network is not available.
+   */
+  busy = false;
+
+  /**
+   * Denotes whether the network has finished.
+   */
+  resolved = false;
+
+  /**
    * @param name  See {@link name}.
    */
   constructor(name = 'network') {
@@ -53,8 +63,18 @@ class Network extends VEventTarget {
    */
   resolve(): void {
     console.log(`--- ${this.name} ---`);
+    this.nodes.forEach((node) => node.preResolve());
     this.nodes.forEach((node) => node.resolve());
     this.dispatchEvent(new VEvent('resolve'));
+  }
+
+  /**
+   *
+   * @returns Boolean that states if at least one node has a live state
+   */
+  step(): boolean {
+    this.resolve();
+    return this.nodes.some((node) => node.resetState === false);
   }
 }
 
