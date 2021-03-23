@@ -1,9 +1,15 @@
 import { VEvent, VEventTarget } from './vanillaEvent';
+import ValueType from './valueType';
 
 /**
  * Class for dealing with Node values.
  */
 class Socket extends VEventTarget {
+  /**
+   * The ValueType name of the socket.
+   */
+  private typeObject: ValueType | null = null;
+
   /**
    * The stored value.
    */
@@ -29,8 +35,9 @@ class Socket extends VEventTarget {
    */
   title: string | null = null;
 
-  constructor() {
+  constructor(typeObject?: ValueType) {
     super();
+    if (typeObject) this.typeObject = typeObject;
     this.init();
   }
 
@@ -49,6 +56,9 @@ class Socket extends VEventTarget {
   setValue(value?: unknown): void {
     if (this.hasValue) throw Error('Value already set');
     if (arguments.length) {
+      if (this.typeObject !== null && !this.typeObject.check(value)) {
+        throw Error(`${value} is not of ${this.typeObject}`);
+      }
       this.value = value;
     } else {
       this.nothing = true;

@@ -1,6 +1,20 @@
+import StockValueTypeDeclarations from 'stockValueTypeDeclarations';
+import ValueType from './valueType';
+
 class Engine {
-  constructor() {
-    console.log('Engine init');
+  private valueTypeDefinitions: ValueType[] = StockValueTypeDeclarations;
+
+  /**
+   * Given valueType, find corresponding ValueType.
+   *
+   * @param valueType The name of the ValueType object
+   * @return The corresponding ValueType object
+   */
+  public getValueTypeDefinition(valueType: string): ValueType {
+    for (v of this.valueTypeDefinitions) {
+      if (v.name === valueType) return v;
+    }
+    throw Error(`Type ${valueType} does not exist!`);
   }
 }
 
