@@ -171,9 +171,13 @@ test('Async network', (done) => {
   const network = new Network('test');
   network.addNode(nodeA);
   network.addNode(nodeB);
-  network.addEventListener('afterResolve', function (this: Network) {
+  /* network.addEventListener('afterResolve', function (this: Network) {
     this.nodes.forEach((node) => expect(node.resolved).toBe(true));
     done();
+  }); */
+  const p = network.resolve();
+  p.then(() => {
+    network.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    done();
   });
-  network.resolve();
 });

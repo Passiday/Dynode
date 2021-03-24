@@ -224,25 +224,30 @@ class Node extends VEventTarget {
   /**
    * Check all input availability.
    */
-  resolve(): void {
-    if (this.busy) return;
-    this.dispatchEvent(new VEvent('beforeResolve'));
-    this.busy = true;
-    this.resolvedInputs = 0;
-    this.inputs.getAllSockets().forEach((input) => {
-      if (!input.isValid()) throw Error('Input is not linked and has no default.');
-      if (input.isSet()) {
-        this.resolvedInputs++;
-      } else {
-        input.pull();
+  resolve(): Promise<void> {
+    const p = new Promise<void>((resolve, reject) => {
+      if (this.busy) reject();
+      this.dispatchEvent(new VEvent('beforeResolve'));
+      this.busy = true;
+      this.resolvedInputs = 0;
+      this.inputs.getAllSockets().forEach((input) => {
+        if (!input.isValid()) throw Error('Input is not linked and has no default.');
+        if (input.isSet()) {
+          this.resolvedInputs++;
+        } else {
+          input.pull();
+        }
+      });
+      if (!this.resolved && this.resolvedInputs === this.inputCount) {
+        this.inputsReady(resolve, reject);
       }
+      reject();
     });
-    if (!this.resolved && this.resolvedInputs === this.inputCount) {
-      this.inputsReady();
-    }
+    return p;
   }
 
-  inputsReady(): void {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  inputsReady(resolve: Function, reject: Function): void {
     this.log('Node action:', this.name);
     this.dumpInputs();
     if (this.resetState === true) this.state = {};
@@ -252,6 +257,7 @@ class Node extends VEventTarget {
       p = this.action();
     } catch (err) {
       this.actionError(err);
+      reject();
       return;
     }
     if (p instanceof Promise) {
