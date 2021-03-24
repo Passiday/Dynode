@@ -161,3 +161,50 @@ test('NodeLog', () => {
   expect(mockFunc).toHaveBeenNthCalledWith(1, data);
   expect(mockFunc).toHaveBeenNthCalledWith(2, ['test']);
 });
+
+test('Async keepState works', (done) => {
+  // Node A: one input
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  nodeA.action = function () {
+    const p = new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        this.keepState();
+        resolve();
+      }, 0);
+    });
+    return p;
+  };
+
+  nodeA.addEventListener('afterResolve', function (this:Node) {
+    expect(this.state).not.toBeNull();
+    expect(this.hasState()).toBe(true);
+    done();
+  });
+  nodeA.addEventListener('error', () => {
+    throw new Error('Node had an error');
+  });
+
+  nodeA.resolve();
+});
+test('KeepState works', (done) => {
+  // Node A: one input
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  nodeA.action = function () {
+    this.keepState();
+  };
+
+  nodeA.addEventListener('afterResolve', function (this:Node) {
+    expect(this.state).not.toBeNull();
+    expect(this.hasState()).toBe(true);
+    done();
+  });
+  nodeA.addEventListener('error', () => {
+    throw new Error('Node had an error');
+  });
+
+  nodeA.resolve();
+});

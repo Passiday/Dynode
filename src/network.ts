@@ -78,15 +78,15 @@ class Network extends VEventTarget {
       let resolvedNodes = 0;
       this.nodes.forEach((node) => node.preResolve());
       this.nodes.forEach((node) => {
-        node.resolve();
-        node.addEventListener('afterResolve', () => {
-          resolvedNodes++;
-          if (resolvedNodes === this.nodes.length) {
-            this.busy = false;
-            this.resolved = true;
-            this.dispatchEvent(new VEvent('afterResolve'));
-          }
-        });
+        const p = node.resolve();
+        if (p instanceof Promise) {
+          p.then(() => {
+            resolvedNodes++;
+            if (resolvedNodes === this.nodes.length) {
+              this.dispatchEvent(new VEvent('afterResolve'));
+            }
+          });
+        }
       });
     } else {
       throw new Error('Network is already resolved');
@@ -99,7 +99,7 @@ class Network extends VEventTarget {
    */
   step(): boolean {
     this.resolve();
-    return this.nodes.some((node) => node.resetState === false);
+    return this.hasState();
   }
 
   /**

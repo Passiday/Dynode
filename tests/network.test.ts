@@ -1,3 +1,4 @@
+import Network from '../src/network';
 import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
 // import { VEventHandler, VEvent } from '../src/vanillaEvent';
@@ -143,3 +144,36 @@ test('quadraticFormulaNetworkTest', () => {
 
   mockFunc.mockReturnValueOnce(4).mockReturnValueOnce(3);
 });
+
+/* test('Async network', (done) => {
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  const outputA1 = nodeA.addOutput('one');
+  nodeA.action = () => {
+    const p = new Promise<void>((resolve) => {
+      setTimeout(() => {
+        if (!nodeA.inputIsNothing('one')) {
+          const inputOne = nodeA.getInputValue('one');
+          nodeA.setOutputValue('one', inputOne);
+        }
+        resolve();
+      }, 0);
+    });
+    return p;
+  };
+
+  // Node B: one input, no outputs
+  const nodeB = new Node('Node-B');
+  const inputB1 = nodeB.addInput('one');
+  inputB1.linkSocket(outputA1);
+
+  const network = new Network('test');
+  network.addNode(nodeA);
+  network.addNode(nodeB);
+  network.addEventListener('afterResolve', function (this: Network) {
+    this.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    done();
+  });
+  network.resolve();
+}); */
