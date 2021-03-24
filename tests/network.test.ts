@@ -145,7 +145,7 @@ test('quadraticFormulaNetworkTest', () => {
   mockFunc.mockReturnValueOnce(4).mockReturnValueOnce(3);
 });
 
-/* test('Async network', (done) => {
+test('Async network', (done) => {
   const nodeA = new Node('Node-A');
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
@@ -176,4 +176,4 @@ test('quadraticFormulaNetworkTest', () => {
     done();
   });
   network.resolve();
-}); */
+});

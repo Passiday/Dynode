@@ -75,19 +75,9 @@ class Network extends VEventTarget {
     this.busy = true;
     console.log(`--- ${this.name} ---`);
     if (!this.resolved) {
-      let resolvedNodes = 0;
       this.nodes.forEach((node) => node.preResolve());
-      this.nodes.forEach((node) => {
-        const p = node.resolve();
-        if (p instanceof Promise) {
-          p.then(() => {
-            resolvedNodes++;
-            if (resolvedNodes === this.nodes.length) {
-              this.dispatchEvent(new VEvent('afterResolve'));
-            }
-          });
-        }
-      });
+      this.nodes.forEach((node) => { node.resolve(); });
+      this.dispatchEvent(new VEvent('afterResolve'));
     } else {
       throw new Error('Network is already resolved');
     }
