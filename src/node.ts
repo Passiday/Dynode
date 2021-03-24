@@ -39,7 +39,7 @@ class Node extends VEventTarget {
   /**
    * The state of the node.
    */
-  state: { [key: string]: unknown; } = {};
+  state: { [key: string]: unknown; } | null = {};
 
   /**
    * A boolean used to determine if the state gets reset before the next cycle
@@ -245,6 +245,7 @@ class Node extends VEventTarget {
   inputsReady(): void {
     this.log('Node action:', this.name);
     this.dumpInputs();
+    if (this.resetState === true) this.state = {};
     this.resetState = true;
     let p;
     try {
@@ -253,7 +254,7 @@ class Node extends VEventTarget {
       this.actionError(err);
       return;
     }
-    if (this.resetState === true) this.state = {};
+    if (this.resetState === true) this.state = null;
     if (p instanceof Promise) {
       p
         .then(
@@ -304,6 +305,15 @@ class Node extends VEventTarget {
   keepState = (): void => {
     this.resetState = false;
   };
+
+  /**
+   * Checks if the node has state.
+   * @returns True if node has state, false if doesn't.
+   */
+  hasState(): boolean {
+    if (!this.resolved) throw new Error('Node is not resolved');
+    return this.state !== null;
+  }
 }
 
 export default Node;

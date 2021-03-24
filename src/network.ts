@@ -59,22 +59,56 @@ class Network extends VEventTarget {
   }
 
   /**
+   * Prepare network for resolving.
+   */
+  preResolve(): void {
+    this.busy = false;
+    this.resolved = false;
+  }
+
+  /**
    * Resolve all the nodes in the network.
    */
   resolve(): void {
+    if (this.busy) return;
+    this.dispatchEvent(new VEvent('beforeResolve'));
+    this.busy = true;
     console.log(`--- ${this.name} ---`);
-    this.nodes.forEach((node) => node.preResolve());
-    this.nodes.forEach((node) => node.resolve());
-    this.dispatchEvent(new VEvent('resolve'));
+    if (!this.resolved) {
+      let resolvedNodes = 0;
+      this.nodes.forEach((node) => node.preResolve());
+      this.nodes.forEach((node) => {
+        node.resolve();
+        node.addEventListener('afterResolve', () => {
+          resolvedNodes++;
+          if (resolvedNodes === this.nodes.length) {
+            this.busy = false;
+            this.resolved = true;
+            this.dispatchEvent(new VEvent('afterResolve'));
+          }
+        });
+      });
+    } else {
+      throw new Error('Network is already resolved');
+    }
   }
 
   /**
    *
-   * @returns Boolean that states if at least one node has a live state
+   * @returns Boolean that states if at least one node has a state
    */
   step(): boolean {
     this.resolve();
     return this.nodes.some((node) => node.resetState === false);
+  }
+
+  /**
+   * Checks if the network has state.
+   * @returns True if network has state, false if doesn't.
+   */
+  hasState(): boolean {
+    if (!this.resolved) throw new Error('Network is not resolved');
+    return this.nodes.some((node) => node.hasState());
   }
 }
 
