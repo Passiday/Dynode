@@ -76,8 +76,20 @@ class Network extends VEventTarget {
     console.log(`--- ${this.name} ---`);
     if (!this.resolved) {
       this.nodes.forEach((node) => node.preResolve());
-      this.nodes.forEach((node) => { node.resolve(); });
-      this.dispatchEvent(new VEvent('afterResolve'));
+      let resolvedNodes = 0;
+      // eslint-disable-next-line no-inner-declarations
+      function resolveHandler() {
+        resolvedNodes++;
+      }
+      const p = new Promise<void>((resolve, reject) => {
+        this.nodes.forEach((node) => {
+          node.addEventListener('afterResolve', )
+          node.resolve();
+        });
+      });
+      p.then(() => {
+        this.dispatchEvent(new VEvent('afterResolve'));
+      });
     } else {
       throw new Error('Network is already resolved');
     }

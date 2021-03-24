@@ -224,7 +224,7 @@ class Node extends VEventTarget {
   /**
    * Check all input availability.
    */
-  resolve() {
+  resolve(): void {
     if (this.busy) return;
     this.dispatchEvent(new VEvent('beforeResolve'));
     this.busy = true;
