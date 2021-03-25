@@ -209,3 +209,61 @@ test('Network test', (done) => {
   });
   const p = network.resolve();
 });
+
+test('Async state works', (done) => {
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  const outputA1 = nodeA.addOutput('one');
+  nodeA.action = function () {
+    const p = new Promise<void>((resolve) => {
+      setTimeout(() => {
+        if (!nodeA.inputIsNothing('one')) {
+          const inputOne = nodeA.getInputValue('one');
+          nodeA.setOutputValue('one', inputOne);
+        }
+        this.keepState();
+        resolve();
+      }, 0);
+    });
+    return p;
+  };
+
+  // Node B: one input, no outputs
+
+  const network = new Network();
+  network.addNode(nodeA);
+  const p = network.step();
+  p.then((result) => {
+    expect(outputA1.getValue()).toBe(123);
+    expect(result).toBe(true);
+    network.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    done();
+  });
+});
+
+test('State works', (done) => {
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  const outputA1 = nodeA.addOutput('one');
+  nodeA.action = function () {
+    if (!nodeA.inputIsNothing('one')) {
+      const inputOne = nodeA.getInputValue('one');
+      nodeA.setOutputValue('one', inputOne);
+    }
+    this.keepState();
+  };
+
+  // Node B: one input, no outputs
+
+  const network = new Network();
+  network.addNode(nodeA);
+  const p = network.step();
+  p.then((result) => {
+    expect(outputA1.getValue()).toBe(123);
+    expect(result).toBe(true);
+    network.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    done();
+  });
+});

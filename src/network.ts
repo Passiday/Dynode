@@ -81,6 +81,8 @@ class Network extends VEventTarget {
           if (promis instanceof Promise) {
             promis.then(() => {
               if (!(this.nodes.some((n) => !n.resolved))) {
+                this.resolved = true;
+                this.busy = false;
                 this.dispatchEvent(new VEvent('afterResolve'));
                 resolve();
               }
@@ -98,9 +100,14 @@ class Network extends VEventTarget {
    *
    * @returns Boolean that states if at least one node has a state
    */
-  step(): boolean {
-    this.resolve();
-    return this.hasState();
+  step(): Promise<boolean> {
+    const promise = new Promise<boolean>((resolve) => {
+      const p = this.resolve();
+      p.then(() => {
+        resolve(this.hasState());
+      });
+    });
+    return promise;
   }
 
   /**
