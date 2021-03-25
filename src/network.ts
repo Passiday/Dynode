@@ -77,9 +77,16 @@ class Network extends VEventTarget {
       if (!this.resolved) {
         this.nodes.forEach((node) => node.preResolve());
         this.nodes.forEach((node) => {
-          node.resolve();
+          const promis = node.resolve();
+          if (promis instanceof Promise) {
+            promis.then(() => {
+              if (!(this.nodes.some((n) => !n.resolved))) {
+                this.dispatchEvent(new VEvent('afterResolve'));
+                resolve();
+              }
+            });
+          }
         });
-        resolve();
       } else {
         reject();
       }
