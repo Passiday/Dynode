@@ -1,4 +1,4 @@
-import StockValueTypeDeclarations from 'stockValueTypeDeclarations';
+import StockValueTypeDeclarations from './stockValueTypeDeclarations';
 import ValueType from './valueType';
 
 class Engine {
@@ -11,7 +11,7 @@ class Engine {
    * @return The corresponding ValueType object
    */
   public getValueTypeDefinition(valueType: string): ValueType {
-    for (v of this.valueTypeDefinitions) {
+    for (const v of this.valueTypeDefinitions) {
       if (v.name === valueType) return v;
     }
     throw Error(`Type ${valueType} does not exist!`);

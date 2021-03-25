@@ -1,12 +1,16 @@
-abstract class ValueType {
+interface CheckFunc {
+  (value: unknown): boolean;
+}
+
+class ValueType {
   /**
    * String representation of the value type.
    */
   private innerName: string;
 
-  constructor(name: string, checkFunc: (value: unknown) => bool) {
+  constructor(name: string, check: CheckFunc) {
     this.innerName = name;
-    this.check = checkFunc;
+    this.check = check;
   }
 
   get name(): string {
@@ -18,7 +22,7 @@ abstract class ValueType {
    *
    * @param value  Variable to check.
    */
-  public check(value: unknown): bool;
+  readonly check: CheckFunc;
 }
 
 export default ValueType;

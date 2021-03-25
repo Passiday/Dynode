@@ -2,11 +2,17 @@ import { VEvent, VEventTarget } from './vanillaEvent';
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
 import SocketCollection from './socketCollection';
+import Engine from './engine';
 
 /**
  * Class that does processing, using InputSocket and OutputSocket.
  */
 class Node extends VEventTarget {
+  /**
+   * Reference to the engine where this node belongs to.
+   */
+  private engine: Engine | null;
+
   /**
    * Identifier used to differentiate from other instances of this class.
    */
@@ -15,9 +21,10 @@ class Node extends VEventTarget {
   /**
    * @param name  See {@link name}
    */
-  constructor(name: string) {
+  constructor(name: string, engine?: Engine) {
     super();
     this.name = name || 'Untitled';
+    this.engine = engine || null;
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 

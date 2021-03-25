@@ -1,10 +1,16 @@
 import Node from './node';
 import { VEventTarget, VEvent } from './vanillaEvent';
+import Engine from './engine';
 
 /**
  * Class that orchestrates nodes.
  */
 class Network extends VEventTarget {
+  /**
+   * Engine instance where this network belongs to.
+   */
+  private engine: Engine;
+
   /**
    * A collection of nodes that belong to this object.
    */
@@ -18,9 +24,10 @@ class Network extends VEventTarget {
   /**
    * @param name  See {@link name}.
    */
-  constructor(name = 'network') {
+  constructor(engine: Engine, name = 'network') {
     super();
     this.nodes = [];
+    this.engine = engine;
     this.name = name;
   }
 
