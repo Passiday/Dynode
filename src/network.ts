@@ -9,7 +9,7 @@ class Network extends VEventTarget {
   /**
    * Engine instance where this network belongs to.
    */
-  private engine: Engine;
+  private engine: Engine | null;
 
   /**
    * A collection of nodes that belong to this object.
@@ -24,10 +24,10 @@ class Network extends VEventTarget {
   /**
    * @param name  See {@link name}.
    */
-  constructor(engine: Engine, name = 'network') {
+  constructor(name = 'network', engine?: Engine) {
     super();
     this.nodes = [];
-    this.engine = engine;
+    this.engine = engine || null;
     this.name = name;
   }
 
