@@ -66,7 +66,7 @@ class Node extends VEventTarget {
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
       if (this.resolvedInputs === this.inputCount) {
-        this.inputsReady();
+        this.inputsReady(() => {}, () => {});
       }
     });
     this.inputCount++;
@@ -265,17 +265,18 @@ class Node extends VEventTarget {
         .then(
           () => {
             if (this.resetState === true) this.state = null;
-            this.actionReady();
+            this.actionReady(resolve, reject);
           },
-          (err) => { this.actionError(err); },
+          (err) => { this.actionError(err); reject(); },
         );
     } else {
       if (this.resetState === true) this.state = null;
-      this.actionReady();
+      this.actionReady(resolve, reject);
     }
   }
 
-  actionReady(): void {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  actionReady(resolve: Function, reject: Function): void {
     // Set all unset outputs
     this.outputs.getAllSockets().forEach((output) => {
       if (!output.isSet()) output.setValue();
@@ -283,6 +284,7 @@ class Node extends VEventTarget {
     this.dumpOutputs();
     this.busy = false;
     this.resolved = true;
+    resolve();
     this.dispatchEvent(new VEvent('afterResolve'));
   }
 
