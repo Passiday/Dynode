@@ -177,7 +177,7 @@ test('Async network', (done) => {
   }); */
   const p = network.resolve();
   p.then(() => {
-    network.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
     done();
   });
 });
@@ -204,10 +204,10 @@ test('Network test', (done) => {
   network.addNode(nodeB);
   // AfterResolve or promise can be used to check if the network has finished.
   network.addEventListener('afterResolve', function (this: Network) {
-    this.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    this.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
     done();
   });
-  const p = network.resolve();
+  network.resolve();
 });
 
 test('Async state works', (done) => {
@@ -233,11 +233,11 @@ test('Async state works', (done) => {
 
   const network = new Network();
   network.addNode(nodeA);
-  const p = network.step();
-  p.then((result) => {
+  const p = network.resolve();
+  p.then(() => {
     expect(outputA1.getValue()).toBe(123);
-    expect(result).toBe(true);
-    network.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    expect(network.hasState()).toBe(true);
+    network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
     done();
   });
 });
@@ -259,11 +259,11 @@ test('State works', (done) => {
 
   const network = new Network();
   network.addNode(nodeA);
-  const p = network.step();
-  p.then((result) => {
+  const p = network.resolve();
+  p.then(() => {
     expect(outputA1.getValue()).toBe(123);
-    expect(result).toBe(true);
-    network.nodes.forEach((node) => expect(node.resolved).toBe(true));
+    expect(network.hasState()).toBe(true);
+    network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
     done();
   });
 });

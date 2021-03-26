@@ -43,9 +43,8 @@ class Node extends VEventTarget {
 
   /**
    * A boolean used to determine if the state gets reset before the next cycle
-   * @private
    */
-  resetState = true;
+  private resetState = true;
 
   /**
    * A collection of OutputSocket objects.
@@ -211,7 +210,7 @@ class Node extends VEventTarget {
   /**
    * Denotes whether the object has finished and set the outputs.
    */
-  resolved = false;
+  private resolved = false;
 
   /**
    * Prepare node for resolving.
@@ -244,7 +243,7 @@ class Node extends VEventTarget {
   }
 
   inputsReady(): void | Promise<void> {
-    const promis = new Promise<void>((resolve, reject) => {
+    return new Promise<void>((pResolve) => {
       this.log('Node action:', this.name);
       this.dumpInputs();
       if (this.resetState === true) this.state = {};
@@ -262,17 +261,16 @@ class Node extends VEventTarget {
             () => {
               if (this.resetState === true) this.state = null;
               this.actionReady();
-              resolve();
+              pResolve();
             },
             (err) => { this.actionError(err); },
           );
       } else {
         if (this.resetState === true) this.state = null;
         this.actionReady();
-        resolve();
+        pResolve();
       }
     });
-    return promis;
   }
 
   actionReady(): void {
@@ -293,9 +291,9 @@ class Node extends VEventTarget {
     // Do something with inputs, set some outputs
   };
 
-  actionError = (err: Error): void => {
+  actionError(err: Error): void {
     this.dispatchEvent(new VEvent('error', { detail: { error: err } }));
-  };
+  }
 
   /**
    * Method, that dispatches log event with given args.
@@ -304,16 +302,16 @@ class Node extends VEventTarget {
    * Event's detail contains the array as a property.
    *
    */
-  log = (...args: unknown[]): void => {
+  log(...args: unknown[]): void {
     this.dispatchEvent(new VEvent('log', { detail: { args } }));
-  };
+  }
 
   /**
-   * Method that sets resetState to false
+   * The action code must call this method, if the node has to maintain state until the next cycle.
    */
-  keepState = (): void => {
+  keepState(): void {
     this.resetState = false;
-  };
+  }
 
   /**
    * Checks if the node has state.
@@ -322,6 +320,14 @@ class Node extends VEventTarget {
   hasState(): boolean {
     if (!this.resolved) throw new Error('Node is not resolved');
     return this.state !== null;
+  }
+
+  /**
+   * Denotes whether the network has finished resolving.
+   * @returns True if the network is resolved, false if not.
+   */
+  isResolved(): boolean {
+    return this.resolved;
   }
 }
 

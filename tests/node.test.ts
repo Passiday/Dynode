@@ -79,7 +79,7 @@ test('linkedNodesTestAsync', (done) => {
   nodeB.preResolve();
   nodeB.resolve();
   expect(nodeB.busy).toBe(true);
-  expect(nodeB.resolved).toBe(false);
+  expect(nodeB.isResolved()).toBe(false);
   expect(() => inputB1.getValue()).toThrow(Error);
 });
 
@@ -168,7 +168,7 @@ test('Async keepState works', (done) => {
   const inputA1 = nodeA.addInput('one');
   inputA1.setDefaultValue(123);
   nodeA.action = function () {
-    const p = new Promise<void>((resolve, reject) => {
+    const p = new Promise<void>((resolve) => {
       setTimeout(() => {
         this.keepState();
         resolve();

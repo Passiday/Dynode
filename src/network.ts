@@ -16,12 +16,12 @@ class Network extends VEventTarget {
   name: string;
 
   /**
-   * Denotes whether the network is not available.
+   * Denotes whether the network is in process of being resolved.
    */
   busy = false;
 
   /**
-   * Denotes whether the network has finished.
+   * Denotes whether the network has finished resolving.
    */
   resolved = false;
 
@@ -64,55 +64,42 @@ class Network extends VEventTarget {
   preResolve(): void {
     this.busy = false;
     this.resolved = false;
+    this.nodes.forEach((node) => node.preResolve());
   }
 
   /**
    * Resolve all the nodes in the network.
    */
   resolve(): Promise<void> {
-    const p = new Promise<void>((resolve, reject) => {
-      if (this.busy) reject();
+    return new Promise<void>((pResolve, pReject) => {
+      if (this.busy) pReject();
       this.busy = true;
-      console.log(`--- ${this.name} ---`);
+      this.log(`--- ${this.name} ---`);
       if (!this.resolved) {
-        this.nodes.forEach((node) => node.preResolve());
         this.nodes.forEach((node) => {
-          const promis = node.resolve();
-          if (promis instanceof Promise) {
-            promis.then(() => {
-              if (!(this.nodes.some((n) => !n.resolved))) {
-                this.resolved = true;
-                this.busy = false;
-                this.dispatchEvent(new VEvent('afterResolve'));
-                resolve();
-              }
-            });
-          }
+          const p = node.resolve();
+          if (!(p instanceof Promise)) return;
+          p.then(() => {
+            if (this.nodes.some((n) => !n.isResolved())) return;
+            this.resolved = true;
+            this.busy = false;
+            this.dispatchEvent(new VEvent('afterResolve'));
+            pResolve();
+          });
         });
       } else {
-        reject();
+        pReject();
       }
     });
-    return p;
   }
 
-  /**
-   *
-   * @returns Boolean that states if at least one node has a state
-   */
-  step(): Promise<boolean> {
-    const promise = new Promise<boolean>((resolve) => {
-      const p = this.resolve();
-      p.then(() => {
-        resolve(this.hasState());
-      });
-    });
-    return promise;
+  log(...args: unknown[]): void {
+    this.dispatchEvent(new VEvent('log', { detail: { args } }));
   }
 
   /**
    * Checks if the network has state.
-   * @returns True if network has state, false if doesn't.
+   * @returns True if at least one node in the network has state, false if not.
    */
   hasState(): boolean {
     if (!this.resolved) throw new Error('Network is not resolved');
