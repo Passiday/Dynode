@@ -8,7 +8,7 @@ class Socket extends VEventTarget {
   /**
    * The ValueType name of the socket.
    */
-  private typeObject: ValueType | null = null;
+  protected typeObject: ValueType | null = null;
 
   /**
    * The stored value.

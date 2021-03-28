@@ -38,10 +38,11 @@ class Network extends VEventTarget {
    * @return Node that has been passed.
    */
   addNode(node: Node): Node {
-    this.nodes.push(node);
-    node.engine = this.engine;
-    this.dispatchEvent(new VEvent('addNode', { detail: { node } }));
-    return node;
+    const n = node;
+    n.engine = this.engine;
+    this.nodes.push(n);
+    this.dispatchEvent(new VEvent('addNode', { detail: { n } }));
+    return n;
   }
 
   /**
