@@ -11,7 +11,7 @@ class Node extends VEventTarget {
   /**
    * Reference to the engine where this node belongs to.
    */
-  private engine: Engine | null;
+  public engine: Engine | null;
 
   /**
    * Identifier used to differentiate from other instances of this class.
