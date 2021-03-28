@@ -2,6 +2,8 @@
 
 declare type SVGBElementAttrs = { [name: string]: any };
 
+declare type SVGBPoint = { x: number, y: number };
+
 declare type SVGBPointPartial = { x?: number, y?: number };
 
 declare class SVGBElement {
@@ -126,17 +128,33 @@ declare class SVGBContainer extends SVGBElement {
 }
 
 declare class SVGBDraggableEvent {
+  type: string;
+
+  currentTarget: SVGBDraggable;
+
+  target: SVGBDraggable;
+
   constructor(type: string);
 }
 
 declare class SVGBDraggable {
-  xObject: number;
+  body: SVGBElement;
 
-  yObject: number;
+  xBody: number;
+
+  yBody: number;
+
+  xBodyOffset: number;
+
+  yBodyOffset: number;
 
   xStart: number;
 
   yStart: number;
+
+  xScreenStart: number;
+
+  yScreenStart: number;
 
   xScreen: number;
 
@@ -156,25 +174,15 @@ declare class SVGBDraggable {
 
   constructor(body: SVGBElement);
   isActive(): boolean;
-  getLocalCoords(
-    xScreen: number,
-    yScreen: number,
-    dxScreen: number,
-    dyScreen: number,
-  ): {
-    x: number,
-    y: number,
-    dx: number,
-    dy: number,
-  };
   getPosition(): void;
-  setPosition(point: SVGBPointPartial): void;
-  snap(point?: SVGBPointPartial): void;
+  setPosition(point: SVGBPointPartial, pointerReg?: boolean): void;
+  isSnapped(): boolean;
+  snap(point?: SVGBPointPartial, pointerReg?: boolean): void;
   unsnap(): void;
   enable(handle: SVGBElement, onStartDrag: (e: Event) => void): void;
   disable(): void;
-  start(): void;
-  move(): void;
+  start(position: SVGBPoint): void;
+  move(position: SVGBPoint): void;
   release(): void;
   cancel(): void;
   stop(): void;
