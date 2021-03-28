@@ -2,6 +2,7 @@ import Network from './network';
 import Node from './node';
 import { NetworkController } from './dynodeController';
 import { StageUI, NodeUI, LinkUI } from './DynodeUI';
+import { hasOwnProperty } from './objectUtils';
 import './main.scss';
 
 // Temporarily, the network and stage will be published to the global scope
@@ -48,10 +49,73 @@ function controllerExample(): NetworkController {
   return controller;
 }
 
+function multiCycleExample() : void {
+  const coalesceNode = new Node('Coalesce');
+  coalesceNode.addInput('x').setDefaultValue(1);
+  coalesceNode.addOutput('result');
+  coalesceNode.action = function (this: Node) {
+    this.setOutputValue('result', this.getInputValue('x'));
+  };
+  network.addNode(coalesceNode);
+
+  const logNode = new Node('Log');
+  logNode.addInput('parameters');
+  logNode.action = function (this: Node) {
+    if (!this.inputIsNothing('parameters')) console.log(`Log node: ${logNode.getInputValue('parameters')}`);
+  };
+  logNode.linkInput('parameters', coalesceNode.getOutput('result'));
+  network.addNode(logNode);
+
+  const incrementNode = new Node('Increment');
+  incrementNode.addInput('x');
+  incrementNode.addOutput('y');
+  incrementNode.action = function (this: Node) {
+    if (this.inputIsNothing('x')) return;
+    let v = this.getInputValue('x') as number;
+    v++;
+    this.setOutputValue('y', v);
+  };
+  incrementNode.linkInput('x', coalesceNode.getOutput('result'));
+  network.addNode(incrementNode);
+
+  const ifNode = new Node('If');
+  ifNode.addInput('x');
+  ifNode.addOutput('y');
+  ifNode.action = function (this:Node) {
+    if (this.inputIsNothing('x')) return;
+    const v = this.getInputValue('x') as number;
+    if (v < 4) {
+      this.setOutputValue('y', v);
+    }
+  };
+  ifNode.linkInput('x', incrementNode.getOutput('y'));
+  network.addNode(ifNode);
+
+  const delayNode = new Node('Delay');
+  delayNode.addInput('x');
+  delayNode.addOutput('y');
+  delayNode.action = function (this:Node) {
+    this.keepState();
+    if (this.state !== null && hasOwnProperty(this.state, 'i')) {
+      const i = this.state.i as number;
+      this.setOutputValue('y', i);
+    }
+    if (this.inputIsNothing('x')) return;
+    if (this.state !== null) this.state.i = this.getInputValue('x') as number;
+  };
+  delayNode.linkInput('x', ifNode.getOutput('y'));
+  network.addNode(delayNode);
+
+  coalesceNode.linkInput('x', delayNode.getOutput('y'));
+
+  // network.resolve();
+}
+
 global.publishToGlobal({
   demoNetwork: network,
   demoStage: stage,
   NodeUI,
   LinkUI,
   controllerExample,
+  multiCycleExample,
 });
