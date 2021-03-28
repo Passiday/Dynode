@@ -26,5 +26,5 @@ describe('getValueTypeDefinition', () => {
     const e = new Engine();
     expect(() => e.getValueTypeDefinition('string')).not.toThrow();
     expect(() => e.getValueTypeDefinition('String')).toThrow();
-  })
+  });
 });
