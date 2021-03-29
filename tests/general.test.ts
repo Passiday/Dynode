@@ -8,31 +8,26 @@ test('Engine passing test', () => {
   const n1 = new Node('n1');
 
   network.addNode(n1);
-  expect(() => n1.addInput('i1', 'number').setDefaultValue(2)).not.toThrow();
+  expect(() => n1.addInput('numberInput', 'number').setDefaultValue(2)).not.toThrow();
   expect(() => n1.addInput('i2', 'strng')).toThrow();
   expect(() => n1.getInput('i2')).toThrow(); // ensures that i2 is never made
-  expect(() => n1.addInput('i2').setDefaultValue('meow')).not.toThrow();
+  expect(() => n1.addInput('noTypeInput').setDefaultValue('meow')).not.toThrow();
   expect(() => n1.addOutput('o1', 'number')).not.toThrow();
 
-  const mockFunc = jest.fn();
+  const errorCatcherFunc = jest.fn();
 
-  n1.addEventListener('error', mockFunc);
-
+  n1.addEventListener('error', errorCatcherFunc);
   n1.action = function (this: Node) {
-    this.setOutputValue('o1', this.getInput('i2'));
+    this.setOutputValue('o1', this.getInput('noTypeInput'));
   };
-
   n1.resolve();
-
   // Expect to have gone through an error
-  expect(mockFunc.mock.calls.length).toBe(1);
+  expect(errorCatcherFunc.mock.calls.length).toBe(1);
 
   n1.action = function (this: Node) {
-    this.setOutputValue('o1', this.getInput('i1'));
+    this.setOutputValue('o1', this.getInput('numberInput'));
   };
-
   n1.resolve();
-
   // Expect that new action doesn't call an error
-  expect(mockFunc.mock.calls.length).toBe(1);
+  expect(errorCatcherFunc.mock.calls.length).toBe(1);
 });
