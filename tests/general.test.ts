@@ -14,11 +14,25 @@ test('Engine passing test', () => {
   expect(() => n1.addInput('i2').setDefaultValue('meow')).not.toThrow();
   expect(() => n1.addOutput('o1', 'number')).not.toThrow();
 
+  const mockFunc = jest.fn();
+
+  n1.addEventListener('error', mockFunc);
+
   n1.action = function (this: Node) {
-    const input1 = this.getInput('i1');
-    const input2 = this.getInput('i2');
-    expect(false).toBe(true); // This proves that the action is never executed
+    this.setOutputValue('o1', this.getInput('i2'));
   };
 
   n1.resolve();
+
+  // Expect to have gone through an error
+  expect(mockFunc.mock.calls.length).toBe(1);
+
+  n1.action = function (this: Node) {
+    this.setOutputValue('o1', this.getInput('i1'));
+  };
+
+  n1.resolve();
+
+  // Expect that new action doesn't call an error
+  expect(mockFunc.mock.calls.length).toBe(1);
 });
