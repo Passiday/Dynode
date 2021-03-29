@@ -77,9 +77,18 @@ class Network extends VEventTarget {
       this.log(`--- ${this.name} ---`);
       if (!this.resolved) {
         this.nodes.forEach((node) => {
+          if (node.isResolved()) {
+            if (this.nodes.some((n) => !n.isResolved())) return;
+            this.resolved = true;
+            this.busy = false;
+            this.dispatchEvent(new VEvent('afterResolve'));
+            pResolve();
+          }
           const p = node.resolve();
           if (!(p instanceof Promise)) return;
+
           p.then(() => {
+            // eslint-disable-next-line no-continue
             if (this.nodes.some((n) => !n.isResolved())) return;
             this.resolved = true;
             this.busy = false;

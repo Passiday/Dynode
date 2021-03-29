@@ -51,7 +51,7 @@ function controllerExample(): NetworkController {
 
 function multiCycleExample() : void {
   const coalesceNode = new Node('Coalesce');
-  coalesceNode.addInput('x').setDefaultValue(1);
+  coalesceNode.addInput('x');
   coalesceNode.addOutput('result');
   coalesceNode.action = function (this: Node) {
     this.setOutputValue('result', this.getInputValue('x'));
@@ -84,29 +84,37 @@ function multiCycleExample() : void {
   ifNode.action = function (this:Node) {
     if (this.inputIsNothing('x')) return;
     const v = this.getInputValue('x') as number;
-    if (v < 4) {
+    if (v < 6) {
       this.setOutputValue('y', v);
     }
   };
   ifNode.linkInput('x', incrementNode.getOutput('y'));
   network.addNode(ifNode);
 
-  const delayNode = new Node('Delay');
-  delayNode.addInput('x');
-  delayNode.addOutput('y');
-  delayNode.action = function (this:Node) {
+  const delayRead = new Node('DelayRead');
+  delayRead.addInput('x');
+  delayRead.action = function (this:Node) {
     this.keepState();
-    if (this.state !== null && hasOwnProperty(this.state, 'i')) {
-      const i = this.state.i as number;
-      this.setOutputValue('y', i);
-    }
     if (this.inputIsNothing('x')) return;
     if (this.state !== null) this.state.i = this.getInputValue('x') as number;
   };
-  delayNode.linkInput('x', ifNode.getOutput('y'));
-  network.addNode(delayNode);
+  delayRead.linkInput('x', ifNode.getOutput('y'));
+  network.addNode(delayRead);
 
-  coalesceNode.linkInput('x', delayNode.getOutput('y'));
+  const delayWrite = new Node('DelayWrite');
+  delayWrite.addInput('reader').setDefaultValue('reader');
+  delayWrite.addOutput('i');
+  delayWrite.action = function (this: Node) {
+    const reader = this.getInputValue('reader');
+    if (reader instanceof Node && reader.state !== null && hasOwnProperty(reader.state, 'i')) {
+      if (reader.state.i === null) return;
+      const i = reader.state.i as number;
+      this.setOutputValue('i', i);
+    } else this.setOutputValue('i', 1);
+  };
+
+  coalesceNode.linkInput('x', delayWrite.getOutput('i'));
+  network.addNode(delayWrite);
 
   // network.resolve();
 }
