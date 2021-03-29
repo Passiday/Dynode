@@ -2,11 +2,17 @@ import { VEvent, VEventTarget } from './vanillaEvent';
 import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
 import SocketCollection from './socketCollection';
+import Engine from './engine';
 
 /**
  * Class that does processing, using InputSocket and OutputSocket.
  */
 class Node extends VEventTarget {
+  /**
+   * Reference to the engine where this node belongs to.
+   */
+  public engine: Engine | null;
+
   /**
    * Identifier used to differentiate from other instances of this class.
    */
@@ -15,9 +21,10 @@ class Node extends VEventTarget {
   /**
    * @param name  See {@link name}
    */
-  constructor(name: string) {
+  constructor(name: string, engine?: Engine) {
     super();
     this.name = name || 'Untitled';
+    this.engine = engine || null;
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 
@@ -45,11 +52,20 @@ class Node extends VEventTarget {
    * Register a new input.
    *
    * @param name  Name of the inputSocket to generate
+   * @param inputType  Name of the ValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string): InputSocket {
+  addInput(name: string, valueType?: string): InputSocket {
     if (name in this.inputs) throw Error('Input name already exists');
-    const socket = new InputSocket();
+
+    let socket;
+    if (valueType) {
+      if (!this.engine) throw Error('Engine is needed to specify a valueType!');
+      socket = new InputSocket(this.engine.getValueTypeDefinition(valueType));
+    } else {
+      socket = new InputSocket();
+    }
+
     socket.name = name;
     this.inputs.addSocket(socket);
     socket.addEventListener('value', (e) => {
@@ -140,8 +156,18 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string): OutputSocket {
-    const socket = new OutputSocket(this);
+  addOutput(name: string, valueType?: string): OutputSocket {
+    let socket;
+    if (valueType) {
+      if (!this.engine) throw Error('Engine is needed to specify a valueType!');
+      socket = new OutputSocket(
+        this,
+        this.engine.getValueTypeDefinition(valueType),
+      );
+    } else {
+      socket = new OutputSocket(this);
+    }
+
     socket.name = name;
     this.outputs.addSocket(socket);
 

@@ -1,6 +1,7 @@
 import Socket from '../src/socket';
 import InputSocket from '../src/inputSocket';
 import OutputSocket from '../src/outputSocket';
+import ValueType from '../src/valueType';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();
@@ -67,4 +68,13 @@ test('outputSocketTest', () => {
   expect(socket.waiting).toBe(false);
   socket.pull();
   expect(socket.waiting).toBe(true);
+});
+
+test('setValue with a type', () => {
+  const vt = new ValueType('oddNumber', ((value: unknown): boolean => (typeof value === 'number') && (value % 2 === 1)));
+  const s = new Socket(vt);
+
+  s.setValue(5);
+  expect(s.getValue()).toBe(5);
+  expect(() => s.setValue(10)).toThrow();
 });

@@ -1,5 +1,6 @@
 import Socket from './socket';
 import type Node from './node';
+import type ValueType from './valueType';
 
 /**
  * Socket class that handles output.
@@ -18,9 +19,10 @@ class OutputSocket extends Socket {
   /**
    * @param parentNode  See {@link parent}
    */
-  constructor(parentNode: Node) {
+  constructor(parentNode: Node, typeObject?: ValueType) {
     super();
     this.parent = parentNode;
+    if (typeObject) this.typeObject = typeObject;
   }
 
   /**
