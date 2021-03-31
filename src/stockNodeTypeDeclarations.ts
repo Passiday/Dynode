@@ -1,18 +1,13 @@
 import Node from './node';
-import type Engine from './engine';
 
-interface NodeCreatorFunc {
-  (name: string, engine?: Engine): Node;
-}
-
-class Nodetype {
+class NodeType {
   private innerName;
 
   /**
    * @param name See {@link name}
    * @param createFunc See {@link createFunc}
    */
-  constructor(name: string, createFunc: NodeCreatorFunc) {
+  constructor(name: string, createFunc: (node: Node) => Node) {
     this.innerName = name;
     this.createFunc = createFunc;
   }
@@ -27,16 +22,16 @@ class Nodetype {
   /**
    * Function for creating a Node that matches this type.
    */
-  readonly createFunc: NodeCreatorFunc;
+  readonly createFunc: (node: Node) => Node;
 }
 
-function createMathNode(name: string, engine?: Engine): Node {
-  const node = new Node(name, engine);
-  node.addInput('operator', 'string');
-  node.addInput('lhs', 'number');
-  node.addInput('rhs', 'number');
-  node.addOutput('result');
-  node.action = function (this: Node) {
+function createMathNode(node: Node): Node {
+  const n = node;
+  n.addInput('operator', 'string');
+  n.addInput('lhs', 'number');
+  n.addInput('rhs', 'number');
+  n.addOutput('result');
+  n.action = function (this: Node) {
     if (this.inputIsNothing('lhs')) return;
     if (this.inputIsNothing('rhs')) return;
 
@@ -65,17 +60,17 @@ function createMathNode(name: string, engine?: Engine): Node {
 
     this.setOutputValue('result', val);
   };
-  return node;
+  return n;
 }
 
-function createConstNode(name: string, engine?: Engine): Node {
-  const node = new Node(name, engine);
-  node.addInput('input');
-  node.addOutput('result');
-  node.action = function (this: Node) {
+function createConstNode(node: Node): Node {
+  const n = node;
+  n.addInput('input');
+  n.addOutput('result');
+  n.action = function (this: Node) {
     this.setOutputValue('result', this.getInputValue('input'));
   };
-  return node;
+  return n;
 }
 
 export default [
