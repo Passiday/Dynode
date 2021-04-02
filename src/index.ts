@@ -94,20 +94,20 @@ function multiCycleExample() : void {
   const delayRead = new Node('DelayRead');
   delayRead.addInput('x');
   delayRead.action = function (this:Node) {
-    this.keepState();
     if (this.inputIsNothing('x')) return;
+    this.keepState();
     if (this.state !== null) this.state.i = this.getInputValue('x') as number;
   };
   delayRead.linkInput('x', ifNode.getOutput('y'));
   network.addNode(delayRead);
 
   const delayWrite = new Node('DelayWrite');
-  delayWrite.addInput('reader').setDefaultValue('reader');
+  delayWrite.addInput('reader').setDefaultValue(delayRead);
   delayWrite.addOutput('i');
   delayWrite.action = function (this: Node) {
     const reader = this.getInputValue('reader');
     if (reader instanceof Node && reader.state !== null && hasOwnProperty(reader.state, 'i')) {
-      if (reader.state.i === null) return;
+      if (reader.state.i === null) this.setOutputValue('i', 1);
       const i = reader.state.i as number;
       this.setOutputValue('i', i);
     } else this.setOutputValue('i', 1);

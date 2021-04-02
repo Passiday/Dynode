@@ -2,6 +2,7 @@ import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
 import { VEvent } from '../src/vanillaEvent';
 import { hasOwnProperty } from '../src/objectUtils';
+import Network from '../src/network';
 
 test('unlinkedNodeTest', () => {
   const node = new Node('Node-A');
@@ -207,4 +208,52 @@ test('KeepState works', (done) => {
   });
 
   nodeA.resolve();
+});
+
+test('Multiple resolve test', (done) => {
+  // Node A: one input, one output
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  const outputA1 = nodeA.addOutput('one');
+  nodeA.action = () => {
+    if (!nodeA.inputIsNothing('one')) {
+      const inputOne = nodeA.getInputValue('one');
+      nodeA.setOutputValue('one', inputOne);
+    }
+  };
+
+  // Node B: two inputs, no outputs
+  const nodeB = new Node('Node-B');
+  const inputB1 = nodeB.addInput('one');
+  const inputB2 = nodeB.addInput('two');
+  const outputB = nodeB.addOutput('one');
+  nodeB.action = () => {
+    if (!nodeB.inputIsNothing('one')) {
+      const inputOne = nodeB.getInputValue('one') as number;
+      const inputTwo = nodeB.getInputValue('two') as number;
+      nodeB.setOutputValue('one', inputOne + inputTwo);
+    }
+  };
+  inputB1.setDefaultValue(456);
+  inputB2.setDefaultValue(2);
+  inputB1.linkSocket(outputA1);
+
+  const network = new Network();
+  network.addNode(nodeA);
+  network.addNode(nodeB);
+  network.resolve().then(
+    () => {
+      expect(network.resolved).toBe(true);
+      expect(outputB.getValue()).toBe(125);
+      network.preResolve();
+      network.resolve().then(
+        () => {
+          expect(network.resolved).toBe(true);
+          expect(outputB.getValue()).toBe(125);
+          done();
+        },
+      );
+    },
+  );
 });
