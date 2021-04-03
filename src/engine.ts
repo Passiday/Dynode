@@ -1,8 +1,14 @@
 import StockValueTypeDeclarations from './stockValueTypeDeclarations';
 import ValueType from './valueType';
+import type NodeType from './nodeType';
 
 class Engine {
   private valueTypeDefinitions: ValueType[] = StockValueTypeDeclarations;
+
+  /**
+   * List of node types registered in this engine.
+   */
+  public nodeTypeDefinitions: NodeType[] = [];
 
   /**
    * Given valueType, find corresponding ValueType.
