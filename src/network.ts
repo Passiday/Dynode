@@ -62,6 +62,7 @@ class Network extends VEventTarget {
    */
   resolve(): void {
     console.log(`--- ${this.name} ---`);
+    this.nodes.forEach((node) => node.preResolve());
     this.nodes.forEach((node) => node.resolve());
     this.dispatchEvent(new VEvent('resolve'));
   }

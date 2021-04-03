@@ -48,10 +48,46 @@ function controllerExample(): NetworkController {
   return controller;
 }
 
+function easterEggwork(): NetworkController {
+  const controller = new NetworkController(network, stage);
+
+  function createRandomRGBNode(name: string): Node {
+    const node = new Node('RandomRGB');
+    node.addOutput('rrggbb');
+    node.action = function (this: Node) {
+      this.setOutputValue('rrggbb', Math.floor(Math.random() * 0x1000000).toString(16));
+    };
+    return node;
+  }
+
+  const nodeColor1 = createRandomRGBNode('Color1');
+  const nodeColor2 = createRandomRGBNode('Color2');
+  const nodeColor3 = createRandomRGBNode('Color3');
+  network.addNode(nodeColor1);
+  network.addNode(nodeColor2);
+  network.addNode(nodeColor3);
+
+  const eggNode = new Node('Egg');
+  eggNode.addInput('a').setDefaultValue('ffffff');
+  eggNode.addInput('b').setDefaultValue('ffffff');
+  eggNode.addInput('c').setDefaultValue('ffffff');
+  network.addNode(eggNode);
+
+  //sumNode.linkInput('x', nodeParams.getOutput('x'));
+  //sumNode.linkInput('y', nodeParams.getOutput('y'));
+
+  eggNode.linkInput('a', nodeColor1.getOutput('rrggbb'));
+  eggNode.linkInput('b', nodeColor2.getOutput('rrggbb'));
+  eggNode.linkInput('c', nodeColor3.getOutput('rrggbb'));
+
+  return controller;
+}
+
 global.publishToGlobal({
   demoNetwork: network,
   demoStage: stage,
   NodeUI,
   LinkUI,
   controllerExample,
+  easterEggwork,
 });

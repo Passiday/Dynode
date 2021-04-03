@@ -19,6 +19,8 @@ class NodeUI {
 
   infoBox: HTMLDivElement;
 
+  elements: {[key: string]: any} = {};
+
   constructor(stage: StageUI, name?: string) {
     this.stage = stage;
     this.name = name || 'Node';
@@ -81,9 +83,34 @@ class NodeUI {
     this.infoBox.innerHTML = contents;
   }
 
+  updateInputs(inputSet: {[key: string]: any}) {
+    if (this.name === 'Egg' && ('egg' in this.elements)) {
+      const egg = <SVGBFile> this.elements['egg'];
+      const a = egg.getElement('a');
+      const b = egg.getElement('b');
+      const c = egg.getElement('c');
+      a.setStyle({fill: '#' + inputSet['a']});
+      b.setStyle({fill: '#' + inputSet['b']});
+      c.setStyle({fill: '#' + inputSet['c']});
+    }
+    return;
+  }
+
   redraw(): void {
     // Redraw the node UI
     this.container.wipe();
+
+    const { elements } = this;
+    if (this.name === 'Egg') {
+      this.stage.svgb.draggable(this.container);      
+      const eggBox = this.container.addGroup();
+      eggBox.scale(3, 3);
+      eggBox.addSVGBFile({}, 'nodeEgg.svg', function(this:SVGBFile) {
+        elements['egg'] = this;
+      });
+      return;
+    }
+
     this.frame = this.container.addRect({
       x: 0, y: 0, width: 200, height: 150, class: 'body',
     });

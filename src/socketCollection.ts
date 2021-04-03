@@ -61,6 +61,13 @@ class SocketCollection<T extends Socket> {
   }
 
   /**
+   * Initialize all sockets.
+   */
+  public init() {
+    this.sockets.forEach((socket) => socket.init());
+  }
+
+  /**
    * Retrieve all sockets in order.
    *
    * @return  Ordered socket array.

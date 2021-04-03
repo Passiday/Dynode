@@ -16,6 +16,13 @@ class NodeController {
 
   addHandlers(): void { // Init model event handlers
     const { view: nodeUI } = this;
+    function inputsReady(this: Node): void {
+      const inputSet: {[key: string]: any} = {};
+      this.inputs.getAllSockets().forEach((input) => {
+        if (!input.isNothing() && input.name !== null) inputSet[input.name] = input.getValue();
+      });
+      nodeUI.updateInputs(inputSet);
+    }
     function afterResolve(this: Node): void {
       let s = '';
       this.outputs.getAllSockets().forEach((output) => {
@@ -26,6 +33,7 @@ class NodeController {
     function nodeRemoved(this: Node): void {
       nodeUI.remove();
     }
+    this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
   }

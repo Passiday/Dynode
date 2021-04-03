@@ -234,6 +234,8 @@ class Node extends VEventTarget {
   preResolve(): void {
     this.busy = false;
     this.resolved = false;
+    this.inputs.init();
+    this.outputs.init();
   }
 
   /**
@@ -260,6 +262,7 @@ class Node extends VEventTarget {
   inputsReady(): void {
     this.log('Node action:', this.name);
     this.dumpInputs();
+    this.dispatchEvent(new VEvent('inputsReady'));
     let p;
     try {
       p = this.action();
