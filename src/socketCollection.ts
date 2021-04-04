@@ -63,7 +63,7 @@ class SocketCollection<T extends Socket> {
   /**
    * Initialize all sockets.
    */
-  public init() {
+  public init(): void {
     this.sockets.forEach((socket) => socket.init());
   }
 

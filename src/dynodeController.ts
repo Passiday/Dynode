@@ -17,11 +17,11 @@ class NodeController {
   addHandlers(): void { // Init model event handlers
     const { view: nodeUI } = this;
     function inputsReady(this: Node): void {
-      const inputSet: {[key: string]: any} = {};
+      const inputValues: {[key: string]: unknown} = {};
       this.inputs.getAllSockets().forEach((input) => {
-        if (!input.isNothing() && input.name !== null) inputSet[input.name] = input.getValue();
+        if (!input.isNothing() && input.name !== null) inputValues[input.name] = input.getValue();
       });
-      nodeUI.updateInputs(inputSet);
+      nodeUI.updateInputs(inputValues);
     }
     function afterResolve(this: Node): void {
       let s = '';

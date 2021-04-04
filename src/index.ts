@@ -52,7 +52,7 @@ function easterEggwork(): NetworkController {
   const controller = new NetworkController(network, stage);
 
   function createRandomRGBNode(name: string): Node {
-    const node = new Node('RandomRGB');
+    const node = new Node(name);
     node.addOutput('rrggbb');
     node.action = function (this: Node) {
       this.setOutputValue('rrggbb', Math.floor(Math.random() * 0x1000000).toString(16));
@@ -72,9 +72,6 @@ function easterEggwork(): NetworkController {
   eggNode.addInput('b').setDefaultValue('ffffff');
   eggNode.addInput('c').setDefaultValue('ffffff');
   network.addNode(eggNode);
-
-  //sumNode.linkInput('x', nodeParams.getOutput('x'));
-  //sumNode.linkInput('y', nodeParams.getOutput('y'));
 
   eggNode.linkInput('a', nodeColor1.getOutput('rrggbb'));
   eggNode.linkInput('b', nodeColor2.getOutput('rrggbb'));

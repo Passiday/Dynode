@@ -19,7 +19,7 @@ class NodeUI {
 
   infoBox: HTMLDivElement;
 
-  elements: {[key: string]: any} = {};
+  elements: {[key: string]: unknown} = {};
 
   constructor(stage: StageUI, name?: string) {
     this.stage = stage;
@@ -83,17 +83,16 @@ class NodeUI {
     this.infoBox.innerHTML = contents;
   }
 
-  updateInputs(inputSet: {[key: string]: any}) {
+  updateInputs(inputValues: {[key: string]: unknown}): void {
     if (this.name === 'Egg' && ('egg' in this.elements)) {
-      const egg = <SVGBFile> this.elements['egg'];
+      const egg = <SVGBFile> this.elements.egg;
       const a = egg.getElement('a');
       const b = egg.getElement('b');
       const c = egg.getElement('c');
-      a.setStyle({fill: '#' + inputSet['a']});
-      b.setStyle({fill: '#' + inputSet['b']});
-      c.setStyle({fill: '#' + inputSet['c']});
+      a.setStyle({ fill: `#${inputValues.a}` });
+      b.setStyle({ fill: `#${inputValues.b}` });
+      c.setStyle({ fill: `#${inputValues.c}` });
     }
-    return;
   }
 
   redraw(): void {
@@ -102,11 +101,11 @@ class NodeUI {
 
     const { elements } = this;
     if (this.name === 'Egg') {
-      this.stage.svgb.draggable(this.container);      
+      this.stage.svgb.draggable(this.container);
       const eggBox = this.container.addGroup();
       eggBox.scale(3, 3);
-      eggBox.addSVGBFile({}, 'nodeEgg.svg', function(this:SVGBFile) {
-        elements['egg'] = this;
+      eggBox.addSVGBFile({}, 'nodeEgg.svg', function (this:SVGBFile) {
+        elements.egg = this;
       });
       return;
     }
