@@ -10,18 +10,7 @@ class OutputSocket extends Socket {
    */
   waiting = false;
 
-  /**
-   * Reference to a node that is responsible for this object.
-   */
-  parent: Node;
-
-  /**
-   * @param parentNode  See {@link parent}
-   */
-  constructor(parentNode: Node) {
-    super();
-    this.parent = parentNode;
-  }
+  tempValue: unknown;
 
   /**
    * Ask {@link parent} to resolve.
@@ -29,7 +18,6 @@ class OutputSocket extends Socket {
   pull(): void {
     if (this.waiting) return;
     this.waiting = true;
-    this.parent.resolve();
   }
 
   /**
@@ -38,6 +26,7 @@ class OutputSocket extends Socket {
   init(): void {
     super.init();
     this.waiting = false;
+    super.setValue(this.tempValue);
   }
 
   /**
@@ -48,9 +37,9 @@ class OutputSocket extends Socket {
   setValue(value?: unknown): void {
     this.waiting = false;
     if (arguments.length) {
-      super.setValue(value);
+      this.tempValue = value;
     } else {
-      super.setValue();
+      this.tempValue = undefined;
     }
   }
 }
