@@ -150,8 +150,8 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string): OutputSocket {
-    const socket = new OutputSocket(this);
+  addOutput(name: string, storageMode?: boolean): OutputSocket {
+    const socket = new OutputSocket(this, storageMode);
     socket.name = name;
     this.outputs.addSocket(socket);
 
@@ -219,7 +219,7 @@ class Node extends VEventTarget {
     this.busy = false;
     this.resolved = false;
     this.inputs.getAllSockets().forEach((input) => input.init());
-    this.outputs.getAllSockets().forEach((output) => output.init());
+    this.outputs.getAllSockets().forEach((output) => output.reset());
   }
 
   /**

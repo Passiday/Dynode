@@ -257,3 +257,41 @@ test('Multiple resolve test', (done) => {
     },
   );
 });
+
+test('StorageMode', () => {
+  const mockFn = jest.fn();
+
+  const nodeA = new Node('Node-A');
+  const network = new Network();
+  network.addNode(nodeA);
+  const inputA = nodeA.addInput('x');
+  inputA.setDefaultValue(1);
+  const outputA = nodeA.addOutput('y');
+  nodeA.action = () => {
+    if (!nodeA.inputIsNothing('x')) {
+      const inputOne = nodeA.getInputValue('x') as number;
+      nodeA.setOutputValue('y', inputOne + 1);
+    } else {
+      nodeA.setOutputValue('y', 1);
+    }
+  };
+
+  const nodeB = new Node('Node-B');
+  network.addNode(nodeB);
+  const inputB = nodeB.addInput('x');
+  const outputB = nodeB.addOutput('y', true);
+  nodeB.action = () => {
+    if (!nodeB.inputIsNothing('x')) {
+      const inputOne = nodeB.getInputValue('x') as number;
+      mockFn(inputOne);
+      nodeB.setOutputValue('y', inputOne);
+    }
+  };
+  inputB.linkSocket(outputA);
+  inputA.linkSocket(outputB);
+  for (let i = 0; i < 5; i++) {
+    network.preResolve();
+    network.resolve();
+  }
+  expect(mockFn).toBeCalledTimes(5);
+});
