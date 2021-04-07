@@ -218,7 +218,7 @@ class Node extends VEventTarget {
   preResolve(): void {
     this.busy = false;
     this.resolved = false;
-    this.inputs.getAllSockets().forEach((input) => input.init());
+    this.inputs.getAllSockets().forEach((input) => input.reset());
     this.outputs.getAllSockets().forEach((output) => output.reset());
   }
 

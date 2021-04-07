@@ -35,6 +35,7 @@ class OutputSocket extends Socket {
 
   /**
    * @param parentNode  See {@link parent}
+   * @param storageMode Option to enable StorageMode
    */
   constructor(parentNode: Node, storageMode?: boolean) {
     super();
@@ -49,16 +50,16 @@ class OutputSocket extends Socket {
     if (this.waiting) return;
     this.waiting = true;
     if (!this.storageMode) { this.parent.resolve(); return; }
+    if (this.isSet()) return;
     if (this.storedNothing) super.setValue();
     else super.setValue(this.storedValue);
-    this.dispatchEvent(new VEvent('value'));
   }
 
   /**
    * Initialize the socket.
    */
   init(): void {
-    super.init();
+    super.reset();
     this.waiting = false;
     this.storedValue = undefined;
     this.storedNothing = true;
@@ -68,7 +69,7 @@ class OutputSocket extends Socket {
    * Resets the socket, keeping the storedValue
    */
   reset(): void {
-    super.init();
+    super.reset();
     this.waiting = false;
   }
 
