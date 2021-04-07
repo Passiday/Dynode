@@ -53,7 +53,7 @@ test('outputSocketTest', () => {
   jest.useFakeTimers();
 
   const mockNode: any = {};
-  const socket = new OutputSocket();
+  const socket = new OutputSocket(mockNode);
   mockNode.resolve = jest.fn(
     () => setTimeout(() => socket.setValue(123), 1000),
   );

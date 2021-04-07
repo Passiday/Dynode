@@ -151,7 +151,7 @@ class Node extends VEventTarget {
    * @return  Newly created OutputSocket object.
    */
   addOutput(name: string): OutputSocket {
-    const socket = new OutputSocket();
+    const socket = new OutputSocket(this);
     socket.name = name;
     this.outputs.addSocket(socket);
 
