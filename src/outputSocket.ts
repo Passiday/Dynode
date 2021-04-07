@@ -12,9 +12,6 @@ class OutputSocket extends Socket {
 
   tempValue: unknown;
 
-  /**
-   * Ask {@link parent} to resolve.
-   */
   pull(): void {
     if (this.waiting) return;
     this.waiting = true;
