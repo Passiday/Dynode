@@ -1,6 +1,5 @@
 import Socket from './socket';
 import type Node from './node';
-import { VEvent } from './vanillaEvent';
 
 /**
  * Socket class that handles output.
@@ -31,7 +30,7 @@ class OutputSocket extends Socket {
    * StorageMode is used for networks with loops,
    * it ensure that the state can be passed during the next network step.
    */
-  storageMode = false;
+  private storageMode = false;
 
   /**
    * @param parentNode  See {@link parent}
@@ -97,6 +96,14 @@ class OutputSocket extends Socket {
     } else {
       super.setValue();
     }
+  }
+
+  /**
+   * Denotes whether the OutputSocket has Storage Mode turned on or off.
+   * @returns True if the network has Storage Mode turned on, false otherwise.
+   */
+  isStorage(): boolean {
+    return this.storageMode;
   }
 }
 

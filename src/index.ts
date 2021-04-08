@@ -54,6 +54,10 @@ function multiCycleExample() : void {
   coalesceNode.addInput('x');
   coalesceNode.addOutput('result');
   coalesceNode.action = function (this: Node) {
+    if (this.inputIsNothing('x')) {
+      this.setOutputValue('result', 1);
+      return;
+    }
     this.setOutputValue('result', this.getInputValue('x'));
   };
   network.addNode(coalesceNode);
@@ -90,32 +94,18 @@ function multiCycleExample() : void {
   };
   ifNode.linkInput('x', incrementNode.getOutput('y'));
   network.addNode(ifNode);
-
-  const delayRead = new Node('DelayRead');
-  delayRead.addInput('x');
-  delayRead.action = function (this:Node) {
+  const delay = new Node('Delay');
+  delay.addInput('x');
+  delay.addOutput('y', true);
+  delay.action = function () {
     if (this.inputIsNothing('x')) return;
-    this.keepState();
-    if (this.state !== null) this.state.i = this.getInputValue('x') as number;
+    // this.keepState();
+    const input = this.getInputValue('x') as number;
+    this.setOutputValue('y', input);
   };
-  delayRead.linkInput('x', ifNode.getOutput('y'));
-  network.addNode(delayRead);
-
-  const delayWrite = new Node('DelayWrite');
-  delayWrite.addInput('reader').setDefaultValue(delayRead);
-  delayWrite.addOutput('i');
-  delayWrite.action = function (this: Node) {
-    const reader = this.getInputValue('reader');
-    if (reader instanceof Node && reader.state !== null && hasOwnProperty(reader.state, 'i')) {
-      if (reader.state.i === null) this.setOutputValue('i', 1);
-      const i = reader.state.i as number;
-      this.setOutputValue('i', i);
-    } else this.setOutputValue('i', 1);
-  };
-
-  coalesceNode.linkInput('x', delayWrite.getOutput('i'));
-  network.addNode(delayWrite);
-
+  delay.linkInput('x', ifNode.getOutput('y'));
+  coalesceNode.linkInput('x', delay.getOutput('y'));
+  network.addNode(delay);
   // network.resolve();
 }
 

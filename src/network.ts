@@ -72,6 +72,7 @@ class Network extends VEventTarget {
    */
   resolve(): Promise<void> {
     return new Promise<void>((pResolve, pReject) => {
+      this.preResolve();
       if (this.busy) pReject();
       this.busy = true;
       this.log(`--- ${this.name} ---`);

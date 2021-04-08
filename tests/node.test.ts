@@ -290,7 +290,6 @@ test('StorageMode', () => {
   inputB.linkSocket(outputA);
   inputA.linkSocket(outputB);
   for (let i = 0; i < 5; i++) {
-    network.preResolve();
     network.resolve();
   }
   expect(mockFn).toBeCalledTimes(5);
