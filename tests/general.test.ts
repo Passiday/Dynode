@@ -1,9 +1,9 @@
-import Engine from '../src/engine';
+import StandardEngine from '../src/standardEngine';
 import Network from '../src/network';
 import Node from '../src/node';
 
 test('Engine passing test', () => {
-  const engine = new Engine();
+  const engine = new StandardEngine();
   const network = new Network('n', engine);
   const n1 = new Node('n1');
 
