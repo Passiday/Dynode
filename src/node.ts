@@ -176,7 +176,7 @@ class Node extends VEventTarget {
         storageMode,
       );
     } else {
-      socket = new OutputSocket(this,undefined, storageMode);
+      socket = new OutputSocket(this, undefined, storageMode);
     }
 
     socket.name = name;

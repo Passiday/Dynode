@@ -96,7 +96,7 @@ function multiCycleExample() : void {
   network.addNode(ifNode);
   const delay = new Node('Delay');
   delay.addInput('x');
-  delay.addOutput('y', true);
+  delay.addOutput('y', undefined, true);
   delay.action = function () {
     if (this.inputIsNothing('x')) return;
     // this.keepState();
