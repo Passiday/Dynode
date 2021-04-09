@@ -1,4 +1,5 @@
 import Engine from './engine';
+import StockValueTypeDeclarations from './stockValueTypeDeclarations';
 import StockNodeTypeDeclarations from './stockNodeTypeDeclarations';
 
 class StandardEngine extends Engine {
@@ -7,6 +8,8 @@ class StandardEngine extends Engine {
     for (const nodeType of StockNodeTypeDeclarations) {
       this.addNodeTypeDefinition(nodeType);
     }
+    for (const valueType of StockValueTypeDeclarations)
+      this.addValueTypeDefinition(valueType);
   }
 }
 

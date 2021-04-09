@@ -28,6 +28,13 @@ class Engine {
   public addNodeTypeDefinition(nodeType: NodeType): void {
     this.nodeTypeDefinitions.push(nodeType);
   }
+
+  /**
+   * Register a new value type to this engine.
+   */
+  public addValueTypeDefinition(valueType: ValueType): void {
+    this.valueTypeDefinitions.push(valueType);
+  }
 }
 
 export default Engine;
