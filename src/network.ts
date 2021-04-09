@@ -32,6 +32,12 @@ class Network extends VEventTarget {
   resolved = false;
 
   /**
+   * Denotes whether the multi cycle network needs another resolve call.
+   * Another resolve call is needed if halted is false.
+   */
+  private halted = true;
+
+  /**
    * @param name  See {@link name}.
    */
   constructor(name = 'network', engine?: Engine) {
@@ -73,6 +79,7 @@ class Network extends VEventTarget {
   preResolve(): void {
     this.busy = false;
     this.resolved = false;
+    this.halted = false;
     this.nodes.forEach((node) => node.preResolve());
   }
 
@@ -123,6 +130,21 @@ class Network extends VEventTarget {
   hasState(): boolean {
     if (!this.resolved) throw new Error('Network is not resolved');
     return this.nodes.some((node) => node.hasState());
+  }
+
+  /**
+   * Method that can be used by the nodes in the network.
+   * It is used to state, that the multi cycle network doesn't need another resolve method call.
+   */
+  halt(): void {
+    this.halted = true;
+  }
+
+  /**
+   * @returns this.halted
+   */
+  isHalted(): boolean {
+    return this.halted;
   }
 }
 
