@@ -1,9 +1,8 @@
-import StockValueTypeDeclarations from './stockValueTypeDeclarations';
 import ValueType from './valueType';
 import type NodeType from './nodeType';
 
 class Engine {
-  private valueTypeDefinitions: ValueType[] = StockValueTypeDeclarations;
+  private valueTypeDefinitions: ValueType[] = [];
 
   /**
    * List of node types registered in this engine.
