@@ -1,4 +1,4 @@
-import ValueType from './valueType';
+import type ValueType from './valueType';
 import type NodeType from './nodeType';
 
 class Engine {
@@ -7,7 +7,7 @@ class Engine {
   /**
    * List of node types registered in this engine.
    */
-  public nodeTypeDefinitions: NodeType[] = [];
+  private nodeTypeDefinitions: NodeType[] = [];
 
   /**
    * Given valueType, find corresponding ValueType.
@@ -20,6 +20,13 @@ class Engine {
       if (v.name === valueType) return v;
     }
     throw Error(`Type ${valueType} does not exist!`);
+  }
+
+  /**
+   * Register a new value type to this engine.
+   */
+  public addNodeTypeDefinition(nodeType: NodeType): void {
+    this.nodeTypeDefinitions.push(nodeType);
   }
 }
 

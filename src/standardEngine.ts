@@ -3,7 +3,10 @@ import StockNodeTypeDeclarations from './stockNodeTypeDeclarations';
 
 class StandardEngine extends Engine {
   constructor() {
-    this.nodeTypeDefinitions = StockNodeTypeDeclarations;
+    super();
+    for (const nodeType of StockNodeTypeDeclarations) {
+      this.addNodeTypeDefinition(nodeType);
+    }
   }
 }
 
