@@ -18,9 +18,8 @@ class NodeController {
     const { view: nodeUI } = this;
     function afterResolve(this: Node): void {
       let s = '';
-      Object.keys(this.outputs).forEach((outputName) => {
-        const output = this.getOutput(outputName);
-        s += `Output ${outputName}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
+      this.outputs.getAllSockets().forEach((output) => {
+        s += `Output ${output.name}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
       });
       nodeUI.setInfo(s);
     }

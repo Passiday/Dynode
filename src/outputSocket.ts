@@ -1,5 +1,6 @@
 import Socket from './socket';
 import type Node from './node';
+import type ValueType from './valueType';
 
 /**
  * Socket class that handles output.
@@ -36,9 +37,10 @@ class OutputSocket extends Socket {
    * @param parentNode  See {@link parent}
    * @param storageMode Option to enable StorageMode
    */
-  constructor(parentNode: Node, storageMode?: boolean) {
+  constructor(parentNode: Node, typeObject?: ValueType, storageMode?: boolean) {
     super();
     this.parent = parentNode;
+    if (typeObject) this.typeObject = typeObject;
     if (storageMode !== undefined) this.storageMode = storageMode;
   }
 
