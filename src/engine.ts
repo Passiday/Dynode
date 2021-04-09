@@ -23,7 +23,9 @@ class Engine {
   }
 
   /**
-   * Register a new value type to this engine.
+   * Register a new node type to this engine.
+   *
+   * @param nodeType The NodeType to add
    */
   public addNodeTypeDefinition(nodeType: NodeType): void {
     this.nodeTypeDefinitions.push(nodeType);
@@ -31,6 +33,8 @@ class Engine {
 
   /**
    * Register a new value type to this engine.
+   *
+   * @param valueType The ValueType to add
    */
   public addValueTypeDefinition(valueType: ValueType): void {
     this.valueTypeDefinitions.push(valueType);
