@@ -3,11 +3,17 @@ import InputSocket from './inputSocket';
 import OutputSocket from './outputSocket';
 import SocketCollection from './socketCollection';
 import Engine from './engine';
+import type Network from './network';
 
 /**
  * Class that does processing, using InputSocket and OutputSocket.
  */
 class Node extends VEventTarget {
+  /**
+   * Reference to the network this node belongs to.
+   */
+  private network: Network | null;
+
   /**
    * Reference to the engine where this node belongs to.
    */
@@ -21,10 +27,11 @@ class Node extends VEventTarget {
   /**
    * @param name  See {@link name}
    */
-  constructor(name: string, engine?: Engine) {
+  constructor(name: string, engine?: Engine, network?: Network) {
     super();
     this.name = name || 'Untitled';
     this.engine = engine || null;
+    this.network = network || null;
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 
@@ -353,6 +360,13 @@ class Node extends VEventTarget {
    */
   isResolved(): boolean {
     return this.resolved;
+  }
+
+  /**
+   * Send halt signal to {@link network}
+   */
+  public halt(): void {
+    if (this.network) this.network.halt();
   }
 }
 
