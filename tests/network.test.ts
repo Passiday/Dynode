@@ -1,3 +1,4 @@
+import Network from '../src/network';
 import Node from '../src/node';
 import OutputSocket from '../src/outputSocket';
 // import { VEventHandler, VEvent } from '../src/vanillaEvent';
@@ -142,4 +143,67 @@ test('quadraticFormulaNetworkTest', () => {
   nodeRoot2.resolve();
 
   mockFunc.mockReturnValueOnce(4).mockReturnValueOnce(3);
+});
+
+test('Async network', (done) => {
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  const outputA1 = nodeA.addOutput('one');
+  nodeA.action = () => {
+    const p = new Promise<void>((pResolve) => {
+      setTimeout(() => {
+        if (!nodeA.inputIsNothing('one')) {
+          const inputOne = nodeA.getInputValue('one');
+          nodeA.setOutputValue('one', inputOne);
+        }
+        pResolve();
+      }, 0);
+    });
+    return p;
+  };
+
+  // Node B: one input, no outputs
+  const nodeB = new Node('Node-B');
+  const inputB1 = nodeB.addInput('one');
+  inputB1.linkSocket(outputA1);
+
+  const network = new Network();
+  network.addNode(nodeA);
+  network.addNode(nodeB);
+
+  // Expect promise resolving only when all nodes are resolved
+  const p = network.resolve();
+  p.then(() => {
+    network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
+    done();
+  });
+});
+
+test('Network test', (done) => {
+  const nodeA = new Node('Node-A');
+  const inputA1 = nodeA.addInput('one');
+  inputA1.setDefaultValue(123);
+  const outputA1 = nodeA.addOutput('one');
+  nodeA.action = () => {
+    if (!nodeA.inputIsNothing('one')) {
+      const inputOne = nodeA.getInputValue('one');
+      nodeA.setOutputValue('one', inputOne);
+    }
+  };
+
+  // Node B: one input, no outputs
+  const nodeB = new Node('Node-B');
+  const inputB1 = nodeB.addInput('one');
+  inputB1.linkSocket(outputA1);
+
+  const network = new Network();
+  network.addNode(nodeA);
+  network.addNode(nodeB);
+  // AfterResolve or promise can be used to check if the network has finished.
+  network.addEventListener('afterResolve', function (this: Network) {
+    this.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
+    done();
+  });
+  network.resolve();
 });

@@ -44,6 +44,11 @@ class Node extends VEventTarget {
   resolvedInputs = 0;
 
   /**
+   * The state of the node.
+   */
+  state: { [key: string]: unknown; } = {};
+
+  /**
    * A collection of OutputSocket objects.
    */
   outputs = new SocketCollection<OutputSocket>();
@@ -156,16 +161,17 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, valueType?: string): OutputSocket {
+  addOutput(name: string, valueType?: string, storageMode?: boolean): OutputSocket {
     let socket;
     if (valueType) {
       if (!this.engine) throw Error('Engine is needed to specify a valueType!');
       socket = new OutputSocket(
         this,
         this.engine.getValueTypeDefinition(valueType),
+        storageMode,
       );
     } else {
-      socket = new OutputSocket(this);
+      socket = new OutputSocket(this, undefined, storageMode);
     }
 
     socket.name = name;
@@ -226,21 +232,35 @@ class Node extends VEventTarget {
   /**
    * Denotes whether the object has finished and set the outputs.
    */
-  resolved = false;
+  private resolved = false;
+
+  /**
+   * Initialize the node for clean run.
+   */
+  init(): void {
+    this.reset();
+    this.state = {};
+    this.inputs.init();
+    this.outputs.init();
+  }
 
   /**
    * Prepare node for resolving.
    */
-  preResolve(): void {
+  reset(): void {
     this.busy = false;
     this.resolved = false;
+    this.inputs.reset();
+    this.outputs.reset();
   }
 
   /**
    * Check all input availability.
    */
-  resolve(): void {
-    if (this.busy) return;
+  resolve(): Promise<void> | void {
+    // TODO: just returning when the node is busy or resolved can lead to hard-to-debug situations
+    // basically, that is an error situtation that deserves to be treated as such.
+    if (this.busy || this.resolved) return;
     this.dispatchEvent(new VEvent('beforeResolve'));
     this.busy = true;
     this.resolvedInputs = 0;
@@ -253,29 +273,36 @@ class Node extends VEventTarget {
       }
     });
     if (!this.resolved && this.resolvedInputs === this.inputCount) {
-      this.inputsReady();
+      // eslint-disable-next-line consistent-return
+      return this.inputsReady();
     }
   }
 
-  inputsReady(): void {
-    this.log('Node action:', this.name);
-    this.dumpInputs();
-    let p;
-    try {
-      p = this.action();
-    } catch (err) {
-      this.actionError(err);
-      return;
-    }
-    if (p instanceof Promise) {
-      p
-        .then(
-          () => { this.actionReady(); },
-          (err) => { this.actionError(err); },
-        );
-    } else {
-      this.actionReady();
-    }
+  inputsReady(): void | Promise<void> {
+    return new Promise<void>((pResolve) => {
+      this.log('Node action:', this.name);
+      this.dumpInputs();
+      let p;
+      try {
+        p = this.action();
+      } catch (err) {
+        this.actionError(err);
+        return;
+      }
+      if (p instanceof Promise) {
+        p
+          .then(
+            () => {
+              this.actionReady();
+              pResolve();
+            },
+            (err) => { this.actionError(err); },
+          );
+      } else {
+        this.actionReady();
+        pResolve();
+      }
+    });
   }
 
   actionReady(): void {
@@ -296,9 +323,9 @@ class Node extends VEventTarget {
     // Do something with inputs, set some outputs
   };
 
-  actionError = (err: Error): void => {
+  actionError(err: Error): void {
     this.dispatchEvent(new VEvent('error', { detail: { error: err } }));
-  };
+  }
 
   /**
    * Method, that dispatches log event with given args.
@@ -307,9 +334,26 @@ class Node extends VEventTarget {
    * Event's detail contains the array as a property.
    *
    */
-  log = (...args: unknown[]): void => {
+  log(...args: unknown[]): void {
     this.dispatchEvent(new VEvent('log', { detail: { args } }));
-  };
+  }
+
+  /**
+   * Checks if the node has state.
+   * @returns True if node has state, false if doesn't.
+   */
+  hasState(): boolean {
+    if (!this.resolved) throw new Error('Node is not resolved');
+    return this.state !== null;
+  }
+
+  /**
+   * Denotes whether the network has finished resolving.
+   * @returns True if the network is resolved, false if not.
+   */
+  isResolved(): boolean {
+    return this.resolved;
+  }
 }
 
 export default Node;

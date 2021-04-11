@@ -38,13 +38,20 @@ class Socket extends VEventTarget {
   constructor(typeObject?: ValueType) {
     super();
     if (typeObject) this.typeObject = typeObject;
-    this.init();
+    this.reset();
   }
 
   /**
-   * Object's setup.
+   * Initialize the socket for clean run.
    */
   init(): void {
+    this.reset();
+  }
+
+  /**
+   * Object's setup/reset.
+   */
+  reset(): void {
     this.value = undefined;
     this.nothing = false;
     this.hasValue = false;
