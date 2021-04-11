@@ -13,7 +13,7 @@ test('simpleSocketTest', () => {
 
   expect(() => socket.setValue(456)).toThrow();
 
-  socket.init();
+  socket.reset();
   socket.setValue();
   expect(mockFun.mock.results.slice(-1)[0].value.isNothing()).toBe(true);
 });
@@ -38,8 +38,8 @@ test('linkedInputSocketTest', () => {
   outputSocket.setValue(123);
   expect(mockFun.mock.results.slice(-1)[0].value.getValue()).toBe(123);
 
-  inputSocket.init();
-  outputSocket.init();
+  inputSocket.reset();
+  outputSocket.reset();
   expect(inputSocket.isSet()).toBe(false);
 
   inputSocket.clearLink();

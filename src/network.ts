@@ -22,6 +22,22 @@ class Network extends VEventTarget {
   name: string;
 
   /**
+   * Denotes whether the network is in process of being resolved.
+   */
+  busy = false;
+
+  /**
+   * Denotes whether the network has finished resolving.
+   */
+  resolved = false;
+
+  /**
+   * Denotes whether the multi cycle network needs another resolve call.
+   * Another resolve call is needed if halted is false.
+   */
+  private halted = true;
+
+  /**
    * @param name  See {@link name}.
    */
   constructor(name = 'network', engine?: Engine) {
@@ -58,12 +74,77 @@ class Network extends VEventTarget {
   }
 
   /**
+   * Prepare network for resolving.
+   */
+  preResolve(): void {
+    this.busy = false;
+    this.resolved = false;
+    this.halted = false;
+    this.nodes.forEach((node) => node.preResolve());
+  }
+
+  /**
    * Resolve all the nodes in the network.
    */
-  resolve(): void {
-    console.log(`--- ${this.name} ---`);
-    this.nodes.forEach((node) => node.resolve());
-    this.dispatchEvent(new VEvent('resolve'));
+  resolve(): Promise<void> {
+    return new Promise<void>((pResolve, pReject) => {
+      this.preResolve();
+      if (this.busy) pReject();
+      this.busy = true;
+      this.log(`--- ${this.name} ---`);
+      if (!this.resolved) {
+        this.nodes.forEach((node) => {
+          if (node.isResolved()) {
+            if (this.nodes.some((n) => !n.isResolved())) return;
+            this.resolved = true;
+            this.busy = false;
+            this.dispatchEvent(new VEvent('afterResolve'));
+            pResolve();
+          }
+          const p = node.resolve();
+          if (!(p instanceof Promise)) return;
+
+          p.then(() => {
+            // eslint-disable-next-line no-continue
+            if (this.nodes.some((n) => !n.isResolved())) return;
+            this.resolved = true;
+            this.busy = false;
+            this.dispatchEvent(new VEvent('afterResolve'));
+            pResolve();
+          });
+        });
+      } else {
+        pReject();
+      }
+    });
+  }
+
+  log(...args: unknown[]): void {
+    this.dispatchEvent(new VEvent('log', { detail: { args } }));
+  }
+
+  /**
+   * Checks if the network has state.
+   * @returns True if at least one node in the network has state, false if not.
+   */
+  hasState(): boolean {
+    if (!this.resolved) throw new Error('Network is not resolved');
+    return this.nodes.some((node) => node.hasState());
+  }
+
+  /**
+   * Method that can be used by the nodes in the network.
+   * It is used to state, that the multi cycle network doesn't need another resolve method call.
+   */
+  halt(): void {
+    this.halted = true;
+  }
+
+  /**
+   * @returns this.halted
+   */
+  isHalted(): boolean {
+    return this.halted;
   }
 }
 
