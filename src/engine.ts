@@ -10,6 +10,19 @@ class Engine {
   private nodeTypeDefinitions: NodeType[] = [];
 
   /**
+   * Given name, find corresponding NodeType
+   *
+   * @param name The name of the NodeType
+   * @return The corresponding NodeType object
+   */
+  public getNodeTypeDefinition(name: string): NodeType {
+    for (const n of this.nodeTypeDefinitions) {
+      if (n.name === name) return n;
+    }
+    throw Error(`Type ${name} does not exist!`);
+  }
+
+  /**
    * Given valueType, find corresponding ValueType.
    *
    * @param valueType The name of the ValueType object

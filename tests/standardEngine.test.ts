@@ -4,6 +4,23 @@ import ValueType from '../src/valueType';
 import NodeType from '../src/nodeType';
 import type Node from '../src/node';
 
+describe('getNodeTypeDefinition', () => {
+  test('Ensure math node type exists', () => {
+    const e = new StandardEngine();
+    expect(() => e.getNodeTypeDefinition('math')).not.toThrow();
+  });
+
+  test('Ensure const node type exists', () => {
+    const e = new StandardEngine();
+    expect(() => e.getNodeTypeDefinition('const')).not.toThrow();
+  });
+
+  test('Ensure burger node does not exist', () => {
+    const e = new StandardEngine();
+    expect(() => e.getNodeTypeDefinition('burger')).toThrow();
+  })
+});
+
 describe('getValueTypeDefinition', () => {
   test('Ensure number type exists', () => {
     const e = new StandardEngine();
