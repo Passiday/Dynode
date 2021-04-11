@@ -28,6 +28,9 @@ class Engine {
    * @param nodeType The NodeType to add
    */
   public addNodeTypeDefinition(nodeType: NodeType): void {
+    for (const n of this.nodeTypeDefinitions) {
+      if (n.name === nodeType.name) throw Error(`NodeType ${n.name} already exists!`);
+    }
     this.nodeTypeDefinitions.push(nodeType);
   }
 
