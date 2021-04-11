@@ -151,13 +151,13 @@ test('Async network', (done) => {
   inputA1.setDefaultValue(123);
   const outputA1 = nodeA.addOutput('one');
   nodeA.action = () => {
-    const p = new Promise<void>((resolve) => {
+    const p = new Promise<void>((pResolve) => {
       setTimeout(() => {
         if (!nodeA.inputIsNothing('one')) {
           const inputOne = nodeA.getInputValue('one');
           nodeA.setOutputValue('one', inputOne);
         }
-        resolve();
+        pResolve();
       }, 0);
     });
     return p;
@@ -171,10 +171,8 @@ test('Async network', (done) => {
   const network = new Network();
   network.addNode(nodeA);
   network.addNode(nodeB);
-  /* network.addEventListener('afterResolve', function (this: Network) {
-    this.nodes.forEach((node) => expect(node.resolved).toBe(true));
-    done();
-  }); */
+
+  // Expect promise resolving only when all nodes are resolved
   const p = network.resolve();
   p.then(() => {
     network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
@@ -208,62 +206,4 @@ test('Network test', (done) => {
     done();
   });
   network.resolve();
-});
-
-test('Async state works', (done) => {
-  const nodeA = new Node('Node-A');
-  const inputA1 = nodeA.addInput('one');
-  inputA1.setDefaultValue(123);
-  const outputA1 = nodeA.addOutput('one');
-  nodeA.action = function () {
-    const p = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        if (!nodeA.inputIsNothing('one')) {
-          const inputOne = nodeA.getInputValue('one');
-          nodeA.setOutputValue('one', inputOne);
-        }
-        this.keepState();
-        resolve();
-      }, 0);
-    });
-    return p;
-  };
-
-  // Node B: one input, no outputs
-
-  const network = new Network();
-  network.addNode(nodeA);
-  const p = network.resolve();
-  p.then(() => {
-    expect(outputA1.getValue()).toBe(123);
-    expect(network.hasState()).toBe(true);
-    network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
-    done();
-  });
-});
-
-test('State works', (done) => {
-  const nodeA = new Node('Node-A');
-  const inputA1 = nodeA.addInput('one');
-  inputA1.setDefaultValue(123);
-  const outputA1 = nodeA.addOutput('one');
-  nodeA.action = function () {
-    if (!nodeA.inputIsNothing('one')) {
-      const inputOne = nodeA.getInputValue('one');
-      nodeA.setOutputValue('one', inputOne);
-    }
-    this.keepState();
-  };
-
-  // Node B: one input, no outputs
-
-  const network = new Network();
-  network.addNode(nodeA);
-  const p = network.resolve();
-  p.then(() => {
-    expect(outputA1.getValue()).toBe(123);
-    expect(network.hasState()).toBe(true);
-    network.nodes.forEach((node) => expect(node.isResolved()).toBe(true));
-    done();
-  });
 });

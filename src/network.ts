@@ -35,16 +35,17 @@ class Network extends VEventTarget {
    * Denotes whether the multi cycle network needs another resolve call.
    * Another resolve call is needed if halted is false.
    */
-  private halted = true;
+  private halted = false;
 
   /**
    * @param name  See {@link name}.
    */
   constructor(name = 'network', engine?: Engine) {
-    super();
+    super(); // VEventTarget
     this.nodes = [];
     this.engine = engine || null;
     this.name = name;
+    this.init();
   }
 
   /**
@@ -74,48 +75,59 @@ class Network extends VEventTarget {
   }
 
   /**
-   * Prepare network for resolving.
+   * Initialize the network for clean run.
    */
-  preResolve(): void {
-    this.busy = false;
-    this.resolved = false;
+  init(): void {
     this.halted = false;
-    this.nodes.forEach((node) => node.preResolve());
+    this.reset();
+    this.nodes.forEach((node) => node.init());
   }
 
   /**
-   * Resolve all the nodes in the network.
+   * Prepare network for resolving.
+   */
+  reset(): void {
+    this.busy = false;
+    this.resolved = false;
+    this.nodes.forEach((node) => node.reset());
+  }
+
+  /**
+   * Resolve all nodes in the network.
    */
   resolve(): Promise<void> {
     return new Promise<void>((pResolve, pReject) => {
-      this.preResolve();
-      if (this.busy) pReject();
-      this.busy = true;
-      this.log(`--- ${this.name} ---`);
-      if (!this.resolved) {
-        this.nodes.forEach((node) => {
-          if (node.isResolved()) {
-            if (this.nodes.some((n) => !n.isResolved())) return;
-            this.resolved = true;
-            this.busy = false;
-            this.dispatchEvent(new VEvent('afterResolve'));
-            pResolve();
-          }
-          const p = node.resolve();
-          if (!(p instanceof Promise)) return;
-
-          p.then(() => {
-            // eslint-disable-next-line no-continue
-            if (this.nodes.some((n) => !n.isResolved())) return;
-            this.resolved = true;
-            this.busy = false;
-            this.dispatchEvent(new VEvent('afterResolve'));
-            pResolve();
-          });
-        });
-      } else {
-        pReject();
+      if (this.busy) {
+        pReject(new Error('Network busy'));
+        return;
       }
+      if (this.isHalted()) {
+        pReject(new Error('Network halted'));
+        return;
+      }
+      this.reset();
+      this.busy = true;
+      this.log(`Resolving newtork ${this.name}`);
+      this.nodes.forEach((node) => {
+        if (node.isResolved()) {
+          if (this.nodes.some((n) => !n.isResolved())) return;
+          this.resolved = true;
+          this.busy = false;
+          this.dispatchEvent(new VEvent('afterResolve'));
+          pResolve();
+        }
+        const p = node.resolve();
+        if (!(p instanceof Promise)) return;
+
+        p.then(() => {
+          // eslint-disable-next-line no-continue
+          if (this.nodes.some((n) => !n.isResolved())) return;
+          this.resolved = true;
+          this.busy = false;
+          this.dispatchEvent(new VEvent('afterResolve'));
+          pResolve();
+        });
+      });
     });
   }
 

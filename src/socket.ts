@@ -42,6 +42,13 @@ class Socket extends VEventTarget {
   }
 
   /**
+   * Initialize the socket for clean run.
+   */
+  init(): void {
+    this.reset();
+  }
+
+  /**
    * Object's setup/reset.
    */
   reset(): void {

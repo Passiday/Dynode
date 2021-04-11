@@ -60,8 +60,7 @@ class OutputSocket extends Socket {
    * Initialize the socket.
    */
   init(): void {
-    super.reset();
-    this.waiting = false;
+    this.reset();
     this.storedValue = undefined;
     this.storedNothing = true;
   }

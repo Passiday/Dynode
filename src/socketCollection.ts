@@ -61,6 +61,24 @@ class SocketCollection<T extends Socket> {
   }
 
   /**
+   * Initialize all sockets in the collection for clean run
+   */
+  public init(): void {
+    for (const socket of this.sockets) {
+      socket.init();
+    }
+  }
+
+  /**
+   * Reset all sockets in the collection
+   */
+  public reset(): void {
+    for (const socket of this.sockets) {
+      socket.reset();
+    }
+  }
+
+  /**
    * Retrieve all sockets in order.
    *
    * @return  Ordered socket array.

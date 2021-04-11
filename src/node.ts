@@ -46,12 +46,7 @@ class Node extends VEventTarget {
   /**
    * The state of the node.
    */
-  state: { [key: string]: unknown; } | null = {};
-
-  /**
-   * A boolean used to determine if the state gets reset before the next cycle
-   */
-  private resetState = true;
+  state: { [key: string]: unknown; } = {};
 
   /**
    * A collection of OutputSocket objects.
@@ -240,20 +235,32 @@ class Node extends VEventTarget {
   private resolved = false;
 
   /**
+   * Initialize the node for clean run.
+   */
+  init(): void {
+    this.reset();
+    this.state = {};
+    this.inputs.init();
+    this.outputs.init();
+  }
+
+  /**
    * Prepare node for resolving.
    */
-  preResolve(): void {
+  reset(): void {
     this.busy = false;
     this.resolved = false;
-    this.inputs.getAllSockets().forEach((input) => input.reset());
-    this.outputs.getAllSockets().forEach((output) => output.reset());
+    this.inputs.reset();
+    this.outputs.reset();
   }
 
   /**
    * Check all input availability.
    */
   resolve(): Promise<void> | void {
-    if (this.busy) return;
+    // TODO: just returning when the node is busy or resolved can lead to hard-to-debug situations
+    // basically, that is an error situtation that deserves to be treated as such.
+    if (this.busy || this.resolved) return;
     this.dispatchEvent(new VEvent('beforeResolve'));
     this.busy = true;
     this.resolvedInputs = 0;
@@ -275,8 +282,6 @@ class Node extends VEventTarget {
     return new Promise<void>((pResolve) => {
       this.log('Node action:', this.name);
       this.dumpInputs();
-      if (this.resetState === true) this.state = {};
-      this.resetState = true;
       let p;
       try {
         p = this.action();
@@ -288,14 +293,12 @@ class Node extends VEventTarget {
         p
           .then(
             () => {
-              if (this.resetState === true) this.state = null;
               this.actionReady();
               pResolve();
             },
             (err) => { this.actionError(err); },
           );
       } else {
-        if (this.resetState === true) this.state = null;
         this.actionReady();
         pResolve();
       }
@@ -333,13 +336,6 @@ class Node extends VEventTarget {
    */
   log(...args: unknown[]): void {
     this.dispatchEvent(new VEvent('log', { detail: { args } }));
-  }
-
-  /**
-   * The action code must call this method, if the node has to maintain state until the next cycle.
-   */
-  keepState(): void {
-    this.resetState = false;
   }
 
   /**

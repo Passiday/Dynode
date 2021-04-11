@@ -41,9 +41,11 @@ test('linkedNodesTest', () => {
   expect(inputB1.getValue()).toBe(456);
 
   inputB1.linkSocket(outputA1);
+  nodeB.reset();
   nodeB.resolve();
   expect(inputB1.getValue()).toBe(123);
 });
+
 test('linkedNodesTestAsync', (done) => {
   // Node A: one input, one output
   const nodeA = new Node('Node-A');
@@ -77,7 +79,7 @@ test('linkedNodesTestAsync', (done) => {
   };
   inputB1.linkSocket(outputA1);
   inputB1.addEventListener('value', check);
-  nodeB.preResolve();
+  nodeB.reset();
   nodeB.resolve();
   expect(nodeB.busy).toBe(true);
   expect(nodeB.isResolved()).toBe(false);
@@ -163,53 +165,6 @@ test('NodeLog', () => {
   expect(mockFunc).toHaveBeenNthCalledWith(2, ['test']);
 });
 
-test('Async keepState works', (done) => {
-  // Node A: one input
-  const nodeA = new Node('Node-A');
-  const inputA1 = nodeA.addInput('one');
-  inputA1.setDefaultValue(123);
-  nodeA.action = function () {
-    const p = new Promise<void>((resolve) => {
-      setTimeout(() => {
-        this.keepState();
-        resolve();
-      }, 0);
-    });
-    return p;
-  };
-
-  nodeA.addEventListener('afterResolve', function (this:Node) {
-    expect(this.state).not.toBeNull();
-    expect(this.hasState()).toBe(true);
-    done();
-  });
-  nodeA.addEventListener('error', () => {
-    throw new Error('Node had an error');
-  });
-
-  nodeA.resolve();
-});
-test('KeepState works', (done) => {
-  // Node A: one input
-  const nodeA = new Node('Node-A');
-  const inputA1 = nodeA.addInput('one');
-  inputA1.setDefaultValue(123);
-  nodeA.action = function () {
-    this.keepState();
-  };
-
-  nodeA.addEventListener('afterResolve', function (this:Node) {
-    expect(this.state).not.toBeNull();
-    expect(this.hasState()).toBe(true);
-    done();
-  });
-  nodeA.addEventListener('error', () => {
-    throw new Error('Node had an error');
-  });
-
-  nodeA.resolve();
-});
-
 test('Multiple resolve test', (done) => {
   // Node A: one input, one output
   const nodeA = new Node('Node-A');
@@ -246,7 +201,6 @@ test('Multiple resolve test', (done) => {
     () => {
       expect(network.resolved).toBe(true);
       expect(outputB.getValue()).toBe(125);
-      network.preResolve();
       network.resolve().then(
         () => {
           expect(network.resolved).toBe(true);
@@ -258,11 +212,13 @@ test('Multiple resolve test', (done) => {
   );
 });
 
-test('StorageMode', () => {
+test('StorageMode', (done) => {
   const mockFn = jest.fn();
 
   const nodeA = new Node('Node-A');
   const network = new Network();
+
+  // nodeA: one input x, one output y. Outputs 1, if x is nothing, else x + 1.
   network.addNode(nodeA);
   const inputA = nodeA.addInput('x');
   inputA.setDefaultValue(1);
@@ -276,6 +232,7 @@ test('StorageMode', () => {
     }
   };
 
+  // nodeB one input x, one storage-mode output y. Pass the value of x to the output y.
   const nodeB = new Node('Node-B');
   network.addNode(nodeB);
   const inputB = nodeB.addInput('x');
@@ -289,11 +246,20 @@ test('StorageMode', () => {
   };
   inputB.linkSocket(outputA);
   inputA.linkSocket(outputB);
-  for (let i = 0; i < 5; i++) {
-    network.resolve();
-  }
-  expect(mockFn).toBeCalledTimes(5);
-  for (let i = 1; i <= 5; i++) {
-    expect(mockFn).toHaveBeenNthCalledWith(i, i);
-  }
+
+  // Resolve (asynchronously!) the network 5 times
+  let step = 0;
+  const networkResolve = (): void => {
+    if (step < 5) {
+      network.resolve().then(networkResolve);
+      step++;
+    } else {
+      expect(mockFn).toBeCalledTimes(5);
+      for (let i = 1; i <= 5; i++) {
+        expect(mockFn).toHaveBeenNthCalledWith(i, i);
+      }
+      done();
+    }
+  };
+  networkResolve();
 });
