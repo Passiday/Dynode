@@ -8,8 +8,7 @@ class StandardEngine extends Engine {
     for (const nodeType of StockNodeTypeDefinitions) {
       this.addNodeTypeDefinition(nodeType);
     }
-    for (const valueType of StockValueTypeDefinitions)
-      this.addValueTypeDefinition(valueType);
+    for (const valueType of StockValueTypeDefinitions) this.addValueTypeDefinition(valueType);
   }
 }
 

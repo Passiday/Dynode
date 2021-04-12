@@ -55,7 +55,7 @@ class Engine {
   public addValueTypeDefinition(valueType: ValueType): void {
     for (const v of this.valueTypeDefinitions) {
       if (v.name === valueType.name) {
-        throw Error(`ValueType ${v.name} already exists!`)
+        throw Error(`ValueType ${v.name} already exists!`);
       }
     }
     this.valueTypeDefinitions.push(valueType);

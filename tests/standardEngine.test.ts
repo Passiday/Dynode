@@ -1,5 +1,4 @@
 import StandardEngine from '../src/standardEngine';
-import OutputSocket from '../src/outputSocket';
 import ValueType from '../src/valueType';
 import NodeType from '../src/nodeType';
 import type Node from '../src/node';
@@ -18,7 +17,7 @@ describe('getNodeTypeDefinition', () => {
   test('Ensure burger node does not exist', () => {
     const e = new StandardEngine();
     expect(() => e.getNodeTypeDefinition('burger')).toThrow();
-  })
+  });
 });
 
 describe('getValueTypeDefinition', () => {
@@ -53,15 +52,15 @@ describe('addNodeTypeDefinition', () => {
   function getSampleNodeType() {
     return new NodeType(
       'sample',
-      function (node: Node) {
+      ((node: Node) => {
         const thisNode = node;
         thisNode.addInput('in');
         thisNode.addOutput('result');
         thisNode.action = function (this: Node) {
           this.setOutputValue('result', this.getInputValue('in'));
-        }
+        };
         return thisNode;
-      }
+      }),
     );
   }
 
@@ -87,7 +86,7 @@ describe('addValueTypeDefinition', () => {
     const e = new StandardEngine();
     const v = new ValueType(
       'even',
-      (val: unknown) => typeof(val) === 'number' && val % 2 == 0
+      (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
     );
     expect(() => e.addValueTypeDefinition(v)).not.toThrow();
   });
@@ -96,11 +95,11 @@ describe('addValueTypeDefinition', () => {
     const e = new StandardEngine();
     const v1 = new ValueType(
       'even',
-      (val: unknown) => typeof(val) === 'number' && val % 2 == 0
+      (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
     );
     const v2 = new ValueType(
       'even',
-      (val: unknown) => typeof(val) === 'number' && val % 2 == 0
+      (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
     );
 
     expect(() => e.addValueTypeDefinition(v1)).not.toThrow();
