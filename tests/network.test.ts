@@ -207,3 +207,18 @@ test('Network test', (done) => {
   });
   network.resolve();
 });
+
+test('Halting works', () => {
+  const n = new Network();
+  const errorCatcherFunc = jest.fn();
+  n.addEventListener('error', errorCatcherFunc);
+
+  n.resolve().then(() => {
+    expect(errorCatcherFunc.mock.calls.length).toBe(0);
+  }).then(() => {
+    n.halt();
+    n.resolve();
+  }).then(() => {
+    expect(errorCatcherFunc.mock.calls.length).toBe(1);
+  });
+});
