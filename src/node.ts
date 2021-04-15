@@ -27,11 +27,11 @@ class Node extends VEventTarget {
   /**
    * @param name  See {@link name}
    */
-  constructor(name: string, engine?: Engine, network?: Network) {
+  constructor(name: string, network?: Network) {
     super();
     this.name = name || 'Untitled';
-    this.engine = engine || null;
     this.network = network || null;
+    this.engine = network ? network.engine : null;
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 

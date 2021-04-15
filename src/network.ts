@@ -9,7 +9,7 @@ class Network extends VEventTarget {
   /**
    * Engine instance where this network belongs to.
    */
-  private engine: Engine | null;
+  public engine: Engine | null;
 
   /**
    * A collection of nodes that belong to this object.
