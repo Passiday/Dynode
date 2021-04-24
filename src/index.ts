@@ -1,5 +1,7 @@
 import Network from './network';
 import Node from './node';
+import NodeType from './nodeType';
+import StandardEngine from './standardEngine';
 import { NetworkController } from './dynodeController';
 import { StageUI, NodeUI, LinkUI } from './DynodeUI';
 import { hasOwnProperty } from './objectUtils';
@@ -109,6 +111,28 @@ function multiCycleExample() : void {
   // network.resolve();
 }
 
+function cellularAutomataExample() {
+  const controller = new NetworkController(network, stage);
+  network.engine = new StandardEngine();
+  network.engine.addNodeTypeDefinition(new NodeType(
+    'grid',
+    ((node: Node) => {
+      const n = node;
+      n.addInput('x', 'number');
+      n.addInput('y', 'number');
+      n.addOutput('result');
+      n.action = function (this: Node) {
+        // TODO
+      };
+      return n;
+    }),
+  ));
+  const n1 = new Node('grid1', network, network.engine.getNodeTypeDefinition('grid'));
+  network.addNode(n1);
+
+  return controller;
+}
+
 global.publishToGlobal({
   demoNetwork: network,
   demoStage: stage,
@@ -116,4 +140,5 @@ global.publishToGlobal({
   LinkUI,
   controllerExample,
   multiCycleExample,
+  cellularAutomataExample,
 });

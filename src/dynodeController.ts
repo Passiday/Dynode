@@ -1,6 +1,6 @@
 import Network from './network';
 import Node from './node';
-import { StageUI, NodeUI } from './DynodeUI';
+import { StageUI, NodeUI, GridNodeUI } from './DynodeUI';
 import { VEvent } from './vanillaEvent';
 
 class NodeController {
@@ -9,6 +9,34 @@ class NodeController {
   view: NodeUI;
 
   constructor(model: Node, view: NodeUI) {
+    this.model = model;
+    this.view = view;
+    this.addHandlers();
+  }
+
+  addHandlers(): void { // Init model event handlers
+    const { view: nodeUI } = this;
+    function afterResolve(this: Node): void {
+      let s = '';
+      this.outputs.getAllSockets().forEach((output) => {
+        s += `Output ${output.name}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
+      });
+      nodeUI.setInfo(s);
+    }
+    function nodeRemoved(this: Node): void {
+      nodeUI.remove();
+    }
+    this.model.addEventListener('afterResolve', afterResolve);
+    this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
+  }
+}
+
+class GridNodeController {
+  model: Node;
+
+  view: GridNodeUI;
+
+  constructor(model: Node, view: GridNodeUI) {
     this.model = model;
     this.view = view;
     this.addHandlers();
@@ -50,10 +78,22 @@ class NetworkController {
       // TODO: the node id should be received from event data
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
       const nodeUI = new NodeUI(stage, nodeModel.name);
-      const nodeCont = new NodeController(nodeModel, nodeUI); // Creates node controller
+
+      const args: [Node, NodeUI] = [nodeModel, nodeUI];
+      const { nodeType } = nodeModel;
+      if (nodeType === null) new NodeController(...args);
+      else {
+        switch (nodeType.name) {
+          case 'grid':
+            new GridNodeController(nodeModel, new GridNodeUI(stage, nodeModel.name));
+            break;
+          default:
+            new NodeController(...args);
+        }
+      }
     }
     this.model.addEventListener('addNode', addNode);
   }
 }
 
-export { NetworkController, NodeController };
+export { NetworkController, NodeController, GridNodeController };
