@@ -45,6 +45,10 @@ class GridNodeUI extends NodeUI {
 
     this.addSVGGrid();
   }
+
+  public inputsReady(x: number, y: number): void {
+    console.log(`x is ${x}; y is ${y}`);
+  }
 }
 
 export default GridNodeUI;

@@ -39,6 +39,7 @@ class Node extends VEventTarget {
     this.network = network || null;
     this.engine = network ? network.engine : null;
     this.nodeType = nodeType || null;
+    if (nodeType) nodeType.createFunc(this);
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 
@@ -297,6 +298,7 @@ class Node extends VEventTarget {
       this.log('Node action:', this.name);
       this.dumpInputs();
       let p;
+      this.dispatchEvent(new VEvent('inputsReady'));
       try {
         p = this.action();
       } catch (err) {

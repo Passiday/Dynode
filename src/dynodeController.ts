@@ -43,7 +43,13 @@ class GridNodeController {
   }
 
   addHandlers(): void { // Init model event handlers
-    const { view: nodeUI } = this;
+    const nodeUI = this.view;
+    function inputsReady(this: Node): void {
+      nodeUI.inputsReady(
+        this.inputs.getSocketByName('x').getValue() as number,
+        this.inputs.getSocketByName('y').getValue() as number,
+      );
+    }
     function afterResolve(this: Node): void {
       let s = '';
       this.outputs.getAllSockets().forEach((output) => {
@@ -54,6 +60,7 @@ class GridNodeController {
     function nodeRemoved(this: Node): void {
       nodeUI.remove();
     }
+    this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
   }
