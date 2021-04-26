@@ -118,8 +118,8 @@ function cellularAutomataExample() {
     'grid',
     ((node: Node) => {
       const n = node;
-      n.addInput('x', 'number').setDefaultValue(1);
-      n.addInput('y', 'number').setDefaultValue(1);
+      n.addInput('x', 'number').setDefaultValue(0);
+      n.addInput('y', 'number').setDefaultValue(0);
       n.addOutput('result');
       n.action = function (this: Node) {
         // TODO
@@ -129,11 +129,12 @@ function cellularAutomataExample() {
   ));
   const n1 = new Node('grid1', network, network.engine.getNodeTypeDefinition('grid'));
   network.addNode(n1);
-  console.log(n1.inputCount);
-  console.log(n1.getInput('x'));
-  console.log(n1.getInput('y'));
-  n1.getInput('x').setDefaultValue(2);
-  network.resolve();
+  network.resolve().then(() => {
+    // This "then" clause checks whether grid is updated properly
+    n1.inputs.getSocketByName('x').setDefaultValue(1);
+    n1.inputs.getSocketByName('y').setDefaultValue(2);
+    network.resolve();
+  });
 
   return controller;
 }
