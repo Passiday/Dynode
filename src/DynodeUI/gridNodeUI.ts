@@ -5,12 +5,10 @@ class GridNodeUI extends NodeUI {
   /**
    * Reference to grid's svg rectangles that represent the grid.
    */
-  private rectCells: SVGBRect[][] | null;
+  private rectCells!: SVGBRect[][];
 
   constructor(stage: StageUI, name?: string) {
     super(stage, name);
-    this.addSVGGrid();
-    this.rectCells = null;
     this.redraw();
   }
 
@@ -43,16 +41,8 @@ class GridNodeUI extends NodeUI {
     this.rectCells = rects;
   }
 
-  redraw(): void {
-    this.container.wipe();
-    this.frame = this.container.addRect({
-      x: 0, y: 0, width: 200, height: 150, class: 'body',
-    });
-    const titleBar = this.container.addRect({
-      x: 0, y: 0, width: 200, height: 25, class: 'titleBar',
-    });
-    this.stage.svgb.draggable(titleBar, this.container);
-    this.container.addText({ x: 5, y: 20, class: 'titleBarText' }, this.name);
+  public redraw(): void {
+    super.redraw();
     this.addSVGGrid();
   }
 
