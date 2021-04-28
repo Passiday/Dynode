@@ -84,18 +84,21 @@ class NetworkController {
     function addNode(this: Network): void {
       // TODO: the node id should be received from event data
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
-      const nodeUI = new NodeUI(stage, nodeModel.name);
 
-      const args: [Node, NodeUI] = [nodeModel, nodeUI];
+      function createNodeController(): NodeController {
+        const nodeUI = new NodeUI(stage, nodeModel.name);
+        return new NodeController(nodeModel, nodeUI);
+      }
+
       const { nodeType } = nodeModel;
-      if (nodeType === null) new NodeController(...args);
+      if (nodeType === null) createNodeController();
       else {
         switch (nodeType.name) {
           case 'grid':
             new GridNodeController(nodeModel, new GridNodeUI(stage, nodeModel.name));
             break;
           default:
-            new NodeController(...args);
+            createNodeController();
         }
       }
     }
