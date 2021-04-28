@@ -23,39 +23,12 @@ class NodeController {
       });
       nodeUI.setInfo(s);
     }
-    function nodeRemoved(this: Node): void {
-      nodeUI.remove();
-    }
-    this.model.addEventListener('afterResolve', afterResolve);
-    this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
-  }
-}
-
-class GridNodeController {
-  model: Node;
-
-  view: GridNodeUI;
-
-  constructor(model: Node, view: GridNodeUI) {
-    this.model = model;
-    this.view = view;
-    this.addHandlers();
-  }
-
-  addHandlers(): void { // Init model event handlers
-    const nodeUI = this.view;
     function inputsReady(this: Node): void {
-      nodeUI.setInputs(
-        this.inputs.getSocketByName('x').getValue() as number,
-        this.inputs.getSocketByName('y').getValue() as number,
-      );
-    }
-    function afterResolve(this: Node): void {
-      let s = '';
-      this.outputs.getAllSockets().forEach((output) => {
-        s += `Output ${output.name}: ${output.isNothing() ? 'nothing' : output.getValue()}, `;
+      const inputValues: {[key: string]: unknown} = {};
+      this.inputs.getAllSockets().forEach((input) => {
+        if (!input.isNothing() && input.name !== null) inputValues[input.name] = input.getValue();
       });
-      nodeUI.setInfo(s);
+      nodeUI.updateInputs(inputValues);
     }
     function nodeRemoved(this: Node): void {
       nodeUI.remove();
@@ -95,7 +68,7 @@ class NetworkController {
       else {
         switch (nodeType.name) {
           case 'grid':
-            new GridNodeController(nodeModel, new GridNodeUI(stage, nodeModel.name));
+            new NodeController(nodeModel, new GridNodeUI(stage, nodeModel.name));
             break;
           default:
             createNodeController();
@@ -106,4 +79,4 @@ class NetworkController {
   }
 }
 
-export { NetworkController, NodeController, GridNodeController };
+export { NetworkController, NodeController };
