@@ -45,7 +45,7 @@ class GridNodeController {
   addHandlers(): void { // Init model event handlers
     const nodeUI = this.view;
     function inputsReady(this: Node): void {
-      nodeUI.inputsReady(
+      nodeUI.setInputs(
         this.inputs.getSocketByName('x').getValue() as number,
         this.inputs.getSocketByName('y').getValue() as number,
       );

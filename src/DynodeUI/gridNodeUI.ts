@@ -56,7 +56,7 @@ class GridNodeUI extends NodeUI {
     this.addSVGGrid();
   }
 
-  public inputsReady(x: number, y: number): void {
+  public setInputs(x: number, y: number): void {
     console.log(`x is ${x}; y is ${y}`);
     if (x < 0 || x > 3) throw new Error('X is not 0, 1 or 2!');
     if (y < 0 || y > 3) throw new Error('y is not 0, 1 or 2!');
