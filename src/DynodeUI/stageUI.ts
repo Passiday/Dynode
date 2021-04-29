@@ -1,5 +1,5 @@
 import NodeUI from './nodeUI';
-import GridNodeUI from './gridNodeUI'
+import GridNodeUI from './gridNodeUI';
 
 interface NodeUIConstructor {
   new(stage: StageUI, name: string): NodeUI;

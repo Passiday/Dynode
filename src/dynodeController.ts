@@ -1,7 +1,6 @@
 import Network from './network';
 import Node from './node';
-import { StageUI, NodeUI, GridNodeUI } from './DynodeUI';
-import { VEvent } from './vanillaEvent';
+import { StageUI, NodeUI } from './DynodeUI';
 
 class NodeController {
   model: Node;
@@ -58,9 +57,9 @@ class NetworkController {
       // TODO: the node id should be received from event data
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
       const nodeTypeName = nodeModel.nodeType?.name || 'default';
-      const nodeUIClass = stage.nodeTypeExists(nodeTypeName) ?
-        stage.getNodeType(nodeTypeName) : stage.getNodeType('default');
-      const nodeUI = new nodeUIClass(stage, nodeModel.name);
+      const NodeUIClass = stage.nodeTypeExists(nodeTypeName)
+        ? stage.getNodeType(nodeTypeName) : stage.getNodeType('default');
+      const nodeUI = new NodeUIClass(stage, nodeModel.name);
       new NodeController(nodeModel, nodeUI);
     }
     this.model.addEventListener('addNode', addNode);
