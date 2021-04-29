@@ -1,5 +1,4 @@
-import NodeUI from './nodeUI';
-import GridNodeUI from './gridNodeUI';
+import type NodeUI from './nodeUI';
 
 interface NodeUIConstructor {
   new(stage: StageUI, name: string): NodeUI;
@@ -15,8 +14,6 @@ class StageUI {
   constructor(container: HTMLElement) {
     this.svgb = new SVGBuilder();
     this.svgb.insert(container);
-    this.addNodeType('grid', GridNodeUI);
-    this.addNodeType('default', NodeUI);
   }
 
   public addNodeType(type: string, ctor: NodeUIConstructor): void {
