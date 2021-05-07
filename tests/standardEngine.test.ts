@@ -87,6 +87,7 @@ describe('addValueTypeDefinition', () => {
     const v = new ValueType(
       'even',
       (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
+      (val: unknown) => <number> val,
     );
     expect(() => e.addValueTypeDefinition(v)).not.toThrow();
   });
@@ -96,10 +97,12 @@ describe('addValueTypeDefinition', () => {
     const v1 = new ValueType(
       'even',
       (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
+      (val: unknown) => <number> val,
     );
     const v2 = new ValueType(
       'even',
       (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
+      (val: unknown) => <number> val,
     );
 
     expect(() => e.addValueTypeDefinition(v1)).not.toThrow();

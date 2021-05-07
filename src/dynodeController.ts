@@ -2,6 +2,7 @@ import Network from './network';
 import Node from './node';
 import { StageUI, NodeUI } from './DynodeUI';
 import { VEvent } from './vanillaEvent';
+import { JsonObject } from './objectUtils';
 
 class NodeController {
   model: Node;
@@ -23,11 +24,23 @@ class NodeController {
       });
       nodeUI.setInfo(s);
     }
+    function inputsReady(this: Node): void {
+      const inputConfig: JsonObject = {};
+      this.inputs.getAllSockets().forEach((input) => {
+        if (!input.isNothing() && input.name !== null) {
+          inputConfig[input.name] = {
+            value: input.getJsonValue(),
+          };
+        }
+      });
+      nodeUI.updateInputs(inputConfig);
+    }
     function nodeRemoved(this: Node): void {
       nodeUI.remove();
     }
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
+    this.model.addEventListener('inputsReady', inputsReady);
   }
 }
 
@@ -49,8 +62,39 @@ class NetworkController {
     function addNode(this: Network): void {
       // TODO: the node id should be received from event data
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
-      const nodeUI = new NodeUI(stage, nodeModel.name);
-      const nodeCont = new NodeController(nodeModel, nodeUI); // Creates node controller
+      const nodeConfig = {
+        name: nodeModel.name,
+        inputs: [
+          // TODO: prepare the input config from the model inputs
+          {
+            socket: 'input',
+            name: 'inputA',
+            title: 'First',
+            type: 'string',
+            value: 'abc', // The input default value
+            enabled: true, // Only unlinked inputs must be enabled
+          },
+          {
+            socket: 'input',
+            name: 'inputB',
+            title: 'Second',
+            type: 'number',
+            value: 123,
+            enabled: false,
+          },
+          {
+            socket: 'input',
+            name: 'inputB',
+            title: 'Second',
+            type: 'number',
+            value: 123,
+            enabled: false,
+          },
+        ],
+      };
+      const nodeUI = new NodeUI(stage, nodeConfig);
+      const nodeCtr = new NodeController(nodeModel, nodeUI);
+      stage.debug[`node-${nodeModel.name}`] = nodeUI; // References to NodeUI instances for debugging purposes
     }
     this.model.addEventListener('addNode', addNode);
   }

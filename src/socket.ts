@@ -1,4 +1,5 @@
 import { VEvent, VEventTarget } from './vanillaEvent';
+import { JsonValue } from './objectUtils';
 import ValueType from './valueType';
 
 /**
@@ -81,6 +82,14 @@ class Socket extends VEventTarget {
     if (!this.hasValue) throw Error('Socket is not set');
     if (this.nothing) throw Error('Socket has no value');
     return this.value;
+  }
+
+  /**
+   * Get {@link value} as a JSON-compatible object
+   */
+  getJsonValue(): JsonValue {
+    if (this.typeObject === null) throw Error('Socket has no associated type');
+    return this.typeObject.toJson(this.getValue());
   }
 
   /**

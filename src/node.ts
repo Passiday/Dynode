@@ -289,6 +289,7 @@ class Node extends VEventTarget {
     return new Promise<void>((pResolve) => {
       this.log('Node action:', this.name);
       this.dumpInputs();
+      this.dispatchEvent(new VEvent('inputsReady'));
       let p;
       try {
         p = this.action();

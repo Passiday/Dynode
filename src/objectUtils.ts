@@ -1,3 +1,8 @@
+// JsonObject type definition copied from https://github.com/sindresorhus/type-fest/blob/main/source/basic.d.ts
+export type JsonObject = {[Key in string]?: JsonValue};
+type JsonArray = Array<JsonValue>;
+export type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
 declare type NewableType = new(...args: any[]) => object;
 

@@ -71,7 +71,7 @@ test('outputSocketTest', () => {
 });
 
 test('setValue with a type', () => {
-  const vt = new ValueType('oddNumber', ((value: unknown): boolean => (typeof value === 'number') && (value % 2 === 1)));
+  const vt = new ValueType('oddNumber', ((value: unknown): boolean => (typeof value === 'number') && (value % 2 === 1)), (value: unknown) => <number> value);
   const s = new Socket(vt);
 
   s.setValue(5);
