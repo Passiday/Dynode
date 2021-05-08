@@ -1,4 +1,5 @@
 import Socket from './socket';
+import InputSocket from './inputSocket';
 
 /**
  * Class that handles related socket management.
@@ -85,6 +86,34 @@ class SocketCollection<T extends Socket> {
    */
   public getAllSockets(): T[] {
     return [...this.sockets];
+  }
+
+  /**
+   * Iterator, that retrieves socket information
+   */
+  [Symbol.iterator]() {
+    const sockets = this.getAllSockets();
+    let currentIndex = 0;
+
+    return {
+      next() {
+        if (currentIndex < sockets.length) {
+          const socket = sockets[currentIndex];
+          currentIndex++;
+          const value = {
+            socket,
+            name: socket.name,
+            title: socket.title,
+            type: socket.constructor.name,
+            value: (socket instanceof InputSocket) ? socket.defaultValue : undefined,
+            enabled: (socket instanceof InputSocket)
+              ? (socket.linkSocket === undefined) : undefined,
+          };
+          return { value, done: false };
+        }
+        return { done: true };
+      },
+    };
   }
 }
 
