@@ -100,7 +100,7 @@ class SocketCollection<T extends Socket> {
         name: socket.name,
         title: socket.title,
         value: (socket instanceof InputSocket)
-          ? (socket.defaultValue as JsonValue) : undefined, // And this
+          ? (socket.defaultValue as JsonValue) : undefined,
       };
       yield value;
     }
