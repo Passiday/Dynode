@@ -161,9 +161,11 @@ test('SocketCollection iterator', () => {
   const mockFn = jest.fn();
 
   for (const info of sc) {
-    if (info !== undefined) {
-      mockFn(info.socket);
-      // console.log(info.socket);
-    }
+    mockFn(info.socket);
   }
+  const arr = [...sc];
+  expect(mockFn).toBeCalledTimes(2);
+  expect(mockFn).toBeCalledWith(s1);
+  expect(mockFn).toBeCalledWith(s2);
+  expect(arr.length).toBe(2);
 });

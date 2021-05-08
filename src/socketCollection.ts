@@ -89,31 +89,23 @@ class SocketCollection<T extends Socket> {
   }
 
   /**
-   * Iterator, that retrieves socket information
+   * Generator, that retrieves socket information
    */
-  [Symbol.iterator]() {
+  * [Symbol.iterator]() {
     const sockets = this.getAllSockets();
-    let currentIndex = 0;
 
-    return {
-      next() {
-        if (currentIndex < sockets.length) {
-          const socket = sockets[currentIndex];
-          currentIndex++;
-          const value = {
-            socket,
-            name: socket.name,
-            title: socket.title,
-            type: socket.constructor.name,
-            value: (socket instanceof InputSocket) ? socket.defaultValue : undefined,
-            enabled: (socket instanceof InputSocket)
-              ? (socket.linkSocket === undefined) : undefined,
-          };
-          return { value, done: false };
-        }
-        return { done: true };
-      },
-    };
+    for (const socket of sockets) {
+      const value = {
+        socket, // NodeUI dislike this
+        name: socket.name,
+        title: socket.title,
+        type: socket.constructor.name,
+        value: (socket instanceof InputSocket) ? socket.defaultValue : undefined, // And this
+        enabled: (socket instanceof InputSocket)
+          ? (socket.linkSocket === undefined) : undefined,
+      };
+      yield value;
+    }
   }
 }
 

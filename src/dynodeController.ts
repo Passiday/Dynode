@@ -64,33 +64,7 @@ class NetworkController {
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
       const nodeConfig = {
         name: nodeModel.name,
-        inputs: [
-          // TODO: prepare the input config from the model inputs
-          {
-            socket: 'input',
-            name: 'inputA',
-            title: 'First',
-            type: 'string',
-            value: 'abc', // The input default value
-            enabled: true, // Only unlinked inputs must be enabled
-          },
-          {
-            socket: 'input',
-            name: 'inputB',
-            title: 'Second',
-            type: 'number',
-            value: 123,
-            enabled: false,
-          },
-          {
-            socket: 'input',
-            name: 'inputB',
-            title: 'Second',
-            type: 'number',
-            value: 123,
-            enabled: false,
-          },
-        ],
+        inputs: [...nodeModel.inputs],
       };
       const nodeUI = new NodeUI(stage, nodeConfig);
       const nodeCtr = new NodeController(nodeModel, nodeUI);
