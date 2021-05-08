@@ -153,19 +153,25 @@ test('SocketCollection iterator', () => {
   const sc = new SocketCollection();
   const s1 = new InputSocket();
   s1.name = 's1';
+  s1.setDefaultValue(5);
   const s2 = new InputSocket();
   s2.name = 's2';
+  s2.setDefaultValue('test');
   sc.addSocket(s1);
   sc.addSocket(s2);
 
   const mockFn = jest.fn();
+  const dV = jest.fn();
 
   for (const info of sc) {
-    mockFn(info.socket);
+    mockFn(info.name);
+    dV(info.value);
   }
   const arr = [...sc];
   expect(mockFn).toBeCalledTimes(2);
-  expect(mockFn).toBeCalledWith(s1);
-  expect(mockFn).toBeCalledWith(s2);
+  expect(mockFn).toBeCalledWith(s1.name);
+  expect(mockFn).toBeCalledWith(s2.name);
+  expect(dV).toBeCalledWith(5);
+  expect(dV).toBeCalledWith('test');
   expect(arr.length).toBe(2);
 });

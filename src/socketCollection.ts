@@ -1,5 +1,6 @@
 import Socket from './socket';
 import InputSocket from './inputSocket';
+import { JsonValue } from './objectUtils';
 
 /**
  * Class that handles related socket management.
@@ -96,13 +97,10 @@ class SocketCollection<T extends Socket> {
 
     for (const socket of sockets) {
       const value = {
-        socket, // NodeUI dislike this
         name: socket.name,
         title: socket.title,
-        type: socket.constructor.name,
-        value: (socket instanceof InputSocket) ? socket.defaultValue : undefined, // And this
-        enabled: (socket instanceof InputSocket)
-          ? (socket.linkSocket === undefined) : undefined,
+        value: (socket instanceof InputSocket)
+          ? (socket.defaultValue as JsonValue) : undefined, // And this
       };
       yield value;
     }
