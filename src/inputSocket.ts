@@ -1,3 +1,4 @@
+import { JsonValue } from './objectUtils';
 import OutputSocket from './outputSocket';
 import Socket from './socket';
 import { VEventHandler, VEvent } from './vanillaEvent';
@@ -9,17 +10,17 @@ class InputSocket extends Socket {
   /**
    * Value used if the socket doesn't have a socket linked to it.
    */
-  defaultValue: unknown;
+  private defaultValue: unknown;
 
   /**
    * If true, mark socket's default to be nothing.
    */
-  defaultNothing = false;
+  private defaultNothing = false;
 
   /**
    * Marks whether socket can have a default value.
    */
-  hasDefault = false;
+  private hasDefault = false;
 
   /**
    * Reference to the socket that is connected to the input.
@@ -142,6 +143,15 @@ class InputSocket extends Socket {
       return super.isNothing();
     }
     return this.isDefaultNothing();
+  }
+
+  isDefaultSet(): boolean {
+    return this.hasDefault;
+  }
+
+  getJsonDefaultValue(): JsonValue {
+    if (this.typeObject === null) throw Error('Socket has no associated type');
+    return this.typeObject.toJson(this.getDefaultValue());
   }
 }
 

@@ -90,19 +90,11 @@ class SocketCollection<T extends Socket> {
   }
 
   /**
-   * Generator, that retrieves socket information
+   * Generator, that retrieves sockets
    */
   * [Symbol.iterator]() {
-    const sockets = this.getAllSockets();
-
-    for (const socket of sockets) {
-      const value = {
-        name: socket.name,
-        title: socket.title,
-        value: (socket instanceof InputSocket)
-          ? (socket.defaultValue as JsonValue) : undefined,
-      };
-      yield value;
+    for (const socket of this.sockets) {
+      yield socket;
     }
   }
 }

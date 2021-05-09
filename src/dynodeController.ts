@@ -2,7 +2,8 @@ import Network from './network';
 import Node from './node';
 import { StageUI, NodeUI } from './DynodeUI';
 import { VEvent } from './vanillaEvent';
-import { JsonObject } from './objectUtils';
+import { JsonObject, JsonValue } from './objectUtils';
+import InputSocket from './inputSocket';
 
 class NodeController {
   model: Node;
@@ -64,7 +65,14 @@ class NetworkController {
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
       const nodeConfig = {
         name: nodeModel.name,
-        inputs: [...nodeModel.inputs],
+        inputs: [...nodeModel.inputs].map((socket: InputSocket) => {
+          const result : {name: string | null; title: string | null; value?: JsonValue} = {
+            name: socket.name,
+            title: socket.title,
+          };
+          if (!socket.isDefaultNothing()) result.value = socket.getJsonDefaultValue();
+          return result;
+        }),
       };
       const nodeUI = new NodeUI(stage, nodeConfig);
       const nodeCtr = new NodeController(nodeModel, nodeUI);
