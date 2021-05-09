@@ -78,3 +78,12 @@ test('setValue with a type', () => {
   expect(s.getValue()).toBe(5);
   expect(() => s.setValue(10)).toThrow();
 });
+
+test('getJsonDefaultValue', () => {
+  const vt = new ValueType('number', ((value: unknown): boolean => (typeof value === 'number')), (value: unknown) => <number> value);
+  const s = new InputSocket(vt);
+
+  s.setDefaultValue(5);
+  expect(s.isDefaultSet()).toBe(true);
+  expect(s.getJsonDefaultValue()).toBe(5);
+});
