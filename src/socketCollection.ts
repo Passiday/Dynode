@@ -1,4 +1,6 @@
 import Socket from './socket';
+import InputSocket from './inputSocket';
+import { JsonValue } from './objectUtils';
 
 /**
  * Class that handles related socket management.
@@ -85,6 +87,15 @@ class SocketCollection<T extends Socket> {
    */
   public getAllSockets(): T[] {
     return [...this.sockets];
+  }
+
+  /**
+   * Generator, that retrieves sockets
+   */
+  * [Symbol.iterator]() {
+    for (const socket of this.sockets) {
+      yield socket;
+    }
   }
 }
 

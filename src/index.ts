@@ -1,16 +1,17 @@
+import StandardEngine from './standardEngine';
 import Network from './network';
 import Node from './node';
 import NodeType from './nodeType';
 import StandardEngine from './standardEngine';
 import { NetworkController } from './dynodeController';
 import { StageUI, NodeUI, LinkUI } from './DynodeUI';
-import { hasOwnProperty } from './objectUtils';
 import './main.scss';
 
 // Temporarily, the network and stage will be published to the global scope
-// so they can be manipulated from the console
+// so that they can be manipulated from the console
 
-const network = new Network();
+const engine = new StandardEngine();
+const network = new Network('network', engine); // TODO: (PJ) I'd like to do engine.createNetwork() instead. Also, I don't think the networks need names.
 const stageContainer = document.getElementById('dynodeContainer');
 if (stageContainer === null) throw new Error('dynodeContainer element does not exist.');
 const stage = new StageUI(stageContainer);
@@ -18,10 +19,10 @@ const stage = new StageUI(stageContainer);
 function controllerExample(): NetworkController {
   const controller = new NetworkController(network, stage);
 
-  const sumNode = new Node('Sum'); // Creates sum node;
-  sumNode.addInput('x');
-  sumNode.addInput('y');
-  sumNode.addOutput('result');
+  const sumNode = new Node('Sum', network); // Creates sum node;
+  sumNode.addInput('x', 'number');
+  sumNode.addInput('y', 'number');
+  sumNode.addOutput('result', 'number');
   sumNode.action = function (this: Node) {
     if (this.inputIsNothing('x')) return;
     if (this.inputIsNothing('y')) return;
@@ -30,12 +31,16 @@ function controllerExample(): NetworkController {
     this.setOutputValue('result', x + y);
   };
   network.addNode(sumNode);
+  /* TODO:
+  (PJ) We need a network.createNode() - currently we have to specify the network also
+  in the Node constructor, for typed inputs to work.
+  */
 
-  const nodeParams: Node = new Node('Params'); // Creates param node;
-  nodeParams.addInput('x').setDefaultValue(4);
-  nodeParams.addInput('y').setDefaultValue(3);
-  nodeParams.addOutput('x');
-  nodeParams.addOutput('y');
+  const nodeParams: Node = new Node('Params', network); // Creates param node;
+  nodeParams.addInput('x', 'number').setDefaultValue(4);
+  nodeParams.addInput('y', 'number').setDefaultValue(3);
+  nodeParams.addOutput('x', 'number');
+  nodeParams.addOutput('y', 'number');
   nodeParams.action = function (this: Node) {
     if (this.inputIsNothing('x')) return;
     if (this.inputIsNothing('y')) return;
@@ -101,7 +106,6 @@ function multiCycleExample() : void {
   delay.addOutput('y', undefined, true);
   delay.action = function () {
     if (this.inputIsNothing('x')) return;
-    // this.keepState();
     const input = this.getInputValue('x') as number;
     this.setOutputValue('y', input);
   };

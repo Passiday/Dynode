@@ -1,6 +1,9 @@
 import Network from './network';
 import Node from './node';
 import { StageUI, NodeUI } from './DynodeUI';
+import { VEvent } from './vanillaEvent';
+import { JsonObject, JsonValue } from './objectUtils';
+import InputSocket from './inputSocket';
 
 class NodeController {
   model: Node;
@@ -23,11 +26,15 @@ class NodeController {
       nodeUI.setInfo(s);
     }
     function inputsReady(this: Node): void {
-      const inputValues: {[key: string]: unknown} = {};
+      const inputConfig: JsonObject = {};
       this.inputs.getAllSockets().forEach((input) => {
-        if (!input.isNothing() && input.name !== null) inputValues[input.name] = input.getValue();
+        if (!input.isNothing() && input.name !== null) {
+          inputConfig[input.name] = {
+            value: input.getJsonValue(),
+          };
+        }
       });
-      nodeUI.updateInputs(inputValues);
+      nodeUI.updateInputs(inputConfig);
     }
     function nodeRemoved(this: Node): void {
       nodeUI.remove();
@@ -35,6 +42,7 @@ class NodeController {
     this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
+    this.model.addEventListener('inputsReady', inputsReady);
   }
 }
 
@@ -56,11 +64,22 @@ class NetworkController {
     function addNode(this: Network): void {
       // TODO: the node id should be received from event data
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
-      const nodeTypeName = nodeModel.nodeType?.name || 'default';
-      const NodeUIClass = stage.nodeTypeExists(nodeTypeName)
-        ? stage.getNodeType(nodeTypeName) : stage.getNodeType('default');
-      const nodeUI = new NodeUIClass(stage, nodeModel.name);
-      new NodeController(nodeModel, nodeUI);
+      const nodeConfig = {
+        name: nodeModel.name,
+        inputs: [...nodeModel.inputs].map((socket: InputSocket) => {
+          const result : {name: string | null; title: string | null; value?: JsonValue} = {
+            name: socket.name,
+            title: socket.title,
+          };
+          if (socket.isDefaultSet() && !socket.isDefaultNothing()) {
+            result.value = socket.getJsonDefaultValue();
+          }
+          return result;
+        }),
+      };
+      const nodeUI = new NodeUI(stage, nodeConfig);
+      const nodeCtr = new NodeController(nodeModel, nodeUI);
+      stage.debug[`node-${nodeModel.name}`] = nodeUI; // References to NodeUI instances for debugging purposes
     }
     this.model.addEventListener('addNode', addNode);
   }

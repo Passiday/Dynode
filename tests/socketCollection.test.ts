@@ -148,3 +148,22 @@ test('changed node name should be reflected in SocketCollection', () => {
   expect(() => sc.getSocketByName('old')).toThrow();
   expect(sc.getSocketByName('new')).toBe(s1);
 });
+
+test('SocketCollection iterator', () => {
+  const sc = new SocketCollection();
+  const s1 = new InputSocket();
+  s1.name = 's1';
+  const s2 = new InputSocket();
+  s2.name = 's2';
+  sc.addSocket(s1);
+  sc.addSocket(s2);
+
+  const mockFn = jest.fn();
+
+  for (const socket of sc) {
+    mockFn(socket);
+  }
+  expect(mockFn).toBeCalledTimes(2);
+  expect(mockFn).toHaveBeenCalledWith(s1);
+  expect(mockFn).toHaveBeenLastCalledWith(s2);
+});
