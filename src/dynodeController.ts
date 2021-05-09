@@ -70,7 +70,9 @@ class NetworkController {
             name: socket.name,
             title: socket.title,
           };
-          if (!socket.isDefaultNothing()) result.value = socket.getJsonDefaultValue();
+          if (socket.isDefaultSet() && !socket.isDefaultNothing()) {
+            result.value = socket.getJsonDefaultValue();
+          }
           return result;
         }),
       };
