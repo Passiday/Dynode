@@ -2,7 +2,6 @@ import StandardEngine from './standardEngine';
 import Network from './network';
 import Node from './node';
 import NodeType from './nodeType';
-import StandardEngine from './standardEngine';
 import { NetworkController } from './dynodeController';
 import { StageUI, NodeUI, LinkUI } from './DynodeUI';
 import './main.scss';

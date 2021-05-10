@@ -299,7 +299,6 @@ class Node extends VEventTarget {
       this.dumpInputs();
       this.dispatchEvent(new VEvent('inputsReady'));
       let p;
-      this.dispatchEvent(new VEvent('inputsReady'));
       try {
         p = this.action();
       } catch (err) {

@@ -269,10 +269,6 @@ class NodeUI {
   remove(): void {
     this.container.remove();
   }
-
-  public updateInputs(inputValues: {[key: string]: unknown}): void {
-    console.log('default updateInputs');
-  }
 }
 
 export default NodeUI;
