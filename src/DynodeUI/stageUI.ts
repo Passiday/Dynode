@@ -1,7 +1,8 @@
-import type NodeUI from './nodeUI';
+import type NodeUI from './nodeUI'
+import type { JsonObject } from '../objectUtils';
 
 interface NodeUIConstructor {
-  new(stage: StageUI, name: string): NodeUI;
+  new(stage: StageUI, config?: JsonObject): NodeUI;
 }
 
 class StageUI {

@@ -1,5 +1,11 @@
 import NodeUI from './nodeUI';
 import type StageUI from './stageUI';
+import type { JsonObject } from '../objectUtils';
+
+interface ObjectWithValue {
+  value: unknown,
+};
+
 
 class GridNodeUI extends NodeUI {
   /**
@@ -7,8 +13,8 @@ class GridNodeUI extends NodeUI {
    */
   private rectCells!: SVGBRect[][];
 
-  constructor(stage: StageUI, name?: string) {
-    super(stage, name);
+  constructor(stage: StageUI, config?: JsonObject) {
+    super(stage, config);
     this.redraw();
   }
 
@@ -22,12 +28,13 @@ class GridNodeUI extends NodeUI {
     const cols = 3; // count
 
     const rects: SVGBRect[][] = new Array(rows);
+    const gridContainer = this.stage.svgb.addGroup({class: 'gridContainer' });
 
     for (let row = 0; row < rows; row++) {
       rects[row] = new Array(cols);
 
       for (let col = 0; col < cols; col++) {
-        const a = this.container.addRect({
+        const a = gridContainer.addRect({
           x: xOffset + col * width + spacing * col,
           y: yOffset + row * height + spacing * row,
           height,
@@ -46,10 +53,16 @@ class GridNodeUI extends NodeUI {
     this.addSVGGrid();
   }
 
-  public updateInputs(inputValues: {[key: string]: unknown}): void {
-    super.updateInputs(inputValues);
-    const x = inputValues.x as number;
-    const y = inputValues.y as number;
+  public updateInputs(inputStates: JsonObject): void {
+    super.updateInputs(inputStates);
+    const xWrapper = inputStates.x as unknown as ObjectWithValue;
+    const yWrapper = inputStates.y as unknown as ObjectWithValue;
+
+    if (!xWrapper || !xWrapper.value) return;
+    if (!yWrapper || !yWrapper.value) return;
+
+    const x = xWrapper.value as number;
+    const y = yWrapper.value as number;
     console.log(`x is ${x}; y is ${y}`);
     if (x < 0 || x > 3) throw new Error('X is not 0, 1 or 2!');
     if (y < 0 || y > 3) throw new Error('y is not 0, 1 or 2!');
@@ -62,6 +75,8 @@ class GridNodeUI extends NodeUI {
       }
     }
 
+    console.log(`"y is ${y}"`);
+    console.log(y);
     this.rectCells[y][x].setAttributes({ style: { fill: 'red' } });
   }
 }

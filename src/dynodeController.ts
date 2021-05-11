@@ -42,7 +42,6 @@ class NodeController {
     this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
-    this.model.addEventListener('inputsReady', inputsReady);
   }
 }
 
@@ -77,7 +76,9 @@ class NetworkController {
           return result;
         }),
       };
-      const nodeUI = new NodeUI(stage, nodeConfig);
+      const nodeTypeName = nodeModel.nodeType?.name || 'default';
+      const NodeUIConstructor = stage.getNodeType(nodeTypeName);
+      const nodeUI = new NodeUIConstructor(stage, nodeConfig);
       const nodeCtr = new NodeController(nodeModel, nodeUI);
       stage.debug[`node-${nodeModel.name}`] = nodeUI; // References to NodeUI instances for debugging purposes
     }
