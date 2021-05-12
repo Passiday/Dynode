@@ -171,11 +171,11 @@ class NodeUI extends VEventTarget {
 
   addInput(inputConfig: JsonObject): InputUI {
     const input = new InputUI(inputConfig);
-    input.addEventListener('change', () => this.updateInputs({
+    input.addEventListener('change', () => new VEvent('inputChange', { detail: {
       [input.name]: {
         value: input.value,
       },
-    }));
+    }}));
     this.inputs.push(input);
     input.insert(this.inputsContainer);
     return input;
