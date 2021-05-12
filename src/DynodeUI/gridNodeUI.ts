@@ -48,14 +48,22 @@ class GridNodeUI extends NodeUI {
       rects[row] = new Array(cols);
 
       for (let col = 0; col < cols; col++) {
-        const a = gridContainer.addRect({
+        const svgCell = gridContainer.addRect({
           x: xOffset + col * width + spacing * col,
           y: yOffset + row * height + spacing * row,
           height,
           width,
         });
-        rects[row][col] = a;
-        a.setAttributes({ style: { fill: 'green' } });
+
+        rects[row][col] = svgCell;
+
+        svgCell.setAttributes({
+          style: { fill: 'green' },
+          onclick: () => this.updateInputs({
+            x: { value: col },
+            y: { value: row },
+          }),
+        });
       }
     }
 
@@ -73,8 +81,8 @@ class GridNodeUI extends NodeUI {
     const xWrapper = inputStates.x as unknown as ObjectWithValue;
     const yWrapper = inputStates.y as unknown as ObjectWithValue;
 
-    this.currentX = ((xWrapper && xWrapper.value) ? xWrapper.value : this.currentX) as number;
-    this.currentY = ((yWrapper && yWrapper.value) ? yWrapper.value : this.currentY) as number;
+    this.currentX = ((xWrapper && xWrapper.value !== null) ? xWrapper.value : this.currentX) as number;
+    this.currentY = ((yWrapper && yWrapper.value !== null) ? yWrapper.value : this.currentY) as number;
 
     const x = this.currentX;
     const y = this.currentY;
