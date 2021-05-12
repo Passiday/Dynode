@@ -39,7 +39,7 @@ export default class GridNodeUI extends NodeUI {
 
     const rects: SVGBRect[][] = new Array(rows);
     const rootContainer = this.addSection();
-    const rootContainerSvgb = new SVGBuilder({class: "grid-box"});
+    const rootContainerSvgb = new SVGBuilder({ class: 'grid-box' });
     const gridContainer = rootContainerSvgb.addGroup();
     rootContainerSvgb.insert(rootContainer);
 
@@ -96,7 +96,7 @@ export default class GridNodeUI extends NodeUI {
     // Reset cell state
     for (const row of this.rectCells) {
       for (const col of row) {
-        col.element.classList.remove('active-cell')
+        col.element.classList.remove('active-cell');
       }
     }
 
