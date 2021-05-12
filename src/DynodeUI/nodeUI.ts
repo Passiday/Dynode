@@ -1,7 +1,8 @@
 import StageUI from './stageUI';
-import { JsonObject, JsonValue } from '../objectUtils';
+import { hasOwnProperty, JsonObject, JsonValue } from '../objectUtils';
+import { VEvent, VEventTarget } from '../vanillaEvent';
 
-class InputUI {
+class InputUI extends VEventTarget{
   body: HTMLDivElement;
 
   control: HTMLInputElement;
@@ -13,6 +14,7 @@ class InputUI {
   value: JsonValue;
 
   constructor(config: JsonObject) {
+    super();
     // Get the params
     this.name = 'name' in config ? <string> config.name : 'InputID';
     this.title = 'title' in config ? <string> config.title : 'InputTitle';
@@ -62,7 +64,7 @@ class InputUI {
     // TODO Handle the value according to the input type
     this.value = value;
     console.log('Input [', this.name, '] onChange:', this.value);
-    // TODO trigger "change" event that can be used by the controller to bind with the model
+    this.dispatchEvent(new VEvent('change', { detail: { value }}));
   }
 
   setValue(value: JsonValue): void {
@@ -85,7 +87,7 @@ class InputUI {
   }
 }
 
-class NodeUI {
+class NodeUI extends VEventTarget {
   stage: StageUI;
 
   name: string;
@@ -107,6 +109,7 @@ class NodeUI {
   config: JsonObject;
 
   constructor(stage: StageUI, config?: JsonObject) {
+    super();
     this.config = config === undefined ? {} : config;
 
     this.stage = stage;
@@ -168,6 +171,11 @@ class NodeUI {
 
   addInput(inputConfig: JsonObject): InputUI {
     const input = new InputUI(inputConfig);
+    input.addEventListener('change', () => this.updateInputs({
+      [input.name]: {
+        value: input.value,
+      },
+    }));
     this.inputs.push(input);
     input.insert(this.inputsContainer);
     return input;

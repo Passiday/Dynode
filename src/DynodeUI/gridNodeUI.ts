@@ -13,9 +13,20 @@ class GridNodeUI extends NodeUI {
    */
   private rectCells!: SVGBRect[][];
 
+  /**
+   * The X coordinate of the currently colored cells
+   */
+  private currentX: number;
+
+  /**
+   * The Y coordinate of the currently colored cells
+   */
+  private currentY: number;
+
   constructor(stage: StageUI, config?: JsonObject) {
     super(stage, config);
-    this.redraw();
+    this.currentX = 0;
+    this.currentY = 0;
   }
 
   private addSVGGrid(): void {
@@ -28,7 +39,10 @@ class GridNodeUI extends NodeUI {
     const cols = 3; // count
 
     const rects: SVGBRect[][] = new Array(rows);
-    const gridContainer = this.stage.svgb.addGroup({class: 'gridContainer' });
+    const rootContainer = this.addSection();
+    const rootContainerSvgb = new SVGBuilder();
+    const gridContainer = rootContainerSvgb.addGroup();
+    rootContainerSvgb.insert(rootContainer);
 
     for (let row = 0; row < rows; row++) {
       rects[row] = new Array(cols);
@@ -51,6 +65,7 @@ class GridNodeUI extends NodeUI {
   public redraw(): void {
     super.redraw();
     this.addSVGGrid();
+    this.updateHeight();
   }
 
   public updateInputs(inputStates: JsonObject): void {
@@ -58,11 +73,12 @@ class GridNodeUI extends NodeUI {
     const xWrapper = inputStates.x as unknown as ObjectWithValue;
     const yWrapper = inputStates.y as unknown as ObjectWithValue;
 
-    if (!xWrapper || !xWrapper.value) return;
-    if (!yWrapper || !yWrapper.value) return;
+    this.currentX = ((xWrapper && xWrapper.value) ? xWrapper.value : this.currentX) as number;
+    this.currentY = ((yWrapper && yWrapper.value) ? yWrapper.value : this.currentY) as number;
 
-    const x = xWrapper.value as number;
-    const y = yWrapper.value as number;
+    const x = this.currentX;
+    const y = this.currentY;
+
     console.log(`x is ${x}; y is ${y}`);
     if (x < 0 || x > 3) throw new Error('X is not 0, 1 or 2!');
     if (y < 0 || y > 3) throw new Error('y is not 0, 1 or 2!');
