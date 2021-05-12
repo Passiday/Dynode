@@ -1,7 +1,11 @@
-import NodeUI from './nodeUI';
-import type StageUI from './stageUI';
+import Node from '../node';
+import NodeType from '../nodeType';
+import StandardEngine from '../standardEngine';
+import { NetworkController } from '../dynodeController';
+import { NodeUI } from '../DynodeUI';
+import type Network from '../network';
+import type { StageUI } from '../DynodeUI';
 import type { JsonObject } from '../objectUtils';
-
 interface ObjectWithValue {
   value: unknown,
 };
@@ -105,4 +109,31 @@ class GridNodeUI extends NodeUI {
   }
 }
 
-export default GridNodeUI;
+export default function cellularAutomataExample(network: Network, stage: StageUI) {
+  const controller = new NetworkController(network, stage);
+  network.engine = new StandardEngine();
+  stage.addNodeType('grid', GridNodeUI);
+  network.engine.addNodeTypeDefinition(new NodeType(
+    'grid',
+    ((node: Node) => {
+      const n = node;
+      n.addInput('x', 'number').setDefaultValue(0);
+      n.addInput('y', 'number').setDefaultValue(0);
+      n.addOutput('result');
+      n.action = function (this: Node) {
+        // TODO
+      };
+      return n;
+    }),
+  ));
+  const n1 = new Node('grid1', network, network.engine.getNodeTypeDefinition('grid'));
+  network.addNode(n1);
+  network.resolve().then(() => {
+    // This "then" clause checks whether grid is updated properly
+    n1.inputs.getSocketByName('x').setDefaultValue(1);
+    n1.inputs.getSocketByName('y').setDefaultValue(2);
+    network.resolve();
+  });
+
+  return controller;
+}
