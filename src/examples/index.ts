@@ -21,5 +21,5 @@ const examples: ExampleFuncCollection = {
 export {
   examples,
   ExampleFunc,
-  ExampleFuncCollection
+  ExampleFuncCollection,
 };

@@ -1,6 +1,4 @@
 import Socket from './socket';
-import InputSocket from './inputSocket';
-import { JsonValue } from './objectUtils';
 
 /**
  * Class that handles related socket management.

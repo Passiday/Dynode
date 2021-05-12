@@ -1,8 +1,8 @@
 import StageUI from './stageUI';
-import { hasOwnProperty, JsonObject, JsonValue } from '../objectUtils';
+import { JsonObject, JsonValue } from '../objectUtils';
 import { VEvent, VEventTarget } from '../vanillaEvent';
 
-class InputUI extends VEventTarget{
+class InputUI extends VEventTarget {
   body: HTMLDivElement;
 
   control: HTMLInputElement;
@@ -64,7 +64,7 @@ class InputUI extends VEventTarget{
     // TODO Handle the value according to the input type
     this.value = value;
     console.log('Input [', this.name, '] onChange:', this.value);
-    this.dispatchEvent(new VEvent('change', { detail: { value }}));
+    this.dispatchEvent(new VEvent('change', { detail: { value } }));
   }
 
   setValue(value: JsonValue): void {
@@ -171,11 +171,13 @@ class NodeUI extends VEventTarget {
 
   addInput(inputConfig: JsonObject): InputUI {
     const input = new InputUI(inputConfig);
-    input.addEventListener('change', () => new VEvent('inputChange', { detail: {
-      [input.name]: {
-        value: input.value,
+    input.addEventListener('change', () => new VEvent('inputChange', {
+      detail: {
+        [input.name]: {
+          value: input.value,
+        },
       },
-    }}));
+    }));
     this.inputs.push(input);
     input.insert(this.inputsContainer);
     return input;

@@ -43,8 +43,8 @@ class NodeController {
     this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
-    this.view.addEventListener('inputChange', function(this: NodeUI, ev: VEvent) {
-      for (let [key, value] of Object.entries(ev.detail as Object)) {
+    this.view.addEventListener('inputChange', (ev: VEvent) => {
+      for (const [key, value] of Object.entries(ev.detail as Record<string, unknown>)) {
         node.getInput(key).setValue(value);
       }
     });

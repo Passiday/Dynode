@@ -6,10 +6,10 @@ import { NodeUI } from '../DynodeUI';
 import type Network from '../network';
 import type { StageUI } from '../DynodeUI';
 import type { JsonObject } from '../objectUtils';
+
 interface ObjectWithValue {
   value: unknown,
-};
-
+}
 
 class GridNodeUI extends NodeUI {
   /**
@@ -85,8 +85,10 @@ class GridNodeUI extends NodeUI {
     const xWrapper = inputStates.x as unknown as ObjectWithValue;
     const yWrapper = inputStates.y as unknown as ObjectWithValue;
 
-    this.currentX = ((xWrapper && xWrapper.value !== null) ? xWrapper.value : this.currentX) as number;
-    this.currentY = ((yWrapper && yWrapper.value !== null) ? yWrapper.value : this.currentY) as number;
+    this.currentX = ((xWrapper && xWrapper.value !== null)
+      ? xWrapper.value : this.currentX) as number;
+    this.currentY = ((yWrapper && yWrapper.value !== null)
+      ? yWrapper.value : this.currentY) as number;
 
     const x = this.currentX;
     const y = this.currentY;
@@ -109,8 +111,11 @@ class GridNodeUI extends NodeUI {
   }
 }
 
-export default function cellularAutomataExample(network: Network, stage: StageUI) {
+export default function cellularAutomataExample(
+  network: Network, stage: StageUI,
+) : NetworkController {
   const controller = new NetworkController(network, stage);
+  // eslint-disable-next-line no-param-reassign
   network.engine = new StandardEngine();
   stage.addNodeType('grid', GridNodeUI);
   network.engine.addNodeTypeDefinition(new NodeType(
