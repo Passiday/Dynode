@@ -39,7 +39,7 @@ export default class GridNodeUI extends NodeUI {
 
     const rects: SVGBRect[][] = new Array(rows);
     const rootContainer = this.addSection();
-    const rootContainerSvgb = new SVGBuilder();
+    const rootContainerSvgb = new SVGBuilder({class: "grid-box"});
     const gridContainer = rootContainerSvgb.addGroup();
     rootContainerSvgb.insert(rootContainer);
 
@@ -57,7 +57,7 @@ export default class GridNodeUI extends NodeUI {
         rects[row][col] = svgCell;
 
         svgCell.setAttributes({
-          style: { fill: 'green' },
+          class: 'cell',
           onclick: () => this.updateInputs({
             x: { value: col },
             y: { value: row },
@@ -93,15 +93,15 @@ export default class GridNodeUI extends NodeUI {
     if (y < 0 || y > 3) throw new Error('y is not 0, 1 or 2!');
     if (!this.rectCells) return;
 
-    // Reset colors
+    // Reset cell state
     for (const row of this.rectCells) {
       for (const col of row) {
-        col.setAttributes({ style: { fill: 'green' } });
+        col.element.classList.remove('active-cell')
       }
     }
 
     console.log(`"y is ${y}"`);
     console.log(y);
-    this.rectCells[y][x].setAttributes({ style: { fill: 'red' } });
+    this.rectCells[y][x].element.classList.add('active-cell');
   }
 }
