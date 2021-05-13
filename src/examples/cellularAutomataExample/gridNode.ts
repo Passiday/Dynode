@@ -88,7 +88,6 @@ export default class GridNodeUI extends NodeUI {
     const x = this.currentX;
     const y = this.currentY;
 
-    console.log(`x is ${x}; y is ${y}`);
     if (x < 0 || x > 3) throw new Error('X is not 0, 1 or 2!');
     if (y < 0 || y > 3) throw new Error('y is not 0, 1 or 2!');
     if (!this.rectCells) return;
@@ -100,8 +99,6 @@ export default class GridNodeUI extends NodeUI {
       }
     }
 
-    console.log(`"y is ${y}"`);
-    console.log(y);
     this.rectCells[y][x].element.classList.add('active-cell');
   }
 }

@@ -64,7 +64,7 @@ class InputUI extends VEventTarget {
     // TODO Handle the value according to the input type
     this.value = value;
     console.log('Input [', this.name, '] onChange:', this.value);
-    this.dispatchEvent(new VEvent('change', { detail: { value } }));
+    this.dispatchEvent(new VEvent('change'));
   }
 
   setValue(value: JsonValue): void {

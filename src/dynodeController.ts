@@ -17,8 +17,7 @@ class NodeController {
   }
 
   addHandlers(): void { // Init model event handlers
-    const { view: nodeUI } = this;
-    const node = this.model;
+    const { view: nodeUI, model: node } = this;
     function afterResolve(this: Node): void {
       let s = '';
       this.outputs.getAllSockets().forEach((output) => {
@@ -43,6 +42,7 @@ class NodeController {
     this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
+    // TODO Handle "nothing" in inputChange
     this.view.addEventListener('inputChange', (ev: VEvent) => {
       for (const [key, value] of Object.entries(ev.detail as Record<string, unknown>)) {
         node.getInput(key).setValue(value);

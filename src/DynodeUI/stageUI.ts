@@ -30,7 +30,7 @@ class StageUI {
   }
 
   public nodeTypeExists(type: string): boolean {
-    return !!this.types[type];
+    return (type in this.types);
   }
 }
 
