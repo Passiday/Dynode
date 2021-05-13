@@ -171,10 +171,11 @@ class NodeUI extends VEventTarget {
 
   addInput(inputConfig: JsonObject): InputUI {
     const input = new InputUI(inputConfig);
-    input.addEventListener('change', () => new VEvent('inputChange', {
+    input.addEventListener('change', (ev) => new VEvent('inputChange', {
+      // TODO Fix VEvent, so that there's no need to type cast ev.target
       detail: {
-        [input.name]: {
-          value: input.value,
+        [(ev.target as InputUI).name]: {
+          value: (ev.target as InputUI).value,
         },
       },
     }));
