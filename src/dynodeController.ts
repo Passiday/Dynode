@@ -45,7 +45,7 @@ class NodeController {
     // TODO Handle "nothing" in inputChange
     this.view.addEventListener('inputChange', (ev: VEvent) => {
       for (const [key, value] of Object.entries(ev.detail as Record<string, unknown>)) {
-        node.getInput(key).setValue(value);
+        node.getInput(key).setDefaultValue(value);
       }
     });
   }
