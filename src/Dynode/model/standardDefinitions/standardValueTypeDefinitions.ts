@@ -1,4 +1,4 @@
-import ValueType from './valueType';
+import { ValueType } from '../core/socket';
 
 export default [
   new ValueType('number', (value: unknown) => typeof value === 'number', (value: unknown) => <number> value),

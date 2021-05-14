@@ -1,5 +1,5 @@
+import { VEventTarget, VEvent } from 'src/utils/vanillaEvent';
 import Node from './node';
-import { VEventTarget, VEvent } from './vanillaEvent';
 import Engine from './engine';
 
 /**

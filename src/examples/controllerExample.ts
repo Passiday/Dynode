@@ -1,7 +1,7 @@
-import Node from '../node';
-import { NetworkController } from '../dynodeController';
-import type Network from '../network';
-import type { StageUI } from '../DynodeUI';
+import { Node } from 'src/Dynode/model/core';
+import { NetworkController } from 'src/Dynode/dynodeController';
+import type { Network } from 'src/Dynode/model/core';
+import type { StageUI } from 'src/Dynode/view';
 
 export default function controllerExample(network: Network, stage: StageUI): NetworkController {
   const controller = new NetworkController(network, stage);

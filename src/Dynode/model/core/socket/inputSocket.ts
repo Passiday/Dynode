@@ -1,7 +1,7 @@
-import { JsonValue } from './objectUtils';
+import { JsonValue } from 'src/utils/objectUtils';
+import { VEventHandler, VEvent } from 'src/utils/vanillaEvent';
 import OutputSocket from './outputSocket';
 import Socket from './socket';
-import { VEventHandler, VEvent } from './vanillaEvent';
 
 /**
  * Socket class that handles inputs.

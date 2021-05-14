@@ -1,6 +1,5 @@
-import Network from '../src/network';
-import Node from '../src/node';
-import OutputSocket from '../src/outputSocket';
+import { Network, Node } from 'src/Dynode/model/core';
+import { OutputSocket } from 'src/Dynode/model/core/socket';
 // import { VEventHandler, VEvent } from '../src/vanillaEvent';
 
 test('quadraticFormulaNetworkTest', () => {

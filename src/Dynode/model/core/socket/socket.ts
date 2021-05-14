@@ -1,5 +1,5 @@
-import { VEvent, VEventTarget } from './vanillaEvent';
-import { JsonValue } from './objectUtils';
+import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
+import { JsonValue } from 'src/utils/objectUtils';
 import ValueType from './valueType';
 
 /**

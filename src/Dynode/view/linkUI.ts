@@ -1,4 +1,4 @@
-import StageUI from './stageUI';
+import type StageUI from './stageUI';
 
 class LinkUI {
   stage: StageUI;

@@ -1,7 +1,7 @@
-import StandardEngine from '../src/standardEngine';
-import ValueType from '../src/valueType';
-import NodeType from '../src/nodeType';
-import type Node from '../src/node';
+import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
+import { ValueType } from 'src/Dynode/model/core/socket';
+import { NodeType } from 'src/Dynode/model/core';
+import type { Node } from 'src/Dynode/model/core';
 
 describe('getNodeTypeDefinition', () => {
   test('Ensure math node type exists', () => {

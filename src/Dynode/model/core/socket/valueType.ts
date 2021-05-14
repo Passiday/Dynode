@@ -1,4 +1,4 @@
-import { JsonValue } from './objectUtils';
+import { JsonValue } from 'src/utils/objectUtils';
 
 interface CheckFunc {
   (value: unknown): boolean;

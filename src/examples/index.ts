@@ -1,5 +1,5 @@
-import type Network from '../network';
-import type { StageUI } from '../DynodeUI';
+import type { Network } from 'src/Dynode/model/core';
+import type { StageUI } from 'src/Dynode/view';
 import cellularAutomataExample from './cellularAutomataExample';
 import controllerExample from './controllerExample';
 import multiCycleExample from './multiCycleExample';

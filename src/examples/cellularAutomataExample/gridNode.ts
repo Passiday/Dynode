@@ -1,6 +1,6 @@
-import { NodeUI } from '../../DynodeUI';
-import type { StageUI } from '../../DynodeUI';
-import type { JsonObject } from '../../objectUtils';
+import { NodeUI } from 'src/Dynode/view';
+import type { StageUI } from 'src/Dynode/view';
+import type { JsonObject } from 'src/utils/objectUtils';
 
 interface ObjectWithValue {
   value: unknown,

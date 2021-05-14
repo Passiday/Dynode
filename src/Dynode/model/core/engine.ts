@@ -1,4 +1,4 @@
-import type ValueType from './valueType';
+import type ValueType from './socket/valueType';
 import type NodeType from './nodeType';
 
 class Engine {

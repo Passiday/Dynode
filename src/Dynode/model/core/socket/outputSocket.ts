@@ -1,5 +1,5 @@
+import type { Node } from 'src/Dynode/model/core';
 import Socket from './socket';
-import type Node from './node';
 import type ValueType from './valueType';
 
 /**

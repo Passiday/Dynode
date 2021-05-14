@@ -1,9 +1,8 @@
-import Node from '../../node';
-import NodeType from '../../nodeType';
-import StandardEngine from '../../standardEngine';
-import { NetworkController } from '../../dynodeController';
-import type Network from '../../network';
-import type { StageUI } from '../../DynodeUI';
+import { Node, NodeType } from 'src/Dynode/model/core';
+import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
+import { NetworkController } from 'src/Dynode/dynodeController';
+import type { Network } from 'src/Dynode/model/core';
+import type { StageUI } from 'src/Dynode/view';
 import './style.scss';
 import GridNodeUI from './gridNode';
 

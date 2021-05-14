@@ -1,7 +1,5 @@
-import { VEvent, VEventTarget } from './vanillaEvent';
-import InputSocket from './inputSocket';
-import OutputSocket from './outputSocket';
-import SocketCollection from './socketCollection';
+import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
+import { InputSocket, OutputSocket, SocketCollection } from './socket';
 import Engine from './engine';
 import type Network from './network';
 import type NodeType from './nodeType';

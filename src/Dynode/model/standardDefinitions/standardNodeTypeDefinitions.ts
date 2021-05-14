@@ -1,5 +1,4 @@
-import Node from './node';
-import NodeType from './nodeType';
+import { Node, NodeType } from 'src/Dynode/model/core';
 
 function createMathNode(node: Node): Node {
   const n = node;

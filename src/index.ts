@@ -1,6 +1,6 @@
-import StandardEngine from './standardEngine';
-import Network from './network';
-import { StageUI, NodeUI, LinkUI } from './DynodeUI';
+import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
+import { Network } from 'src/Dynode/model/core';
+import { StageUI, NodeUI, LinkUI } from 'src/Dynode/view';
 import './main.scss';
 import { examples, ExampleFuncCollection } from './examples';
 

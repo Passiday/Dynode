@@ -1,4 +1,4 @@
-import Engine from './engine';
+import { Engine } from '../core';
 import StandardValueTypeDefinitions from './standardValueTypeDefinitions';
 import StandardNodeTypeDefinitions from './standardNodeTypeDefinitions';
 

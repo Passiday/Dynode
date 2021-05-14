@@ -1,9 +1,3 @@
-import StageUI from './standardStageUI';
-import NodeUI from './nodeUI';
-import LinkUI from './linkUI';
-
-export {
-  StageUI,
-  NodeUI,
-  LinkUI,
-};
+export { default as StageUI } from './standardStageUI';
+export { default as NodeUI } from './nodeUI';
+export { default as LinkUI } from './linkUI';

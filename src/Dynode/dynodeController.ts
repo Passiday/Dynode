@@ -1,9 +1,8 @@
-import Network from './network';
-import Node from './node';
-import { StageUI, NodeUI } from './DynodeUI';
-import { VEvent } from './vanillaEvent';
-import { JsonObject, JsonValue } from './objectUtils';
-import InputSocket from './inputSocket';
+import { Network, Node } from 'src/Dynode/model/core';
+import { StageUI, NodeUI } from 'src/Dynode/view';
+import { VEvent } from 'src/utils/vanillaEvent';
+import { JsonObject, JsonValue } from 'src/utils/objectUtils';
+import { InputSocket } from 'src/Dynode/model/core/socket';
 
 class NodeController {
   model: Node;

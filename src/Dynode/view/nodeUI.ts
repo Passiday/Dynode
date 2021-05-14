@@ -1,6 +1,6 @@
+import { JsonObject, JsonValue } from 'src/utils/objectUtils';
+import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
 import StageUI from './stageUI';
-import { JsonObject, JsonValue } from '../objectUtils';
-import { VEvent, VEventTarget } from '../vanillaEvent';
 
 class InputUI extends VEventTarget {
   body: HTMLDivElement;
