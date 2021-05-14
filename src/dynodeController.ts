@@ -17,7 +17,7 @@ class NodeController {
   }
 
   addHandlers(): void { // Init model event handlers
-    const { view: nodeUI } = this;
+    const { view: nodeUI, model: node } = this;
     function afterResolve(this: Node): void {
       let s = '';
       this.outputs.getAllSockets().forEach((output) => {
@@ -39,9 +39,15 @@ class NodeController {
     function nodeRemoved(this: Node): void {
       nodeUI.remove();
     }
+    this.model.addEventListener('inputsReady', inputsReady);
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
-    this.model.addEventListener('inputsReady', inputsReady);
+    // TODO Handle "nothing" in inputChange
+    this.view.addEventListener('inputChange', (ev: VEvent) => {
+      for (const [key, value] of Object.entries(ev.detail as Record<string, unknown>)) {
+        node.getInput(key).setDefaultValue(value);
+      }
+    });
   }
 }
 
@@ -76,7 +82,9 @@ class NetworkController {
           return result;
         }),
       };
-      const nodeUI = new NodeUI(stage, nodeConfig);
+      const nodeTypeName = nodeModel.nodeType?.name || 'default';
+      const NodeUIConstructor = stage.getNodeType(nodeTypeName);
+      const nodeUI = new NodeUIConstructor(stage, nodeConfig);
       const nodeCtr = new NodeController(nodeModel, nodeUI);
       stage.debug[`node-${nodeModel.name}`] = nodeUI; // References to NodeUI instances for debugging purposes
     }

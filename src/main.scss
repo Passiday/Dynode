@@ -18,7 +18,8 @@
   height: 600px;
   background-color: hsb(0, 0%, 70%);
 
-  svg {
+  // Direct children because there can be nested svg
+  & > svg {
     width: 1200px;
     height: 600px;
   }

@@ -1,0 +1,14 @@
+svg {
+    .grid-box {
+        width: 100%;
+        height: 100%;
+    }
+
+    .cell {
+        fill: green;
+    }
+
+    .active-cell {
+        fill: red;
+    }
+}

@@ -4,6 +4,7 @@ import OutputSocket from './outputSocket';
 import SocketCollection from './socketCollection';
 import Engine from './engine';
 import type Network from './network';
+import type NodeType from './nodeType';
 
 /**
  * Class that does processing, using InputSocket and OutputSocket.
@@ -20,6 +21,11 @@ class Node extends VEventTarget {
   public engine: Engine | null;
 
   /**
+   * The type of this node.
+   */
+  public nodeType: NodeType | null;
+
+  /**
    * Identifier used to differentiate from other instances of this class.
    */
   name: string;
@@ -27,11 +33,13 @@ class Node extends VEventTarget {
   /**
    * @param name  See {@link name}
    */
-  constructor(name: string, network?: Network) {
+  constructor(name: string, network?: Network, nodeType?: NodeType) {
     super();
     this.name = name || 'Untitled';
     this.network = network || null;
     this.engine = network ? network.engine : null;
+    this.nodeType = nodeType || null;
+    if (nodeType) nodeType.createFunc(this);
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 
