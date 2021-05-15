@@ -1,4 +1,4 @@
-import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
+import { Engine as StandardEngine } from 'src/Dynode/model/standard';
 import { Network } from 'src/Dynode/model/core';
 import { StageUI, NodeUI, LinkUI } from 'src/Dynode/view';
 import './index.scss';

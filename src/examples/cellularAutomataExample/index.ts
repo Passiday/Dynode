@@ -1,5 +1,5 @@
 import { Node, NodeType } from 'src/Dynode/model/core';
-import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
+import { Engine } from 'src/Dynode/model/standard';
 import { NetworkController } from 'src/Dynode/controller';
 import type { Network } from 'src/Dynode/model/core';
 import type { StageUI } from 'src/Dynode/view';
@@ -11,7 +11,7 @@ export default function cellularAutomataExample(
 ) : NetworkController {
   const controller = new NetworkController(network, stage);
   // eslint-disable-next-line no-param-reassign
-  network.engine = new StandardEngine();
+  network.engine = new Engine();
   stage.addNodeType('grid', GridNodeUI);
   network.engine.addNodeTypeDefinition(new NodeType(
     'grid',

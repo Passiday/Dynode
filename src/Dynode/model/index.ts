@@ -1,2 +1,2 @@
 export * as Core from './core';
-export * as StandardDefinitions from './standardDefinitions';
+export * as Standard from './standard';

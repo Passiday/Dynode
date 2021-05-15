@@ -1,4 +1,4 @@
-import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
+import { Engine as StandardEngine } from 'src/Dynode/model/standard';
 import { ValueType } from 'src/Dynode/model/core/socket';
 import { NodeType } from 'src/Dynode/model/core';
 import type { Node } from 'src/Dynode/model/core';
