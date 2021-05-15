@@ -1,6 +1,6 @@
 import { Node, NodeType } from 'src/Dynode/model/core';
 import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
-import { NetworkController } from 'src/Dynode/dynodeController';
+import { NetworkController } from 'src/Dynode/controller';
 import type { Network } from 'src/Dynode/model/core';
 import type { StageUI } from 'src/Dynode/view';
 import './style.scss';

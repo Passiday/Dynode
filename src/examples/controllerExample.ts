@@ -1,5 +1,5 @@
 import { Node } from 'src/Dynode/model/core';
-import { NetworkController } from 'src/Dynode/dynodeController';
+import { NetworkController } from 'src/Dynode/controller';
 import type { Network } from 'src/Dynode/model/core';
 import type { StageUI } from 'src/Dynode/view';
 
