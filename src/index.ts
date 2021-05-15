@@ -1,7 +1,7 @@
 import { StandardEngine } from 'src/Dynode/model/standardDefinitions';
 import { Network } from 'src/Dynode/model/core';
 import { StageUI, NodeUI, LinkUI } from 'src/Dynode/view';
-import './main.scss';
+import './index.scss';
 import { examples, ExampleFuncCollection } from './examples';
 
 // Temporarily, the network and stage will be published to the global scope
