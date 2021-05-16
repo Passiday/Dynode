@@ -1,0 +1,73 @@
+@use "~src/utils/styleUtils.scss" as *;
+g.node {
+  rect.body {
+    fill: hsba(0, 0%, 100%, 0.5);
+  }
+
+  rect.titleBar {
+    fill: hsb(240, 100%, 50%);
+  }
+
+  text.titleBarText {
+    cursor: default;
+    fill: white;
+    pointer-events: none;
+  }
+
+  div.body {
+    user-select: none;
+    padding: 5px;
+  }
+
+  div.infoBox {
+    cursor: default;
+    font-size: 20px;
+    color: hsb(0, 0%, 50%);
+  }
+
+  div.socketContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas: "inputs outputs";
+  }
+
+  div.inputs {
+    grid-area: inputs;
+  }
+
+  div.input {
+    height: 20px;
+    white-space: nowrap;
+
+    div {
+      float: left;
+      box-sizing: border-box;
+      width: 50%;
+    }
+
+    input[type="text"] {
+      box-sizing: border-box;
+      width: 50%;
+    }
+  }
+
+  div.outputs {
+    grid-area: outputs;
+  }
+}
+
+
+g.link {
+  g.socket circle {
+    fill: white;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+  line {
+    stroke: black;
+    stroke-width: 2px;
+  }
+}

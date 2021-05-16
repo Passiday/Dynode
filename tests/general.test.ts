@@ -1,9 +1,8 @@
-import StandardEngine from '../src/standardEngine';
-import Network from '../src/network';
-import Node from '../src/node';
+import { Engine } from 'src/Dynode/model/standard';
+import { Network, Node } from 'src/Dynode/model/core';
 
 test('Engine passing test', () => {
-  const engine = new StandardEngine();
+  const engine = new Engine();
   const network = new Network('n', engine);
   const n1 = new Node('n1');
 

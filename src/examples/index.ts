@@ -1,11 +1,11 @@
-import type Network from '../network';
-import type { StageUI } from '../DynodeUI';
-import cellularAutomataExample from './cellularAutomataExample';
-import controllerExample from './controllerExample';
-import multiCycleExample from './multiCycleExample';
+import type { Network } from 'src/Dynode/model/core';
+import type { StageView } from 'src/Dynode/view';
+import cellularAutomata from './cellularAutomata';
+import controller from './controller';
+import multiCycle from './multiCycle';
 
 interface ExampleFunc {
-  (network: Network, stage: StageUI): unknown;
+  (network: Network, stage: StageView): unknown;
 }
 
 interface ExampleFuncCollection {
@@ -13,9 +13,9 @@ interface ExampleFuncCollection {
 }
 
 const examples: ExampleFuncCollection = {
-  cellularAutomataExample,
-  controllerExample,
-  multiCycleExample,
+  cellularAutomata,
+  controller,
+  multiCycle,
 };
 
 export {

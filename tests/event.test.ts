@@ -1,5 +1,5 @@
-import { VEvent, VEventTarget } from '../src/vanillaEvent';
-import { applyMixins } from '../src/objectUtils';
+import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
+import { applyMixins } from 'src/utils/objectUtils';
 
 test('Adding duplicates causes an error', () => {
   const target = new VEventTarget();

@@ -1,8 +1,7 @@
-import Node from '../src/node';
-import OutputSocket from '../src/outputSocket';
-import { VEvent } from '../src/vanillaEvent';
-import { hasOwnProperty } from '../src/objectUtils';
-import Network from '../src/network';
+import { Network, Node } from 'src/Dynode/model/core';
+import { OutputSocket } from 'src/Dynode/model/core/socket';
+import { VEvent } from 'src/utils/vanillaEvent';
+import { hasOwnProperty } from 'src/utils/objectUtils';
 
 test('unlinkedNodeTest', () => {
   const node = new Node('Node-A');

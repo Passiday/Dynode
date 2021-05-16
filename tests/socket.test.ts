@@ -1,7 +1,9 @@
-import Socket from '../src/socket';
-import InputSocket from '../src/inputSocket';
-import OutputSocket from '../src/outputSocket';
-import ValueType from '../src/valueType';
+import {
+  Socket,
+  InputSocket,
+  OutputSocket,
+  ValueType,
+} from 'src/Dynode/model/core/socket';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();
