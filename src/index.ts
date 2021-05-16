@@ -23,5 +23,5 @@ global.publishToGlobal({
   demoStage: stage,
   NodeView,
   LinkView,
-  ...exampleWrappers,
+  example: exampleWrappers,
 });

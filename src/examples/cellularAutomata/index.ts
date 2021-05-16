@@ -6,7 +6,7 @@ import type { StageView } from 'src/Dynode/view';
 import './style.scss';
 import GridNodeUI from './gridNode';
 
-export default function cellularAutomataExample(
+export default function cellularAutomata(
   network: Network, stage: StageView,
 ) : NetworkController {
   const controller = new NetworkController(network, stage);
