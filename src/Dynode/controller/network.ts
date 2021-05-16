@@ -2,7 +2,7 @@ import { Network } from 'src/Dynode/model/core';
 import { StageView } from 'src/Dynode/view';
 import { JsonValue } from 'src/utils/objectUtils';
 import { InputSocket } from 'src/Dynode/model/core/socket';
-import NodeController from './nodeController';
+import NodeController from './node';
 
 export default class NetworkController {
   model: Network;

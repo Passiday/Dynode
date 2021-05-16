@@ -1,2 +1,2 @@
-export { default as NetworkController } from './networkController';
-export { default as NodeController } from './nodeController';
+export { default as NetworkController } from './network';
+export { default as NodeController } from './node';
