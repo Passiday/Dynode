@@ -1,7 +1,7 @@
 import { Engine as StandardEngine } from 'src/Dynode/model/standard';
 import { Network } from 'src/Dynode/model/core';
-import { StageUI, NodeUI, LinkUI } from 'src/Dynode/view';
 import './index.scss';
+import { StageView, NodeView, LinkView } from 'src/Dynode/view';
 import { examples, ExampleFuncCollection } from './examples';
 
 // Temporarily, the network and stage will be published to the global scope
@@ -11,7 +11,7 @@ const engine = new StandardEngine();
 const network = new Network('network', engine); // TODO: (PJ) I'd like to do engine.createNetwork() instead. Also, I don't think the networks need names.
 const stageContainer = document.getElementById('dynodeContainer');
 if (stageContainer === null) throw new Error('dynodeContainer element does not exist.');
-const stage = new StageUI(stageContainer);
+const stage = new StageView(stageContainer);
 
 const exampleWrappers: ExampleFuncCollection = {};
 for (const [key, value] of Object.entries(examples)) {
@@ -21,7 +21,7 @@ for (const [key, value] of Object.entries(examples)) {
 global.publishToGlobal({
   demoNetwork: network,
   demoStage: stage,
-  NodeUI,
-  LinkUI,
+  NodeView,
+  LinkView,
   ...exampleWrappers,
 });

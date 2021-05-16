@@ -1,8 +1,8 @@
 import { JsonObject, JsonValue } from 'src/utils/objectUtils';
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import StageUI from './stageUI';
+import Stage from './stage';
 
-class InputUI extends VEventTarget {
+class Input extends VEventTarget {
   body: HTMLDivElement;
 
   control: HTMLInputElement;
@@ -87,8 +87,8 @@ class InputUI extends VEventTarget {
   }
 }
 
-class NodeUI extends VEventTarget {
-  stage: StageUI;
+class Node extends VEventTarget {
+  stage: Stage;
 
   name: string;
 
@@ -102,13 +102,13 @@ class NodeUI extends VEventTarget {
 
   outputsContainer: HTMLDivElement;
 
-  inputs: InputUI[] = [];
+  inputs: Input[] = [];
 
   infoBox: HTMLDivElement;
 
   config: JsonObject;
 
-  constructor(stage: StageUI, config?: JsonObject) {
+  constructor(stage: Stage, config?: JsonObject) {
     super();
     this.config = config === undefined ? {} : config;
 
@@ -169,13 +169,13 @@ class NodeUI extends VEventTarget {
     return sectionDiv;
   }
 
-  addInput(inputConfig: JsonObject): InputUI {
-    const input = new InputUI(inputConfig);
+  addInput(inputConfig: JsonObject): Input {
+    const input = new Input(inputConfig);
     input.addEventListener('change', (ev) => new VEvent('inputChange', {
       // TODO Fix VEvent, so that there's no need to type cast ev.target
       detail: {
-        [(ev.target as InputUI).name]: {
-          value: (ev.target as InputUI).value,
+        [(ev.target as Input).name]: {
+          value: (ev.target as Input).value,
         },
       },
     }));
@@ -184,7 +184,7 @@ class NodeUI extends VEventTarget {
     return input;
   }
 
-  getInput(name: string): InputUI | null {
+  getInput(name: string): Input | null {
     for (const input of this.inputs) {
       if (input.name === name) return input;
     }
@@ -204,28 +204,28 @@ class NodeUI extends VEventTarget {
 
   addSocket(x: number, y: number): void {
     // Temporary code, just for some visual reference
-    const socketUI = this.container.addGroup();
-    socketUI.addCircle({
+    const socket = this.container.addGroup();
+    socket.addCircle({
       cx: 0,
       cy: 0,
       r: 5,
       style: { fill: 'white' },
     });
-    socketUI.addLine({
+    socket.addLine({
       x1: 0,
       y1: -10,
       x2: 0,
       y2: 10,
       style: { stroke: 'black' },
     });
-    socketUI.addLine({
+    socket.addLine({
       x1: -10,
       y1: 0,
       x2: 10,
       y2: 0,
       style: { stroke: 'black' },
     });
-    socketUI.translate(x, y);
+    socket.translate(x, y);
   }
 
   setInfo(contents: string): void {
@@ -282,4 +282,4 @@ class NodeUI extends VEventTarget {
   }
 }
 
-export default NodeUI;
+export default Node;

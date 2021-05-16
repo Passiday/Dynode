@@ -1,12 +1,12 @@
-import { NodeUI } from 'src/Dynode/view';
-import type { StageUI } from 'src/Dynode/view';
+import { NodeView } from 'src/Dynode/view';
+import type { StageView } from 'src/Dynode/view';
 import type { JsonObject } from 'src/utils/objectUtils';
 
 interface ObjectWithValue {
   value: unknown,
 }
 
-export default class GridNodeUI extends NodeUI {
+export default class GridNodeView extends NodeView {
   /**
    * Reference to grid's svg rectangles that represent the grid.
    */
@@ -22,7 +22,7 @@ export default class GridNodeUI extends NodeUI {
    */
   private currentY: number;
 
-  constructor(stage: StageUI, config?: JsonObject) {
+  constructor(stage: StageView, config?: JsonObject) {
     super(stage, config);
     this.currentX = 0;
     this.currentY = 0;

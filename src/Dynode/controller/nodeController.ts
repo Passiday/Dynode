@@ -1,14 +1,14 @@
 import { Node } from 'src/Dynode/model/core';
-import { NodeUI } from 'src/Dynode/view';
+import { NodeView } from 'src/Dynode/view';
 import { VEvent } from 'src/utils/vanillaEvent';
 import { JsonObject } from 'src/utils/objectUtils';
 
 export default class NodeController {
   model: Node;
 
-  view: NodeUI;
+  view: NodeView;
 
-  constructor(model: Node, view: NodeUI) {
+  constructor(model: Node, view: NodeView) {
     this.model = model;
     this.view = view;
     this.addHandlers();

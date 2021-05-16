@@ -1,5 +1,5 @@
 import { Network } from 'src/Dynode/model/core';
-import { StageUI } from 'src/Dynode/view';
+import { StageView } from 'src/Dynode/view';
 import { JsonValue } from 'src/utils/objectUtils';
 import { InputSocket } from 'src/Dynode/model/core/socket';
 import NodeController from './nodeController';
@@ -7,9 +7,9 @@ import NodeController from './nodeController';
 export default class NetworkController {
   model: Network;
 
-  view: StageUI;
+  view: StageView;
 
-  constructor(model: Network, view: StageUI) {
+  constructor(model: Network, view: StageView) {
     this.model = model;
     this.view = view;
 

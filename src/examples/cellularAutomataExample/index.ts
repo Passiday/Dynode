@@ -2,12 +2,12 @@ import { Node, NodeType } from 'src/Dynode/model/core';
 import { Engine } from 'src/Dynode/model/standard';
 import { NetworkController } from 'src/Dynode/controller';
 import type { Network } from 'src/Dynode/model/core';
-import type { StageUI } from 'src/Dynode/view';
+import type { StageView } from 'src/Dynode/view';
 import './style.scss';
 import GridNodeUI from './gridNode';
 
 export default function cellularAutomataExample(
-  network: Network, stage: StageUI,
+  network: Network, stage: StageView,
 ) : NetworkController {
   const controller = new NetworkController(network, stage);
   // eslint-disable-next-line no-param-reassign

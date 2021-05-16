@@ -1,7 +1,7 @@
-import type StageUI from './stageUI';
+import type Stage from './stage';
 
-class LinkUI {
-  stage: StageUI;
+class Link {
+  stage: Stage;
 
   container: SVGBGroup;
 
@@ -19,7 +19,7 @@ class LinkUI {
 
   link: SVGBLine;
 
-  constructor(stage: StageUI, x1:number, y1:number, x2:number, y2:number) {
+  constructor(stage: Stage, x1:number, y1:number, x2:number, y2:number) {
     this.stage = stage;
     this.x1 = Math.round(x1);
     this.y1 = Math.round(y1);
@@ -82,4 +82,4 @@ class LinkUI {
   }
 }
 
-export default LinkUI;
+export default Link;

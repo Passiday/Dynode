@@ -1,8 +1,8 @@
 import { Node } from 'src/Dynode/model/core';
 import type { Network } from 'src/Dynode/model/core';
-import type { StageUI } from 'src/Dynode/view';
+import type { StageView } from 'src/Dynode/view';
 
-export default function multiCycleExample(network: Network, stage: StageUI) : void {
+export default function multiCycleExample(network: Network, stage: StageView) : void {
   const coalesceNode = new Node('Coalesce');
   coalesceNode.addInput('x');
   coalesceNode.addOutput('result');

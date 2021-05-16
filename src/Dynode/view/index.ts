@@ -1,3 +1,5 @@
-export { default as StageUI } from './standardStageUI';
-export { default as NodeUI } from './nodeUI';
-export { default as LinkUI } from './linkUI';
+export {
+  Node as NodeView,
+  Link as LinkView,
+} from './core';
+export { Stage as StageView } from './standard';

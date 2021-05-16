@@ -1,12 +1,12 @@
 import type { JsonObject } from 'src/utils/objectUtils';
-import type NodeUI from './nodeUI';
+import type Node from './node';
 
-interface NodeUIConstructor {
-  new(stage: StageUI, config?: JsonObject): NodeUI;
+interface NodeConstructor {
+  new(stage: Stage, config?: JsonObject): Node;
 }
 
-class StageUI {
-  private types: {[type: string]: NodeUIConstructor} = {};
+class Stage {
+  private types: {[type: string]: NodeConstructor} = {};
 
   svgb: SVGBuilder;
 
@@ -19,11 +19,11 @@ class StageUI {
     this.svgb.insert(container);
   }
 
-  public addNodeType(type: string, ctor: NodeUIConstructor): void {
+  public addNodeType(type: string, ctor: NodeConstructor): void {
     this.types[type] = ctor;
   }
 
-  public getNodeType(type: string): NodeUIConstructor {
+  public getNodeType(type: string): NodeConstructor {
     const typeClass = this.types[type];
     if (!typeClass) throw new Error(`Type ${type} does not exist!`);
     return typeClass;
@@ -34,4 +34,4 @@ class StageUI {
   }
 }
 
-export default StageUI;
+export default Stage;

@@ -1,9 +1,9 @@
 import { Node } from 'src/Dynode/model/core';
 import { NetworkController } from 'src/Dynode/controller';
 import type { Network } from 'src/Dynode/model/core';
-import type { StageUI } from 'src/Dynode/view';
+import type { StageView } from 'src/Dynode/view';
 
-export default function controllerExample(network: Network, stage: StageUI): NetworkController {
+export default function controllerExample(network: Network, stage: StageView): NetworkController {
   const controller = new NetworkController(network, stage);
 
   const sumNode = new Node('Sum', network); // Creates sum node;
