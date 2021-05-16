@@ -1,5 +1,5 @@
-import { Node } from 'src/Dynode/model/core';
-import type { Network } from 'src/Dynode/model/core';
+import { Node } from 'src/Dynode/model';
+import type { Network } from 'src/Dynode/model';
 import type { StageView } from 'src/Dynode/view';
 
 export default function multiCycleExample(network: Network, stage: StageView) : void {

@@ -1,6 +1,6 @@
-import { Node } from 'src/Dynode/model/core';
+import { Node } from 'src/Dynode/model';
 import { NetworkController } from 'src/Dynode/controller';
-import type { Network } from 'src/Dynode/model/core';
+import type { Network } from 'src/Dynode/model';
 import type { StageView } from 'src/Dynode/view';
 
 export default function controllerExample(network: Network, stage: StageView): NetworkController {

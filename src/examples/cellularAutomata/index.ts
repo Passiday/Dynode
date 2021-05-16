@@ -1,10 +1,9 @@
-import { Node, NodeType } from 'src/Dynode/model/core';
-import { Engine } from 'src/Dynode/model/standard';
+import { Node, NodeType, Engine } from 'src/Dynode/model';
 import { NetworkController } from 'src/Dynode/controller';
-import type { Network } from 'src/Dynode/model/core';
+import type { Network } from 'src/Dynode/model';
 import type { StageView } from 'src/Dynode/view';
 import './style.scss';
-import GridNodeUI from './gridNode';
+import GridNodeView from './gridNode';
 
 export default function cellularAutomata(
   network: Network, stage: StageView,
@@ -12,7 +11,7 @@ export default function cellularAutomata(
   const controller = new NetworkController(network, stage);
   // eslint-disable-next-line no-param-reassign
   network.engine = new Engine();
-  stage.addNodeType('grid', GridNodeUI);
+  stage.addNodeType('grid', GridNodeView);
   network.engine.addNodeTypeDefinition(new NodeType(
     'grid',
     ((node: Node) => {

@@ -1,2 +1,7 @@
-export * as Core from './core';
-export * as Standard from './standard';
+export * from './core/socket';
+export {
+  Network,
+  Node,
+  NodeType,
+} from './core';
+export { Engine } from './standard';
