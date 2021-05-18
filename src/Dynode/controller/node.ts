@@ -41,7 +41,7 @@ export default class NodeController {
     this.model.addEventListener('afterResolve', afterResolve);
     this.model.addEventListener('nodeRemoved', nodeRemoved); // Perhaps this event belongs to the Network model?
     // TODO Handle "nothing" in inputChange
-    this.view.addEventListener('inputChange', (ev: VEvent) => {
+    this.view.addEventListener('inputChange', (ev: VEvent<NodeView>) => {
       for (const [key, value] of Object.entries(ev.detail as Record<string, unknown>)) {
         node.getInput(key).setDefaultValue(value);
       }
