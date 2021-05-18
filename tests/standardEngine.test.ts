@@ -1,3 +1,4 @@
+import { JsonValue } from 'src/utils/objectUtils';
 import { Engine as StandardEngine } from 'src/Dynode/model/standard';
 import { ValueType } from 'src/Dynode/model/core/socket';
 import { NodeType } from 'src/Dynode/model/core';
@@ -84,28 +85,37 @@ describe('addNodeTypeDefinition', () => {
 describe('addValueTypeDefinition', () => {
   test('A valueType can be added', () => {
     const e = new StandardEngine();
-    const v = new ValueType(
-      'even',
-      (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
-      (val: unknown) => <number> val,
-    );
-    expect(() => e.addValueTypeDefinition(v)).not.toThrow();
+
+    class VT extends ValueType {
+      public check(value: unknown): boolean {
+        return (typeof value === 'number' && value % 2 === 0)
+      }
+
+      public toJSON(value: unknown): JsonValue {
+        return value as number
+      }
+    }
+
+    const vt = new VT();
+    expect(() => e.addValueTypeDefinition('even', vt)).not.toThrow();
   });
 
   test('Ensure duplicate names throw', () => {
     const e = new StandardEngine();
-    const v1 = new ValueType(
-      'even',
-      (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
-      (val: unknown) => <number> val,
-    );
-    const v2 = new ValueType(
-      'even',
-      (val: unknown) => typeof (val) === 'number' && val % 2 === 0,
-      (val: unknown) => <number> val,
-    );
+    class VT extends ValueType {
+      public check(value: unknown): boolean {
+        return (typeof value === 'number' && value % 2 === 0)
+      }
 
-    expect(() => e.addValueTypeDefinition(v1)).not.toThrow();
-    expect(() => e.addValueTypeDefinition(v2)).toThrow();
+      public toJSON(value: unknown): JsonValue {
+        return value as number
+      }
+    }
+
+    const v1 = new VT();
+    const v2 = new VT();
+
+    expect(() => e.addValueTypeDefinition('even', v1)).not.toThrow();
+    expect(() => e.addValueTypeDefinition('even', v2)).toThrow();
   });
 });

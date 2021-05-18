@@ -1,8 +1,9 @@
+import { JsonValue } from 'src/utils/objectUtils';
 import {
   Socket,
   InputSocket,
   OutputSocket,
-  ValueType,
+  ValueType
 } from 'src/Dynode/model/core/socket';
 
 test('simpleSocketTest', () => {
@@ -73,7 +74,16 @@ test('outputSocketTest', () => {
 });
 
 test('setValue with a type', () => {
-  const vt = new ValueType('oddNumber', ((value: unknown): boolean => (typeof value === 'number') && (value % 2 === 1)), (value: unknown) => <number> value);
+  class VT extends ValueType {
+    public check(value: unknown): boolean {
+      return ((typeof value === 'number') && (value % 2 === 1));
+    }
+
+    public toJSON(value: unknown): JsonValue {
+      return value as number
+    }
+  }
+  const vt = new VT();
   const s = new Socket(vt);
 
   s.setValue(5);
@@ -82,7 +92,16 @@ test('setValue with a type', () => {
 });
 
 test('getJsonDefaultValue', () => {
-  const vt = new ValueType('number', ((value: unknown): boolean => (typeof value === 'number')), (value: unknown) => <number> value);
+  class VT extends ValueType {
+    public check(value: unknown): boolean {
+      return (typeof value === 'number')
+    }
+
+    public toJSON(value: unknown): JsonValue {
+      return value as number
+    }
+  }
+  const vt = new VT();
   const s = new InputSocket(vt);
 
   s.setDefaultValue(5);
