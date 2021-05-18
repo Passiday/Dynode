@@ -182,3 +182,12 @@ test('Generics', () => {
     expect(e.currentTarget?.name).not.toBe(undefined);
   });
 });
+
+test('Allowed events', () => {
+  const target = new VEventTarget();
+  target.declareEvents(['test']);
+  expect(() => target.addEventListener('notTest', () => {})).toThrow(Error);
+  expect(() => target.addEventListener('test', () => {})).not.toThrow(Error);
+  expect(() => target.dispatchEvent(new VEvent('notTest'))).toThrow(Error);
+  expect(() => target.dispatchEvent(new VEvent('test'))).not.toThrow(Error);
+});

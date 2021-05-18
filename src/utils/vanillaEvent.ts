@@ -12,12 +12,29 @@ class VEventTarget {
   events: { [key: string]: VEventHandler[]; } = {};
 
   /**
+  * An array of allowed events. If the array is undefined all events are allowed.
+  * Allowed events are declared using declareEvents method.
+  */
+  allowedEvents: string[] | undefined;
+
+  /**
+   * Sets allowed event types. If undefined is passed, then all event types are allowed.
+   * @param events An array of allowed event types.
+   */
+  declareEvents(events?: string[]): void {
+    this.allowedEvents = events;
+  }
+
+  /**
    * Attach an event listener to this object.
    *
    * @param type  Name of the event type.
    * @param func  Function that will handle the provided event type.
    */
   addEventListener(type: string, func: VEventHandler): void {
+    if (this.allowedEvents !== undefined && !this.allowedEvents.includes(type)) {
+      throw new Error(`Event type (${type}) is not allowed. Currently allowed event types are ${this.allowedEvents}`);
+    }
     if (type in this.events) {
       if (this.events[type].indexOf(func) !== -1) {
         throw new Error(`Event listener with the specified type and function: ${type} ${func} already exists`);
@@ -35,6 +52,9 @@ class VEventTarget {
    * @param e Event that is going to be sent.
    */
   dispatchEvent(e: VEvent<this>): void {
+    if (this.allowedEvents !== undefined && !this.allowedEvents.includes(e.type)) {
+      throw new Error(`Called event type (${e.type}) is not allowed. Currently allowed event types are ${this.allowedEvents}`);
+    }
     e.currentTarget = this;
     e.target = this;
     if (e.type in this.events) {
