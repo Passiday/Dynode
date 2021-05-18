@@ -85,7 +85,7 @@ class InputSocket extends Socket {
    */
   linkSocket(socket: OutputSocket): void {
     this.linkedSocket = socket;
-    this.valueHandler = (e: VEvent) => {
+    this.valueHandler = (e: VEvent<Socket>) => {
       if (e.target === undefined) throw Error('VEvent target is undefined');
       if (!(e.target instanceof Socket)) throw Error('VEvent target is not a socket');
       if (e.target.isNothing()) {

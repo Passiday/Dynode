@@ -151,7 +151,7 @@ test('NodeLog', () => {
 
   const mockFunc = jest.fn();
 
-  NodeA.addEventListener('log', (e: VEvent) => {
+  NodeA.addEventListener('log', (e: VEvent<Node>) => {
     if (typeof e.detail === 'object' && e.detail !== null && hasOwnProperty(e.detail, 'args')) {
       mockFunc(e.detail.args);
     }

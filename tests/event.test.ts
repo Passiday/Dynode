@@ -168,3 +168,17 @@ test('Multiple class inheritance example', () => {
   cat.feed();
   expect(hungerLevels.Kitty).toBe(1);
 });
+test('Generics', () => {
+  class Cat extends VEventTarget {
+    name: string;
+
+    constructor(name:string) {
+      super();
+      this.name = name;
+    }
+  }
+  const cat = new Cat('Kitty');
+  cat.addEventListener('test', (e: VEvent<Cat>) => {
+    expect(e.currentTarget?.name).not.toBe(undefined);
+  });
+});

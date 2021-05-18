@@ -1,5 +1,5 @@
-declare type VEventHandlerWithThis = (this:VEventTarget, v:VEvent) => void;
-declare type VEventHandlerWithoutThis = (v:VEvent) => void;
+declare type VEventHandlerWithThis = (this:VEventTarget, v:VEvent<any>) => void;
+declare type VEventHandlerWithoutThis = (v:VEvent<any>) => void;
 declare type VEventHandler = VEventHandlerWithThis | VEventHandlerWithoutThis;
 
 /**
@@ -34,7 +34,7 @@ class VEventTarget {
    *
    * @param e Event that is going to be sent.
    */
-  dispatchEvent(e: VEvent): void {
+  dispatchEvent(e: VEvent<this>): void {
     e.currentTarget = this;
     e.target = this;
     if (e.type in this.events) {
@@ -65,14 +65,14 @@ interface CustomEventInit{
   detail: unknown;
 }
 
-class VEvent {
+class VEvent<T extends VEventTarget> {
   type: string;
 
   detail: unknown;
 
-  currentTarget: VEventTarget | undefined;
+  currentTarget: T | undefined;
 
-  target: VEventTarget | undefined;
+  target: T | undefined;
 
   constructor(type: string, customEventInit?: CustomEventInit) {
     this.type = type;
