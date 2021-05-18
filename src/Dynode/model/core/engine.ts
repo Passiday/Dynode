@@ -2,7 +2,7 @@ import type ValueType from './socket/valueType';
 import type NodeType from './nodeType';
 
 class Engine {
-  private valueTypeDefinitions: ValueType[] = [];
+  private valueTypeDefinitions: Record<string, ValueType> = {};
 
   /**
    * List of node types registered in this engine.
@@ -29,9 +29,7 @@ class Engine {
    * @return The corresponding ValueType object
    */
   public getValueTypeDefinition(valueType: string): ValueType {
-    for (const v of this.valueTypeDefinitions) {
-      if (v.name === valueType) return v;
-    }
+    if (valueType in this.valueTypeDefinitions) return this.valueTypeDefinitions[valueType];
     throw Error(`Type ${valueType} does not exist!`);
   }
 
@@ -52,13 +50,9 @@ class Engine {
    *
    * @param valueType The ValueType to add
    */
-  public addValueTypeDefinition(valueType: ValueType): void {
-    for (const v of this.valueTypeDefinitions) {
-      if (v.name === valueType.name) {
-        throw Error(`ValueType ${v.name} already exists!`);
-      }
-    }
-    this.valueTypeDefinitions.push(valueType);
+  public addValueTypeDefinition(name: string, valueType: ValueType): void {
+    if (name in this.valueTypeDefinitions) throw Error(`ValueType ${name} already exists!`);
+    this.valueTypeDefinitions[name] = valueType;
   }
 }
 

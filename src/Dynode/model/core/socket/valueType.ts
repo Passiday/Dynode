@@ -1,37 +1,17 @@
 import { JsonValue } from 'src/utils/objectUtils';
 
-interface CheckFunc {
-  (value: unknown): boolean;
-}
-
-interface ToJsonFunc {
-  (value: unknown): JsonValue;
-}
-
-class ValueType {
-  /**
-   * String representation of the value type.
-   */
-  private innerName: string;
-
-  constructor(name: string, check: CheckFunc, toJson: ToJsonFunc) {
-    this.innerName = name;
-    this.check = check;
-    this.toJson = toJson;
-  }
-
-  get name(): string {
-    return this.innerName;
-  }
-
+abstract class ValueType {
   /**
    * Validator that ensures that a value belongs to this type.
    *
    * @param value  Variable to check.
    */
-  readonly check: CheckFunc;
+  public abstract check(value: unknown): boolean;
 
-  readonly toJson: ToJsonFunc;
+  /**
+   * Converter that turns value to a JsonValue.
+   */
+  public abstract toJson(value: unknown): JsonValue;
 }
 
 export default ValueType;
