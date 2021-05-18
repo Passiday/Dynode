@@ -11,7 +11,7 @@ abstract class ValueType {
   /**
    * Converter that turns value to a JsonValue.
    */
-  public abstract toJson(value: unknown): JsonValue;
+  public abstract toJSON(value: unknown): JsonValue;
 }
 
 export default ValueType;

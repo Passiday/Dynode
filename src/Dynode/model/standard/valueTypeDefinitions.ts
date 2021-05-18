@@ -7,7 +7,7 @@ class Number extends ValueType {
     return typeof value === 'number';
   }
 
-  public toJson(value: unknown): JsonValue {
+  public toJSON(value: unknown): JsonValue {
     return value as number;
   }
 }
@@ -17,7 +17,7 @@ class Boolean extends ValueType {
     return typeof value === 'boolean';
   }
 
-  public toJson(value: unknown): JsonValue {
+  public toJSON(value: unknown): JsonValue {
     return value as boolean;
   }
 }
@@ -27,7 +27,7 @@ class String extends ValueType {
     return typeof value === 'string';
   }
 
-  public toJson(value: unknown): JsonValue {
+  public toJSON(value: unknown): JsonValue {
     return value as string;
   }
 }

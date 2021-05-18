@@ -151,7 +151,7 @@ class InputSocket extends Socket {
 
   getJsonDefaultValue(): JsonValue {
     if (this.typeObject === null) throw Error('Socket has no associated type');
-    return this.typeObject.toJson(this.getDefaultValue());
+    return this.typeObject.toJSON(this.getDefaultValue());
   }
 }
 

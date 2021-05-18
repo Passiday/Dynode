@@ -89,7 +89,7 @@ class Socket extends VEventTarget {
    */
   getJsonValue(): JsonValue {
     if (this.typeObject === null) throw Error('Socket has no associated type');
-    return this.typeObject.toJson(this.getValue());
+    return this.typeObject.toJSON(this.getValue());
   }
 
   /**
