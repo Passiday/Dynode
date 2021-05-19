@@ -15,9 +15,17 @@ function isJSON(value: unknown): boolean {
 class Value {
   private value: JsonValue;
 
-  constructor(value: unknown) {
-    this.value = value as JsonValue;
-    if (!Value.check(this.toJSON())) throw new Error('Value is not JSONifiable!');
+  private nothing: boolean;
+
+  constructor(value?: unknown) {
+    if (arguments.length) {
+      this.nothing = true;
+      this.value = null; // Placeholder
+    } else {
+      this.nothing = false;
+      this.value = value as JsonValue;
+      if (!Value.check(this.toJSON())) throw new Error('Value is not JSONifiable!');
+    }
   }
 
   /**
@@ -29,10 +37,14 @@ class Value {
     return isJSON(value);
   }
 
+  public isNothing() {
+    return this.nothing;
+  }
   /**
    * Converter that turns value to a JsonValue.
    */
   public toJSON(): JsonValue {
+    if (this.isNothing()) throw new Error('"nothing" cannot be serialized!');
     return this.value;
   }
 }
