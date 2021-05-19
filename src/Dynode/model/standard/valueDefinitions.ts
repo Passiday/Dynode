@@ -1,34 +1,21 @@
 /* eslint class-methods-use-this: off */
-import { JsonValue } from 'src/utils/objectUtils';
 import { Value } from '../core/socket';
 
-class Number extends Value {
+class Number extends Value<number> {
   public check(value: unknown): boolean {
-    return super.check(value) && typeof value === 'number';
-  }
-
-  public toJSON(value: unknown): JsonValue {
-    return super.toJSON(value) as number;
+    return Value.check(value) && typeof value === 'number';
   }
 }
 
-class Boolean extends Value {
+class Boolean extends Value<boolean> {
   public check(value: unknown): boolean {
-    return super.check(value) && typeof value === 'boolean';
-  }
-
-  public toJSON(value: unknown): JsonValue {
-    return super.toJSON(value) as boolean;
+    return Value.check(value) && typeof value === 'boolean';
   }
 }
 
-class String extends Value {
+class String extends Value<string> {
   public check(value: unknown): boolean {
-    return super.check(value) && typeof value === 'string';
-  }
-
-  public toJSON(value: unknown): JsonValue {
-    return super.toJSON(value) as string;
+    return Value.check(value) && typeof value === 'string';
   }
 }
 
