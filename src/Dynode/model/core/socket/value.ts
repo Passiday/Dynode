@@ -9,22 +9,35 @@ function isJSON(value: unknown): boolean {
       if (!isJSON(v)) return false;
     }
   }
+  value as JsonValue;
   return true;
 }
 
-class Value {
-  private value: JsonValue;
+interface WithToJSON {
+  toJSON: () => JsonValue,
+}
 
+type JSONifiable = JsonValue | WithToJSON;
+
+class Value<T extends JSONifiable> {
+  /**
+   * Actual value that this class wraps.
+   */
+  private realValue: T | undefined;
+
+  /**
+   * Denotes whether the stored value is nothing.
+   */
   private nothing: boolean;
 
-  constructor(value?: unknown) {
-    if (arguments.length) {
+  constructor(value?: T) {
+    if (value === undefined) {
       this.nothing = true;
-      this.value = null; // Placeholder
+      this.realValue = undefined;
     } else {
       this.nothing = false;
-      this.value = value as JsonValue;
-      if (!Value.check(this.toJSON())) throw new Error('Value is not JSONifiable!');
+      this.realValue = value;
+      if (!Value.check(this.toJSON())) throw new Error('value is not JSONifiable!');
     }
   }
 
@@ -37,6 +50,9 @@ class Value {
     return isJSON(value);
   }
 
+  /**
+   * Denotes whether the object's value is set to nothing.
+   */
   public isNothing() {
     return this.nothing;
   }
@@ -45,7 +61,9 @@ class Value {
    */
   public toJSON(): JsonValue {
     if (this.isNothing()) throw new Error('"nothing" cannot be serialized!');
-    return this.value;
+    if (this.realValue === undefined) throw new Error('value is undefined!');
+    if (isJSON(this.realValue)) return this.realValue as JsonValue;
+    return (this.realValue as WithToJSON).toJSON();
   }
 }
 
