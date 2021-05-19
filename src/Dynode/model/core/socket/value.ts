@@ -9,17 +9,10 @@ function isJSON(value: unknown): boolean {
       if (!isJSON(v)) return false;
     }
   }
-  value as JsonValue;
   return true;
 }
 
-interface WithToJSON {
-  toJSON: () => JsonValue,
-}
-
-type JSONifiable = JsonValue | WithToJSON;
-
-class Value<T extends JSONifiable> {
+class Value<T> {
   /**
    * Actual value that this class wraps.
    */
@@ -36,8 +29,8 @@ class Value<T extends JSONifiable> {
       this.realValue = undefined;
     } else {
       this.nothing = false;
+      if (!Value.check(value)) throw new Error('value does not belong to this class!');
       this.realValue = value;
-      if (!Value.check(this.toJSON())) throw new Error('value is not JSONifiable!');
     }
   }
 
@@ -62,8 +55,7 @@ class Value<T extends JSONifiable> {
   public toJSON(): JsonValue {
     if (this.isNothing()) throw new Error('"nothing" cannot be serialized!');
     if (this.realValue === undefined) throw new Error('value is undefined!');
-    if (isJSON(this.realValue)) return this.realValue as JsonValue;
-    return (this.realValue as WithToJSON).toJSON();
+    return this.realValue;
   }
 }
 
