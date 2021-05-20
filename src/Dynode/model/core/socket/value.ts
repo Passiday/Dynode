@@ -34,6 +34,25 @@ class Value<T> {
     }
   }
 
+  get value(): T {
+    if (this.isNothing()) throw new Error('"nothing" cannot be retrieved!');
+    if (this.realValue === undefined) throw new Error('value is undefined!');
+    return this.realValue;
+  }
+
+  set value(val: T) {
+    if (!Value.check(val)) throw new Error('value does not belong to this class!');
+    this.realValue = val;
+  }
+
+  /**
+   * Set the value to "nothing".
+   */
+  setNothing(): void {
+    this.realValue = undefined;
+    this.nothing = true;
+  }
+
   /**
    * Validator that ensures that a value belongs to this type.
    *
@@ -49,6 +68,7 @@ class Value<T> {
   public isNothing() {
     return this.nothing;
   }
+
   /**
    * Converter that turns value to a JsonValue.
    */
