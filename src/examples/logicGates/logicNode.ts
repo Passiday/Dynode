@@ -1,6 +1,6 @@
 import { NodeView } from 'src/Dynode/view';
 
-export default class NodeUI extends NodeView {
+export default class LogicGateUI extends NodeView {
   public redraw(): void {
     // Redraw the node UI
     this.container.wipe();

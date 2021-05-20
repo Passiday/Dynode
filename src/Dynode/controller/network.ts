@@ -42,5 +42,8 @@ export default class NetworkController {
       stage.debug[`node-${nodeModel.name}`] = nodeUI; // References to NodeUI instances for debugging purposes
     }
     this.model.addEventListener('addNode', addNode);
+    this.view.addEventListener('menuResolve', () => {
+      this.model.resolve();
+    });
   }
 }

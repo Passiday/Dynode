@@ -1,12 +1,13 @@
 import controllerExample from 'src/examples/controller';
 import type { JsonObject } from 'src/utils/objectUtils';
+import { VEventTarget, VEvent } from 'src/utils/vanillaEvent';
 import type Node from './node';
 
 interface NodeConstructor {
   new(stage: Stage, config?: JsonObject): Node;
 }
 
-class Stage {
+class Stage extends VEventTarget {
   private types: {[type: string]: NodeConstructor} = {};
 
   svgb: SVGBuilder;
@@ -16,6 +17,7 @@ class Stage {
   debug: { [key: string]: unknown } = {};
 
   constructor(container: HTMLElement) {
+    super();
     this.svgb = new SVGBuilder();
     this.svgb.insert(container);
     this.createMenu(container);
@@ -26,10 +28,11 @@ class Stage {
     const menuOption = document.createElement('ul');
     menu.className = 'menu';
     menuOption.className = 'menu-options';
-    menuOption.innerHTML = `
-        <li class="menu-option">Resolve</li>
-        <li class="menu-option">Add Node</li>
-    `;
+    const optionOne = document.createElement('li');
+    optionOne.className = 'menu-option';
+    optionOne.innerHTML = 'Resolve';
+    optionOne.onclick = () => { this.dispatchEvent(new VEvent('menuResolve')); };
+    menuOption.append(optionOne);
 
     menu.append(menuOption);
     container.append(menu);
@@ -42,10 +45,6 @@ class Stage {
 
     window.addEventListener('click', (e) => {
       if (menuVisible) toggleMenu('hide');
-    });
-
-    menuOption.addEventListener('click', (e) => {
-      console.log('mouse-option', (e.target as HTMLElement));
     });
 
     window.addEventListener('contextmenu', (e) => {
