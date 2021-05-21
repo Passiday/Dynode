@@ -65,10 +65,10 @@ class Socket<T> extends VEventTarget {
   /**
    * Object's getter for {@link value}
    */
-  public getValue(): unknown {
+  public getValue(): Value<T> {
     if (!this.isSet()) throw Error('Socket is not set');
     if (this.isNothing()) throw Error('Socket has no value');
-    return this.value;
+    return this.value as Value<T>; // Can be cast because of "nothing" check
   }
 
   /**
@@ -82,7 +82,7 @@ class Socket<T> extends VEventTarget {
    * Denotes whether the object's value is set to nothing.
    */
   public isNothing(): boolean {
-    return this.isSet() && (this.value === null);
+    return this.isSet() && (this.value === null);;
   }
 }
 

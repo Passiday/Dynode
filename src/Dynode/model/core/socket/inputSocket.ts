@@ -20,7 +20,7 @@ class InputSocket<T> extends Socket<T> {
   /**
    * Reference to the socket that is connected to the input.
    */
-  private linkedSocket: OutputSocket | undefined;
+  private linkedSocket: OutputSocket<T> | undefined;
 
   /**
    * Function that handles setting the value.
@@ -40,10 +40,10 @@ class InputSocket<T> extends Socket<T> {
   /**
    * Receive the default value that is set on the object.
    */
-  public getDefaultValue(): unknown {
+  public getDefaultValue(): Value<T> {
     // No need to check this.isDefaultSet because it's handled by this.isDefaultNothing
     if (this.isDefaultNothing()) throw Error('Input socket default is nothing');
-    return this.defaultValue;
+    return this.defaultValue as Value<T>; // Can be cast because of "nothing" check
   }
 
   /**
@@ -73,7 +73,7 @@ class InputSocket<T> extends Socket<T> {
    *
    * @param socket  An object that will be connected.
    */
-  linkSocket(socket: OutputSocket): void {
+  public linkSocket(socket: OutputSocket<T>): void {
     this.linkedSocket = socket;
     this.valueHandler = (e: VEvent) => {
       if (e.target === undefined) throw Error('VEvent target is undefined');
@@ -108,7 +108,7 @@ class InputSocket<T> extends Socket<T> {
   /**
    * Receive object's stored value.
    */
-  public getValue(): unknown {
+  public getValue(): Value<T> {
     if (this.linkedSocket) {
       return super.getValue();
     }
