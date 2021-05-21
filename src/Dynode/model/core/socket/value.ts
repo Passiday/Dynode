@@ -16,41 +16,20 @@ class Value<T> {
   /**
    * Actual value that this class wraps.
    */
-  private realValue: T | undefined;
+  private realValue: T;
 
-  /**
-   * Denotes whether the stored value is nothing.
-   */
-  private nothing: boolean;
-
-  constructor(value?: T) {
-    if (value === undefined) {
-      this.nothing = true;
-      this.realValue = undefined;
-    } else {
-      this.nothing = false;
-      if (!Value.check(value)) throw new Error('value does not belong to this class!');
-      this.realValue = value;
-    }
+  constructor(value: T) {
+    if (!Value.check(value)) throw new Error('value does not belong to this class!');
+    this.realValue = value;
   }
 
   get value(): T {
-    if (this.isNothing()) throw new Error('"nothing" cannot be retrieved!');
-    if (this.realValue === undefined) throw new Error('value is undefined!');
     return this.realValue;
   }
 
   set value(val: T) {
     if (!Value.check(val)) throw new Error('value does not belong to this class!');
     this.realValue = val;
-  }
-
-  /**
-   * Set the value to "nothing".
-   */
-  setNothing(): void {
-    this.realValue = undefined;
-    this.nothing = true;
   }
 
   /**
@@ -63,18 +42,9 @@ class Value<T> {
   }
 
   /**
-   * Denotes whether the object's value is set to nothing.
-   */
-  public isNothing() {
-    return this.nothing;
-  }
-
-  /**
    * Converter that turns value to a JsonValue.
    */
   public toJSON(): JsonValue {
-    if (this.isNothing()) throw new Error('"nothing" cannot be serialized!');
-    if (this.realValue === undefined) throw new Error('value is undefined!');
     return this.realValue;
   }
 }
