@@ -55,6 +55,14 @@ class Socket<T> extends VEventTarget {
   }
 
   /**
+   * Remove value and thus setting value to nothing.
+   */
+  public setNothing(): void {
+    this.value = null;
+    this.isSetVariable = true;
+  }
+
+  /**
    * Object's getter for {@link value}
    */
   public getValue(): unknown {
