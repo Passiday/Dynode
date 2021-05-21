@@ -1,81 +1,71 @@
-import { JsonValue } from 'src/utils/objectUtils';
 import { VEventHandler, VEvent } from 'src/utils/vanillaEvent';
 import OutputSocket from './outputSocket';
 import Socket from './socket';
+import Value from './value';
 
 /**
  * Socket class that handles inputs.
  */
-class InputSocket extends Socket {
+class InputSocket<T> extends Socket<T> {
   /**
-   * Value used if the socket doesn't have a socket linked to it.
+   * Value used if the socket doesn't have a socket linked to it. null means there is nothing.
    */
-  private defaultValue: unknown;
-
-  /**
-   * If true, mark socket's default to be nothing.
-   */
-  private defaultNothing = false;
+  private defaultValue: Value<T> | null = null;
 
   /**
    * Marks whether socket can have a default value.
    */
-  private hasDefault = false;
+  private isDefaultSetVariable = false;
 
   /**
    * Reference to the socket that is connected to the input.
    */
-  linkedSocket: OutputSocket | undefined;
+  private linkedSocket: OutputSocket | undefined;
 
   /**
    * Function that handles setting the value.
    */
-  valueHandler: VEventHandler | undefined;
+  private valueHandler: VEventHandler | undefined;
 
   /**
    * Provide a default value to socket.
    *
    * @param value  The new value. If omitted, defaultValue is set to nothing.
    */
-  setDefaultValue(value?: unknown): void {
-    if (arguments.length) {
-      this.defaultValue = value;
-      this.defaultNothing = false;
-    } else {
-      this.defaultNothing = true;
-    }
-    this.hasDefault = true;
+  public setDefaultValue(value: Value<T>): void {
+    this.defaultValue = value;
+    this.isDefaultSetVariable = true;
   }
 
   /**
    * Receive the default value that is set on the object.
    */
-  getDefaultValue(): unknown {
-    if (!this.hasDefault) throw Error('Input socket has no default value set');
-    if (this.defaultNothing) throw Error('Input socket default is nothing');
+  public getDefaultValue(): unknown {
+    // No need to check this.isDefaultSet because it's handled by this.isDefaultNothing
+    if (this.isDefaultNothing()) throw Error('Input socket default is nothing');
     return this.defaultValue;
   }
 
   /**
    * Check whether object's default value is set to nothing.
    */
-  isDefaultNothing() : boolean {
-    if (!this.hasDefault) throw Error('Input socket has no default value set');
-    return this.defaultNothing;
+  public isDefaultNothing(): boolean {
+    if (!this.isDefaultSet) throw Error('Input socket has no default value set');
+    return this.defaultValue === null;
   }
 
   /**
    * Unset object's default value.
    */
-  clearDefault(): void {
-    this.hasDefault = false;
+  public clearDefault(): void {
+    this.isDefaultSetVariable = false;
   }
 
   /**
    * Check if the object's state is valid.
    */
-  isValid(): boolean {
-    return this.linkedSocket ? true : this.hasDefault;
+  public isValid(): boolean {
+    return this.linkedSocket ? true : this.isDefaultSet();
   }
 
   /**
@@ -89,7 +79,7 @@ class InputSocket extends Socket {
       if (e.target === undefined) throw Error('VEvent target is undefined');
       if (!(e.target instanceof Socket)) throw Error('VEvent target is not a socket');
       if (e.target.isNothing()) {
-        this.setValue();
+        this.setNothing();
       } else {
         this.setValue(e.target.getValue());
       }
@@ -100,7 +90,7 @@ class InputSocket extends Socket {
   /**
    * Unlink the connected socket.
    */
-  clearLink(): void {
+  public clearLink(): void {
     if (this.linkedSocket === undefined) throw Error('linkedSocket is undefined');
     if (this.valueHandler === undefined) throw Error('valueHandler is undefined');
     this.linkedSocket.removeEventListener('value', this.valueHandler);
@@ -110,7 +100,7 @@ class InputSocket extends Socket {
   /**
    * Ask {@link linkedSocket} for output.
    */
-  pull(): void {
+  public pull(): void {
     if (!this.linkedSocket) throw new Error('Input socket is not linked.');
     this.linkedSocket.pull();
   }
@@ -118,7 +108,7 @@ class InputSocket extends Socket {
   /**
    * Receive object's stored value.
    */
-  getValue(): unknown {
+  public getValue(): unknown {
     if (this.linkedSocket) {
       return super.getValue();
     }
@@ -128,30 +118,25 @@ class InputSocket extends Socket {
   /**
    * Check if object has a set value.
    */
-  isSet(): boolean {
+  public isSet(): boolean {
     if (this.linkedSocket) {
       return super.isSet();
     }
-    return this.hasDefault;
+    return this.isDefaultSet();
   }
 
   /**
    * Check if the object's value is set to nothing.
    */
-  isNothing(): boolean {
+  public isNothing(): boolean {
     if (this.linkedSocket) {
       return super.isNothing();
     }
     return this.isDefaultNothing();
   }
 
-  isDefaultSet(): boolean {
-    return this.hasDefault;
-  }
-
-  getJsonDefaultValue(): JsonValue {
-    if (this.typeObject === null) throw Error('Socket has no associated type');
-    return this.typeObject.toJSON(this.getDefaultValue());
+  public isDefaultSet(): boolean {
+    return this.isDefaultSetVariable;
   }
 }
 
