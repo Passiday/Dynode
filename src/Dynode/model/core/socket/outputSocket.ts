@@ -1,30 +1,25 @@
 import type { Node } from 'src/Dynode/model/core';
 import Socket from './socket';
-import type ValueType from './valueType';
+import Value from './value';
 
 /**
  * Socket class that handles output.
  */
-class OutputSocket extends Socket {
+class OutputSocket<T> extends Socket<T> {
   /**
    * Mark whether the object is awaiting output.
    */
-  waiting = false;
+  private waiting = false;
 
   /**
    * Reference to a node that is responsible for this object.
    */
-  parent: Node;
+  private parent: Node;
 
   /**
    * The Stored Value of the socket, will be pulled after the next network resolve.
    */
-  storedValue: unknown;
-
-  /**
-   * Checks if the Socket stored nothing as a value;
-   */
-  storedNothing = true;
+  private storedValue: Value<T> | null;
 
   /**
    * An unique mode for the OutputSocket class.
@@ -37,39 +32,38 @@ class OutputSocket extends Socket {
    * @param parentNode  See {@link parent}
    * @param storageMode Option to enable StorageMode
    */
-  constructor(parentNode: Node, typeObject?: ValueType, storageMode?: boolean) {
+  constructor(parentNode: Node, value?: Value<T>, storageMode?: boolean) {
     super();
     this.parent = parentNode;
-    if (typeObject) this.typeObject = typeObject;
+    this.storedValue = (value === undefined) ? null : value;
     if (storageMode !== undefined) this.storageMode = storageMode;
   }
 
   /**
    * Ask {@link parent} to resolve.
    */
-  pull(): void {
+  public pull(): void {
     if (this.waiting) return;
     this.waiting = true;
     if (!this.storageMode) { this.parent.resolve(); return; }
     if (this.isSet()) return;
-    if (this.storedNothing) super.setValue();
-    else super.setValue(this.storedValue);
+    if (this.isStoredNothing()) super.setNothing();
+    else super.setValue(this.storedValue as Value<T>); // Can be cast because it's not nothing
   }
 
   /**
    * Initialize the socket.
    */
-  init(): void {
-    this.reset();
-    this.storedValue = undefined;
-    this.storedNothing = true;
+  public init(): void {
+    this.unset();
+    this.storedValue = null;
   }
 
   /**
    * Resets the socket, keeping the storedValue
    */
-  reset(): void {
-    super.reset();
+  public unset(): void {
+    super.unset();
     this.waiting = false;
   }
 
@@ -78,32 +72,38 @@ class OutputSocket extends Socket {
    *
    * @param value  The new value. If omitted, value is set to nothing.
    */
-  setValue(value?: unknown): void {
+  public setValue(value: Value<T>): void {
     this.waiting = false;
-
     if (this.storageMode) {
       this.pull();
-      if (arguments.length) {
-        this.storedValue = value;
-        this.storedNothing = false;
-      } else {
-        this.storedNothing = true;
-      }
-      return;
-    }
-
-    if (arguments.length) {
-      super.setValue(value);
+      this.storedValue = value;
     } else {
-      super.setValue();
+      super.setValue(value);
     }
+  }
+
+  public setNothing(): void {
+    this.waiting = false;
+    if (this.storageMode) {
+      this.pull();
+      this.storedValue = null;
+    } else {
+      super.setNothing();
+    }
+  }
+
+  /**
+   * Denotes whether the object's stored value is set to nothing.
+   */
+  public isStoredNothing() {
+    return this.storedValue === null;
   }
 
   /**
    * Denotes whether the OutputSocket has Storage Mode turned on or off.
    * @returns True if the network has Storage Mode turned on, false otherwise.
    */
-  isStorage(): boolean {
+  public isStorage(): boolean {
     return this.storageMode;
   }
 }
