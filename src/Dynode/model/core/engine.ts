@@ -1,7 +1,14 @@
+import type Value from './socket/value';
 import type ValueType from './socket/valueType';
 import type NodeType from './nodeType';
 
+interface ValueConstructor<T> {
+  new(value: T): Value<T>
+}
+
 class Engine {
+  private valueDefinitions: Record<string, ValueConstructor<unknown>> = {};
+
   private valueTypeDefinitions: Record<string, ValueType> = {};
 
   /**
@@ -19,6 +26,11 @@ class Engine {
     for (const n of this.nodeTypeDefinitions) {
       if (n.name === name) return n;
     }
+    throw Error(`Type ${name} does not exist!`);
+  }
+
+  public getValueDefinition(name: string): ValueConstructor<unknown> {
+    if (name in this.valueDefinitions) return this.valueDefinitions[name];
     throw Error(`Type ${name} does not exist!`);
   }
 
@@ -43,6 +55,11 @@ class Engine {
       if (n.name === nodeType.name) throw Error(`NodeType ${n.name} already exists!`);
     }
     this.nodeTypeDefinitions.push(nodeType);
+  }
+
+  public addValueDefinition(name: string, valueConstructor: ValueConstructor<unknown>){
+    if (name in this.valueDefinitions) throw Error(`ValueConstructor ${name} already exists!`);
+    this.valueDefinitions[name] = valueConstructor
   }
 
   /**
