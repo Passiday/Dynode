@@ -11,7 +11,11 @@ class Socket<T> extends VEventTarget {
   protected value: Value<T> | null;
 
   /**
-   * Denotes whether the object holds a value.
+   * Denotes whether the object's value has been set.
+   *
+   * Although it may seem that when value = null the value has not been set, that is not
+   * the case. When value = null and isSetVariable = true it's an explicit signal that there
+   * is no value.
    */
   private isSetVariable: boolean;
 
