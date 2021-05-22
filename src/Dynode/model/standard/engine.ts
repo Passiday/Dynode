@@ -1,7 +1,13 @@
 import { Engine } from '../core';
+import { Value } from '../core/socket';
 import * as VT from './valueTypeDefinitions';
+import * as V from '.valueDefinitions';
 import NodeTypeDefinitions from './nodeTypeDefinitions';
 import type ValueType from '../core/socket/valueType';
+
+interface ValueConstructor<T> {
+  new(value: T): Value<T>
+}
 
 class StandardEngine extends Engine {
   constructor() {
@@ -14,6 +20,11 @@ class StandardEngine extends Engine {
       boolean: new VT.Boolean(),
       string: new VT.String(),
     } as Record<string, ValueType>)) this.addValueTypeDefinition(name, valueType);
+    for (const [name, value] of Object.entries({
+      number: V.Number,
+      boolean: V.Boolean,
+      string: V.String,
+    } as Record<string, ValueConstructor<unknown>>)) this.addValueDefinition(name, value);
   }
 }
 
