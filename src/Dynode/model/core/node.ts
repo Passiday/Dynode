@@ -44,7 +44,7 @@ class Node extends VEventTarget {
   /**
    * A collection of InputSocket objects.
    */
-  inputs = new SocketCollection<InputSocket>();
+  inputs = new SocketCollection<InputSocket<unknown>>();
 
   /**
    * The size of stored inputs.
@@ -64,7 +64,7 @@ class Node extends VEventTarget {
   /**
    * A collection of OutputSocket objects.
    */
-  outputs = new SocketCollection<OutputSocket>();
+  outputs = new SocketCollection<OutputSocket<unknown>>();
 
   /**
    * Register a new input.
@@ -73,7 +73,7 @@ class Node extends VEventTarget {
    * @param inputType  Name of the ValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string, valueType?: string): InputSocket {
+  addInput(name: string, valueType?: string): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
 
     let socket;
@@ -102,7 +102,7 @@ class Node extends VEventTarget {
    *
    * @param name  The name of the input to be found.
    */
-  getInput(name: string): InputSocket {
+  getInput(name: string): InputSocket<unknown> {
     return this.inputs.getSocketByName(name);
   }
 
@@ -136,7 +136,7 @@ class Node extends VEventTarget {
    * @param name  The name of the input to link from.
    * @param outputSocket  OutputSocket to link to.
    */
-  linkInput(name: string, outputSocket: OutputSocket): void {
+  linkInput(name: string, outputSocket: OutputSocket<unknown>): void {
     const input = this.getInput(name);
     input.linkSocket(outputSocket);
     this.dispatchEvent(new VEvent('linkInput', { detail: { inputName: name } }));
@@ -174,7 +174,7 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, valueType?: string, storageMode?: boolean): OutputSocket {
+  addOutput(name: string, valueType?: string, storageMode?: boolean): OutputSocket<unknown> {
     let socket;
     if (valueType) {
       if (!this.engine) throw Error('Engine is needed to specify a valueType!');
@@ -199,7 +199,7 @@ class Node extends VEventTarget {
    *
    * @param name  Name of the OutputSocket object to be found.
    */
-  getOutput(name: string): OutputSocket {
+  getOutput(name: string): OutputSocket<unknown> {
     return this.outputs.getSocketByName(name);
   }
 
@@ -322,7 +322,7 @@ class Node extends VEventTarget {
   actionReady(): void {
     // Set all unset outputs
     this.outputs.getAllSockets().forEach((output) => {
-      if (!output.isSet()) output.setValue();
+      if (!output.isSet()) output.setNothing();
     });
     this.dumpOutputs();
     this.busy = false;

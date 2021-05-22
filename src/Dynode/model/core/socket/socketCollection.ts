@@ -5,7 +5,7 @@ import Socket from './socket';
  *
  * @typeParam T  Class of sockets that will be managed.
  */
-class SocketCollection<T extends Socket> {
+class SocketCollection<T extends Socket<unknown>> {
   /**
    * Main storage for sockets.
    */

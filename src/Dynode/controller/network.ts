@@ -24,13 +24,13 @@ export default class NetworkController {
       const nodeModel = this.nodes[this.nodes.length - 1]; // Finds the added node
       const nodeConfig = {
         name: nodeModel.name,
-        inputs: [...nodeModel.inputs].map((socket: InputSocket) => {
+        inputs: [...nodeModel.inputs].map((socket: InputSocket<unknown>) => {
           const result : {name: string | null; title: string | null; value?: JsonValue} = {
             name: socket.name,
             title: socket.title,
           };
           if (socket.isDefaultSet() && !socket.isDefaultNothing()) {
-            result.value = socket.getJsonDefaultValue();
+            result.value = socket.getValue().toJSON();
           }
           return result;
         }),
