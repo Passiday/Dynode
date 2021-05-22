@@ -1,13 +1,9 @@
 import { Engine } from '../core';
-import { Value } from '../core/socket';
+import { ValueConstructor } from '../core/socket/value';
 import * as VT from './valueTypeDefinitions';
-import * as V from '.valueDefinitions';
+import * as V from './valueDefinitions';
 import NodeTypeDefinitions from './nodeTypeDefinitions';
 import type ValueType from '../core/socket/valueType';
-
-interface ValueConstructor<T> {
-  new(value: T): Value<T>
-}
 
 class StandardEngine extends Engine {
   constructor() {

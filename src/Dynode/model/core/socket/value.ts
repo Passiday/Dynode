@@ -12,6 +12,10 @@ function isJSON(value: unknown): boolean {
   return true;
 }
 
+interface ValueConstructor<T> {
+  new(value: T): Value<T>
+}
+
 class Value<T> {
   /**
    * Actual value that this class wraps.
@@ -49,4 +53,4 @@ class Value<T> {
   }
 }
 
-export default Value;
+export { Value, ValueConstructor };

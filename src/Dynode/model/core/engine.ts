@@ -1,10 +1,6 @@
-import type Value from './socket/value';
+import type { ValueConstructor } from './socket/value';
 import type ValueType from './socket/valueType';
 import type NodeType from './nodeType';
-
-interface ValueConstructor<T> {
-  new(value: T): Value<T>
-}
 
 class Engine {
   private valueDefinitions: Record<string, ValueConstructor<unknown>> = {};
