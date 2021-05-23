@@ -1,7 +1,6 @@
 import { Engine as StandardEngine } from 'src/Dynode/model/standard';
 import { NodeType } from 'src/Dynode/model/core';
 import type { Node } from 'src/Dynode/model/core';
-import VT from './sampleValueTypeClass';
 
 describe('getNodeTypeDefinition', () => {
   test('Ensure math node type exists', () => {
@@ -17,34 +16,6 @@ describe('getNodeTypeDefinition', () => {
   test('Ensure burger node does not exist', () => {
     const e = new StandardEngine();
     expect(() => e.getNodeTypeDefinition('burger')).toThrow();
-  });
-});
-
-describe('getValueTypeDefinition', () => {
-  test('Ensure number type exists', () => {
-    const e = new StandardEngine();
-    expect(() => e.getValueTypeDefinition('string')).not.toThrow();
-  });
-
-  test('Ensure boolean type exists', () => {
-    const e = new StandardEngine();
-    expect(() => e.getValueTypeDefinition('boolean')).not.toThrow();
-  });
-
-  test('Ensure string type exists', () => {
-    const e = new StandardEngine();
-    expect(() => e.getValueTypeDefinition('string')).not.toThrow();
-  });
-
-  test('Ensure unknown type throws', () => {
-    const e = new StandardEngine();
-    expect(() => e.getValueTypeDefinition('Object')).toThrow();
-  });
-
-  test('Ensure types are case sensitive', () => {
-    const e = new StandardEngine();
-    expect(() => e.getValueTypeDefinition('string')).not.toThrow();
-    expect(() => e.getValueTypeDefinition('String')).toThrow();
   });
 });
 
@@ -78,22 +49,5 @@ describe('addNodeTypeDefinition', () => {
 
     const n2 = getSampleNodeType();
     expect(() => e.addNodeTypeDefinition(n2)).toThrow();
-  });
-});
-
-describe('addValueTypeDefinition', () => {
-  test('A valueType can be added', () => {
-    const e = new StandardEngine();
-    const vt = new VT();
-    expect(() => e.addValueTypeDefinition('even', vt)).not.toThrow();
-  });
-
-  test('Ensure duplicate names throw', () => {
-    const e = new StandardEngine();
-    const v1 = new VT();
-    const v2 = new VT();
-
-    expect(() => e.addValueTypeDefinition('even', v1)).not.toThrow();
-    expect(() => e.addValueTypeDefinition('even', v2)).toThrow();
   });
 });
