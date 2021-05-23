@@ -73,11 +73,11 @@ class Node extends VEventTarget {
    * @param inputType  Name of the ValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string, valueType: string, value?: unknown): InputSocket<unknown> {
+  addInput(name: string, valueType?: string, value?: unknown): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
     if (!this.engine) throw Error('Engine is not defined!');
 
-    const ValueType = this.engine.getValueDefinition(valueType);
+    const ValueType = this.engine.getValueDefinition(valueType === undefined ? 'default' : valueType);
     const socket = new InputSocket(ValueType, value);
 
     socket.name = name;
@@ -170,10 +170,10 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, valueType: string, value?: unknown, storageMode?: boolean): OutputSocket<unknown> {
+  addOutput(name: string, valueType?: string, value?: unknown, storageMode?: boolean): OutputSocket<unknown> {
     if (!this.engine) throw Error('Engine is not defined!');
 
-    const ValueType = this.engine.getValueDefinition(valueType);
+    const ValueType = this.engine.getValueDefinition(valueType === undefined ? 'default' : valueType);
     const socket = new OutputSocket(this, ValueType, value, storageMode);
 
     socket.name = name;
