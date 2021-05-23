@@ -240,7 +240,7 @@ class Node extends VEventTarget {
    * Initialize the node for clean run.
    */
   public reset(): void {
-    this.reset();
+    this.clear();
     this.state = {};
     this.inputs.reset();
     this.outputs.reset();
