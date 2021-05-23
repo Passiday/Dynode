@@ -28,7 +28,7 @@ export default function multiCycleExample(network: Network, stage: StageView) : 
   incrementNode.addOutput('y');
   incrementNode.action = function (this: Node) {
     if (this.inputIsNothing('x')) return;
-    let v = this.getInputValue('x') as number;
+    let v = this.getInputValue('x').value as number;
     v++;
     this.setOutputValue('y', v);
   };
@@ -40,7 +40,7 @@ export default function multiCycleExample(network: Network, stage: StageView) : 
   ifNode.addOutput('y');
   ifNode.action = function (this:Node) {
     if (this.inputIsNothing('x')) return;
-    const v = this.getInputValue('x') as number;
+    const v = this.getInputValue('x').value as number;
     if (v < 6) {
       this.setOutputValue('y', v);
     }
@@ -52,7 +52,7 @@ export default function multiCycleExample(network: Network, stage: StageView) : 
   delay.addOutput('y', undefined, true);
   delay.action = function () {
     if (this.inputIsNothing('x')) return;
-    const input = this.getInputValue('x') as number;
+    const input = this.getInputValue('x').value as number;
     this.setOutputValue('y', input);
   };
   delay.linkInput('x', ifNode.getOutput('y'));

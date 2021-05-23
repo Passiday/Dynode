@@ -9,8 +9,8 @@ test('unlinkedNodeTest', () => {
   const input2 = node.addInput('two');
   const output1 = node.addOutput('one');
   input1.setDefaultValue(123);
-  input2.setDefaultValue();
-  output1.addEventListener('value', function (this: OutputSocket) {
+  input2.setDefaultNothing();
+  output1.addEventListener('value', function (this: OutputSocket<unknown>) {
     expect(this.isNothing()).toBe(true);
   });
   node.resolve();
@@ -34,7 +34,7 @@ test('linkedNodesTest', () => {
   const inputB1 = nodeB.addInput('one');
   const inputB2 = nodeB.addInput('two');
   inputB1.setDefaultValue(456);
-  inputB2.setDefaultValue();
+  inputB2.setDefaultNothing();
 
   nodeB.resolve();
   expect(inputB1.getValue()).toBe(456);
@@ -184,8 +184,8 @@ test('Multiple resolve test', (done) => {
   const outputB = nodeB.addOutput('one');
   nodeB.action = () => {
     if (!nodeB.inputIsNothing('one')) {
-      const inputOne = nodeB.getInputValue('one') as number;
-      const inputTwo = nodeB.getInputValue('two') as number;
+      const inputOne = nodeB.getInputValue('one').value as number;
+      const inputTwo = nodeB.getInputValue('two').value as number;
       nodeB.setOutputValue('one', inputOne + inputTwo);
     }
   };
@@ -224,7 +224,7 @@ test('StorageMode', (done) => {
   const outputA = nodeA.addOutput('y');
   nodeA.action = () => {
     if (!nodeA.inputIsNothing('x')) {
-      const inputOne = nodeA.getInputValue('x') as number;
+      const inputOne = nodeA.getInputValue('x').value as number;
       nodeA.setOutputValue('y', inputOne + 1);
     } else {
       nodeA.setOutputValue('y', 1);
@@ -238,7 +238,7 @@ test('StorageMode', (done) => {
   const outputB = nodeB.addOutput('y', undefined, true);
   nodeB.action = () => {
     if (!nodeB.inputIsNothing('x')) {
-      const inputOne = nodeB.getInputValue('x') as number;
+      const inputOne = nodeB.getInputValue('x').value as number;
       mockFn(inputOne);
       nodeB.setOutputValue('y', inputOne);
     }

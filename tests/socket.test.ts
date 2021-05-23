@@ -3,11 +3,11 @@ import {
   InputSocket,
   OutputSocket,
 } from 'src/Dynode/model/core/socket';
-import VT from './sampleValueTypeClass';
+import { Value } from 'src/Dynode/model';
 
 test('simpleSocketTest', () => {
-  const socket = new Socket();
-  const mockFun = jest.fn(function (this: Socket) { return this; });
+  const socket = new Socket(Value);
+  const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
   socket.addEventListener('value', mockFun);
 
   socket.setValue(123);
@@ -16,18 +16,18 @@ test('simpleSocketTest', () => {
   expect(() => socket.setValue(456)).toThrow();
 
   socket.reset();
-  socket.setValue();
+  socket.setNothing();
   expect(mockFun.mock.results.slice(-1)[0].value.isNothing()).toBe(true);
 });
 
 test('linkedInputSocketTest', () => {
-  const outputSocket = new Socket();
-  const inputSocket = new InputSocket();
-  const mockFun = jest.fn(function (this: Socket) { return this; });
+  const outputSocket = new Socket(Value);
+  const inputSocket = new InputSocket(Value);
+  const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
 
   expect(inputSocket.isSet()).toBe(false);
 
-  inputSocket.setDefaultValue();
+  inputSocket.setDefaultNothing();
   expect(inputSocket.isSet()).toBe(true);
   expect(inputSocket.isNothing()).toBe(true);
 
@@ -56,7 +56,7 @@ test('outputSocketTest', () => {
   jest.useFakeTimers();
 
   const mockNode: any = {};
-  const socket = new OutputSocket(mockNode);
+  const socket = new OutputSocket(mockNode, Value);
   mockNode.resolve = jest.fn(
     () => setTimeout(() => socket.setValue(123), 1000),
   );
@@ -64,28 +64,18 @@ test('outputSocketTest', () => {
   // Post setValue test
   socket.addEventListener('value', () => {
     expect(socket.getValue).toBe(123);
-    expect(socket.waiting).toBe(false);
+    expect(socket.isWaiting()).toBe(false);
   });
 
-  expect(socket.waiting).toBe(false);
+  expect(socket.isWaiting()).toBe(false);
   socket.pull();
-  expect(socket.waiting).toBe(true);
-});
-
-test('setValue with a type', () => {
-  const vt = new VT();
-  const s = new Socket(vt);
-
-  s.setValue(10);
-  expect(s.getValue()).toBe(10);
-  expect(() => s.setValue(5)).toThrow();
+  expect(socket.isWaiting()).toBe(true);
 });
 
 test('getJsonDefaultValue', () => {
-  const vt = new VT();
-  const s = new InputSocket(vt);
+  const s = new InputSocket(Value);
 
   s.setDefaultValue(5);
   expect(s.isDefaultSet()).toBe(true);
-  expect(s.getJsonDefaultValue()).toBe(5);
+  expect(s.getValue().toJSON()).toBe(5);
 });

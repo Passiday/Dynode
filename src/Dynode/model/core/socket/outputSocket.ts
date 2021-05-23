@@ -100,6 +100,13 @@ class OutputSocket<T> extends Socket<T> {
   public isStorage(): boolean {
     return this.storageMode;
   }
+
+  /**
+   * Return the state of {@link waiting}
+   */
+  public isWaiting(): boolean {
+    return this.waiting;
+  }
 }
 
 export default OutputSocket;

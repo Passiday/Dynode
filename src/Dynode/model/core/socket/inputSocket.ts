@@ -46,6 +46,11 @@ class InputSocket<T> extends Socket<T> {
     return this.defaultValue as Value<T>; // Can be cast because of "nothing" check
   }
 
+  public setDefaultNothing() {
+    this.defaultValue = null;
+    this.isDefaultSetVariable = true;
+  }
+
   /**
    * Check whether object's default value is set to nothing.
    */
