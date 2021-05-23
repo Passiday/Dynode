@@ -73,9 +73,12 @@ class Node extends VEventTarget {
    * @param inputType  Name of the ValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string, value?: Value<unknown>): InputSocket<unknown> {
+  addInput(name: string, valueType: string, value?: unknown): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
-    const socket = new InputSocket(value);
+    if (!this.engine) throw Error('Engine is not defined!');
+
+    const ValueType = this.engine.getValueDefinition(valueType);
+    const socket = new InputSocket(ValueType, value);
 
     socket.name = name;
     this.inputs.addSocket(socket);
@@ -108,7 +111,7 @@ class Node extends VEventTarget {
    *
    * @param name  The name of the input of which the value will be retrieved.
    */
-  getInputValue(name: string): unknown {
+  getInputValue(name: string): Value<unknown> {
     const input = this.getInput(name);
     return input.getValue();
   }
@@ -167,8 +170,11 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, value?: Value<unknown>, storageMode?: boolean): OutputSocket<unknown> {
-    const socket = new OutputSocket(this, value, storageMode);
+  addOutput(name: string, valueType: string, value?: unknown, storageMode?: boolean): OutputSocket<unknown> {
+    if (!this.engine) throw Error('Engine is not defined!');
+
+    const ValueType = this.engine.getValueDefinition(valueType);
+    const socket = new OutputSocket(this, ValueType, value, storageMode);
 
     socket.name = name;
     this.outputs.addSocket(socket);
@@ -196,7 +202,7 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to be found.
    * @param value  New value to be set.
    */
-  setOutputValue(name: string, value: Value<unknown>): void {
+  setOutputValue(name: string, value: unknown): void {
     const output = this.getOutput(name);
     if (arguments.length > 1) {
       output.setValue(value);

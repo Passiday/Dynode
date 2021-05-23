@@ -1,10 +1,15 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { Value } from './value';
+import { Value, ValueConstructor } from './value';
 
 /**
  * Class for dealing with Node values.
  */
 class Socket<T> extends VEventTarget {
+  /**
+   * ValueConstructor that is used to determine the type of value.
+   */
+  protected ValueType: ValueConstructor<T>;
+
   /**
    * The Value of the socket. null means there is nothing.
    */
@@ -29,10 +34,11 @@ class Socket<T> extends VEventTarget {
    */
   public title: string | null = null;
 
-  constructor(value?: Value<T>) {
+  constructor(ValueType: ValueConstructor<T>, value?: T) {
     super();
+    this.ValueType = ValueType;
     if (value !== undefined) {
-      this.value = value;
+      this.value = new ValueType(value);
       this.isSetVariable = true;
     } else {
       this.value = null;
@@ -62,9 +68,9 @@ class Socket<T> extends VEventTarget {
   /**
    * Object's setter for {@link value}
    */
-  public setValue(value: Value<T>): void {
+  public setValue(value: T): void {
     if (this.isSet()) throw Error('Value already set');
-    this.value = value;
+    this.value = new this.ValueType(value);
     this.isSetVariable = true;
     this.dispatchEvent(new VEvent('value'));
   }

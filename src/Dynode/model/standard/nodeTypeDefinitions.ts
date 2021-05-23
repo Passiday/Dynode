@@ -5,14 +5,14 @@ function createMathNode(node: Node): Node {
   n.addInput('operator', 'string');
   n.addInput('lhs', 'number');
   n.addInput('rhs', 'number');
-  n.addOutput('result');
+  n.addOutput('result', 'number');
   n.action = function (this: Node) {
     if (this.inputIsNothing('lhs')) return;
     if (this.inputIsNothing('rhs')) return;
 
-    const operator = this.getInputValue('operator');
-    const lhs = this.getInputValue('lhs') as number;
-    const rhs = this.getInputValue('rhs') as number;
+    const operator = this.getInputValue('operator').value;
+    const lhs = this.getInputValue('lhs').value as number;
+    const rhs = this.getInputValue('rhs').value as number;
 
     let val: number;
     switch (operator) {

@@ -32,8 +32,8 @@ class InputSocket<T> extends Socket<T> {
    *
    * @param value  The new value. If omitted, defaultValue is set to nothing.
    */
-  public setDefaultValue(value: Value<T>): void {
-    this.defaultValue = value;
+  public setDefaultValue(value: T): void {
+    this.defaultValue = new this.ValueType(value);
     this.isDefaultSetVariable = true;
   }
 
@@ -81,7 +81,7 @@ class InputSocket<T> extends Socket<T> {
       if (e.target.isNothing()) {
         this.setNothing();
       } else {
-        this.setValue(e.target.getValue());
+        this.setValue(e.target.getValue().value);
       }
     };
     this.linkedSocket.addEventListener('value', this.valueHandler);
