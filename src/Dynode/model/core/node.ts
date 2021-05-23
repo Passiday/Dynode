@@ -1,5 +1,5 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { InputSocket, OutputSocket, SocketCollection, Value } from './socket';
+import { InputSocket, OutputSocket, SocketCollection, Value, ValueConstructor } from './socket';
 import Engine from './engine';
 import type Network from './network';
 import type NodeType from './nodeType';
@@ -67,6 +67,24 @@ class Node extends VEventTarget {
   outputs = new SocketCollection<OutputSocket<unknown>>();
 
   /**
+   * A helper for retrieving an optional ValueConstructor.
+   *
+   * The main purpose is to provide an argument for socket which can take undefined and
+   * assume the default or a name can be passed which then is extracted from engine. This
+   * done so it is possible to add default type sockets without an engine.
+   *
+   * @param name ValueConstructor name that is stored in engine
+   */
+  private valueTypeExtractor(name?: string): ValueConstructor<unknown> | undefined {
+    if (name === undefined) {
+      return undefined;
+    } else {
+      if (!this.engine) throw Error('Engine is not defined!');
+      this.engine.getValueDefinition(name);
+    }
+  }
+
+  /**
    * Register a new input.
    *
    * @param name  Name of the inputSocket to generate
@@ -75,10 +93,7 @@ class Node extends VEventTarget {
    */
   addInput(name: string, value?: unknown, valueType?: string): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
-    if (!this.engine) throw Error('Engine is not defined!');
-
-    const ValueType = valueType === undefined ? undefined : this.engine.getValueDefinition(valueType);
-    const socket = new InputSocket(value, ValueType);
+    const socket = new InputSocket(value, this.valueTypeExtractor(valueType));
 
     socket.name = name;
     this.inputs.addSocket(socket);
@@ -171,10 +186,8 @@ class Node extends VEventTarget {
    * @return  Newly created OutputSocket object.
    */
   addOutput(name: string, value?: unknown, valueType?: string, storageMode?: boolean): OutputSocket<unknown> {
-    if (!this.engine) throw Error('Engine is not defined!');
-
-    const ValueType = valueType === undefined ? undefined : this.engine.getValueDefinition(valueType);
-    const socket = new OutputSocket(this, value, ValueType, storageMode);
+    if (name in this.outputs) throw Error('Input name already exists');
+    const socket = new OutputSocket(this, value, this.valueTypeExtractor(valueType), storageMode);
 
     socket.name = name;
     this.outputs.addSocket(socket);
