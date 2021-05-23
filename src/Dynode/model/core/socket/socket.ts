@@ -1,5 +1,5 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import Value from './value';
+import { Value } from './value';
 
 /**
  * Class for dealing with Node values.
@@ -41,11 +41,22 @@ class Socket<T> extends VEventTarget {
   }
 
   /**
-   * Object's setup/reset.
+   * Throw away the stored value making the value unset.
+   *
+   * See {@link isSetVariable} on the difference between nothing and unset.
    */
-  public unset(): void {
+  public clear(): void {
     this.value = null;
     this.isSetVariable = false;
+  }
+
+  /**
+   * Revert socket to a fresh state.
+   *
+   * It is used for resetting the socket for a clean run for a network.
+   */
+  public reset(): void {
+    this.clear();
   }
 
   /**

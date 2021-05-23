@@ -51,20 +51,14 @@ class OutputSocket<T> extends Socket<T> {
     else super.setValue(this.storedValue as Value<T>); // Can be cast because it's not nothing
   }
 
-  /**
-   * Initialize the socket.
-   */
-  public init(): void {
-    this.unset();
-    this.storedValue = null;
+  public clear(): void {
+    super.clear();
+    this.waiting = false;
   }
 
-  /**
-   * Resets the socket, keeping the storedValue
-   */
-  public unset(): void {
-    super.unset();
-    this.waiting = false;
+  public reset(): void {
+    this.clear();
+    this.storedValue = null;
   }
 
   /**

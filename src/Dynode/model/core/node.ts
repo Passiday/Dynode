@@ -250,21 +250,21 @@ class Node extends VEventTarget {
   /**
    * Initialize the node for clean run.
    */
-  init(): void {
+  public reset(): void {
     this.reset();
     this.state = {};
-    this.inputs.init();
-    this.outputs.init();
+    this.inputs.reset();
+    this.outputs.reset();
   }
 
   /**
    * Prepare node for resolving.
    */
-  reset(): void {
+  public clear(): void {
     this.busy = false;
     this.resolved = false;
-    this.inputs.reset();
-    this.outputs.reset();
+    this.inputs.clear();
+    this.outputs.clear();
   }
 
   /**

@@ -61,11 +61,11 @@ class SocketCollection<T extends Socket<unknown>> {
   }
 
   /**
-   * Initialize all sockets in the collection for clean run
+   * Clear all sockets in the collection.
    */
-  public init(): void {
+  public clear(): void {
     for (const socket of this.sockets) {
-      socket.init();
+      socket.clear();
     }
   }
 

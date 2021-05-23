@@ -45,7 +45,7 @@ class Network extends VEventTarget {
     this.nodes = [];
     this.engine = engine || null;
     this.name = name;
-    this.init();
+    this.reset();
   }
 
   /**
@@ -77,19 +77,19 @@ class Network extends VEventTarget {
   /**
    * Initialize the network for clean run.
    */
-  init(): void {
+  reset(): void {
     this.halted = false;
-    this.reset();
-    this.nodes.forEach((node) => node.init());
+    this.clear();
+    this.nodes.forEach((node) => node.reset());
   }
 
   /**
    * Prepare network for resolving.
    */
-  reset(): void {
+  clear(): void {
     this.busy = false;
     this.resolved = false;
-    this.nodes.forEach((node) => node.reset());
+    this.nodes.forEach((node) => node.clear());
   }
 
   /**
