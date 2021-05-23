@@ -3,7 +3,6 @@ import {
   InputSocket,
   OutputSocket,
 } from 'src/Dynode/model/core/socket';
-import { Value } from 'src/Dynode/model';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();

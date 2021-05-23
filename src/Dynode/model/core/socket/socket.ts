@@ -103,7 +103,7 @@ class Socket<T> extends VEventTarget {
    * Denotes whether the object's value is set to nothing.
    */
   public isNothing(): boolean {
-    return this.isSet() && (this.value === null);;
+    return this.isSet() && (this.value === null);
   }
 }
 

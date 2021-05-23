@@ -48,7 +48,8 @@ class OutputSocket<T> extends Socket<T> {
     if (!this.storageMode) { this.parent.resolve(); return; }
     if (this.isSet()) return;
     if (this.isStoredNothing()) super.setNothing();
-    else super.setValue((this.storedValue as Value<T>).value); // Can be cast because it's not nothing
+    // Can be cast because it's not nothing
+    else super.setValue((this.storedValue as Value<T>).value);
   }
 
   public clear(): void {
@@ -89,7 +90,7 @@ class OutputSocket<T> extends Socket<T> {
   /**
    * Denotes whether the object's stored value is set to nothing.
    */
-  public isStoredNothing() {
+  public isStoredNothing(): boolean {
     return this.storedValue === null;
   }
 

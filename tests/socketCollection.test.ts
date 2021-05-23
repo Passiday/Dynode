@@ -1,5 +1,4 @@
 import { InputSocket, SocketCollection } from 'src/Dynode/model/core/socket';
-import { Value } from 'src/Dynode/model';
 
 describe('addSocket', () => {
   test('given socket with no name, throw', () => {

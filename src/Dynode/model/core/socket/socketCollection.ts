@@ -90,7 +90,7 @@ class SocketCollection<T extends Socket<unknown>> {
   /**
    * Generator, that retrieves sockets
    */
-  * [Symbol.iterator]() {
+  * [Symbol.iterator](): Generator<T, void, unknown> {
     for (const socket of this.sockets) {
       yield socket;
     }

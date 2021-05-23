@@ -1,5 +1,7 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { InputSocket, OutputSocket, SocketCollection, Value, ValueConstructor } from './socket';
+import {
+  InputSocket, OutputSocket, SocketCollection, Value, ValueConstructor,
+} from './socket';
 import Engine from './engine';
 import type Network from './network';
 import type NodeType from './nodeType';
@@ -78,10 +80,9 @@ class Node extends VEventTarget {
   private valueTypeExtractor(name?: string): ValueConstructor<unknown> | undefined {
     if (name === undefined) {
       return undefined;
-    } else {
-      if (!this.engine) throw Error('Engine is not defined!');
-      this.engine.getValueDefinition(name);
     }
+    if (!this.engine) throw Error('Engine is not defined!');
+    return this.engine.getValueDefinition(name);
   }
 
   /**
@@ -185,7 +186,9 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, value?: unknown, valueType?: string, storageMode?: boolean): OutputSocket<unknown> {
+  addOutput(
+    name: string, value?: unknown, valueType?: string, storageMode?: boolean,
+  ): OutputSocket<unknown> {
     if (name in this.outputs) throw Error('Input name already exists');
     const socket = new OutputSocket(this, value, this.valueTypeExtractor(valueType), storageMode);
 

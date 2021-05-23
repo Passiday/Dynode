@@ -1,5 +1,5 @@
 import { Network, Node } from 'src/Dynode/model/core';
-import { OutputSocket } from 'src/Dynode/model/core/socket';
+
 // import { VEventHandler, VEvent } from '../src/vanillaEvent';
 
 // test('quadraticFormulaNetworkTest', () => {
@@ -143,7 +143,6 @@ import { OutputSocket } from 'src/Dynode/model/core/socket';
 
 //   mockFunc.mockReturnValueOnce(4).mockReturnValueOnce(3);
 // })
-;
 
 test('Async network', (done) => {
   const nodeA = new Node('Node-A');

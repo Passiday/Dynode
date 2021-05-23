@@ -53,9 +53,9 @@ class Engine {
     this.nodeTypeDefinitions.push(nodeType);
   }
 
-  public addValueDefinition(name: string, valueConstructor: ValueConstructor<unknown>){
+  public addValueDefinition(name: string, valueConstructor: ValueConstructor<unknown>): void {
     if (name in this.valueDefinitions) throw Error(`ValueConstructor ${name} already exists!`);
-    this.valueDefinitions[name] = valueConstructor
+    this.valueDefinitions[name] = valueConstructor;
   }
 
   /**
