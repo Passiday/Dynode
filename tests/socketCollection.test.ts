@@ -4,18 +4,18 @@ import { Value } from 'src/Dynode/model';
 describe('addSocket', () => {
   test('given socket with no name, throw', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
 
     expect(() => sc.addSocket(i1)).toThrow();
   });
 
   test('given sockets with same name, throw', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'duplicate';
     sc.addSocket(i1);
 
-    const i2 = new InputSocket(Value);
+    const i2 = new InputSocket();
     i2.name = 'duplicate';
 
     expect(() => sc.addSocket(i2)).toThrow();
@@ -25,7 +25,7 @@ describe('addSocket', () => {
 describe('getSocketByName', () => {
   test('properly obtain item in 1 item collection', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'someInput';
     sc.addSocket(i1);
 
@@ -34,7 +34,7 @@ describe('getSocketByName', () => {
 
   test('given non-existent name, throw', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'someInput';
     sc.addSocket(i1);
 
@@ -45,7 +45,7 @@ describe('getSocketByName', () => {
 describe('getSocketByIndex', () => {
   test('properly index socket collection with 1 input', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'something';
     sc.addSocket(i1);
 
@@ -56,7 +56,7 @@ describe('getSocketByIndex', () => {
     const sc = new SocketCollection();
     const inputs: InputSocket<unknown>[] = [];
     for (let i = 0; i < 3; i++) {
-      const socket = new InputSocket(Value);
+      const socket = new InputSocket();
       socket.name = `s${i}`;
       inputs.push(socket);
       sc.addSocket(socket);
@@ -74,7 +74,7 @@ describe('getSocketByIndex', () => {
 
   test('given out-of-bounds index to throw', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'something';
     sc.addSocket(i1);
 
@@ -83,7 +83,7 @@ describe('getSocketByIndex', () => {
 
   test('given negative index to throw', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'something';
     sc.addSocket(i1);
 
@@ -92,7 +92,7 @@ describe('getSocketByIndex', () => {
 
   test('given float index to throw', () => {
     const sc = new SocketCollection();
-    const i1 = new InputSocket(Value);
+    const i1 = new InputSocket();
     i1.name = 'something';
     sc.addSocket(i1);
 
@@ -111,7 +111,7 @@ describe('getAllSockets', () => {
     const sc = new SocketCollection();
     const expected: InputSocket<unknown>[] = [];
     for (let i = 0; i < 5; i++) {
-      const socket = new InputSocket(Value);
+      const socket = new InputSocket();
       socket.name = `i${i}`;
       expected.push(socket);
       sc.addSocket(socket);
@@ -124,7 +124,7 @@ describe('getAllSockets', () => {
     const sc = new SocketCollection();
     const expected: InputSocket<unknown>[] = [];
     for (const i of [1, 2, 3]) {
-      const socket = new InputSocket(Value);
+      const socket = new InputSocket();
       socket.name = `i${i}`;
       sc.addSocket(socket);
       expected.push(socket);
@@ -138,7 +138,7 @@ describe('getAllSockets', () => {
 
 test('changed node name should be reflected in SocketCollection', () => {
   const sc = new SocketCollection();
-  const s1 = new InputSocket(Value);
+  const s1 = new InputSocket();
   s1.name = 'old';
   sc.addSocket(s1);
 
@@ -151,9 +151,9 @@ test('changed node name should be reflected in SocketCollection', () => {
 
 test('SocketCollection iterator', () => {
   const sc = new SocketCollection();
-  const s1 = new InputSocket(Value);
+  const s1 = new InputSocket();
   s1.name = 's1';
-  const s2 = new InputSocket(Value);
+  const s2 = new InputSocket();
   s2.name = 's2';
   sc.addSocket(s1);
   sc.addSocket(s2);

@@ -20,7 +20,6 @@ class String extends Value<string> {
 }
 
 export {
-  Value,
   Number,
   Boolean,
   String,

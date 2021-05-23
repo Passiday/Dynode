@@ -17,7 +17,6 @@ class StandardEngine extends Engine {
       string: new VT.String(),
     } as Record<string, ValueType>)) this.addValueTypeDefinition(name, valueType);
     for (const [name, value] of Object.entries({
-      default: V.Value,
       number: V.Number,
       boolean: V.Boolean,
       string: V.String,

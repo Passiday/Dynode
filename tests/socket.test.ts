@@ -6,7 +6,7 @@ import {
 import { Value } from 'src/Dynode/model';
 
 test('simpleSocketTest', () => {
-  const socket = new Socket(Value);
+  const socket = new Socket();
   const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
   socket.addEventListener('value', mockFun);
 
@@ -21,8 +21,8 @@ test('simpleSocketTest', () => {
 });
 
 test('linkedInputSocketTest', () => {
-  const outputSocket = new Socket(Value);
-  const inputSocket = new InputSocket(Value);
+  const outputSocket = new Socket();
+  const inputSocket = new InputSocket();
   const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
 
   expect(inputSocket.isSet()).toBe(false);
@@ -56,7 +56,7 @@ test('outputSocketTest', () => {
   jest.useFakeTimers();
 
   const mockNode: any = {};
-  const socket = new OutputSocket(mockNode, Value);
+  const socket = new OutputSocket(mockNode);
   mockNode.resolve = jest.fn(
     () => setTimeout(() => socket.setValue(123), 1000),
   );
@@ -73,7 +73,7 @@ test('outputSocketTest', () => {
 });
 
 test('getJsonDefaultValue', () => {
-  const s = new InputSocket(Value);
+  const s = new InputSocket();
 
   s.setDefaultValue(5);
   expect(s.isDefaultSet()).toBe(true);

@@ -32,8 +32,8 @@ class OutputSocket<T> extends Socket<T> {
    * @param parentNode  See {@link parent}
    * @param storageMode Option to enable StorageMode
    */
-  constructor(parentNode: Node, ValueType: ValueConstructor<T>, value?: T, storageMode?: boolean) {
-    super(ValueType, value);
+  constructor(parentNode: Node, value?: T, ValueType?: ValueConstructor<T>, storageMode?: boolean) {
+    super(value, ValueType);
     this.parent = parentNode;
     this.storedValue = this.value;
     if (storageMode !== undefined) this.storageMode = storageMode;
