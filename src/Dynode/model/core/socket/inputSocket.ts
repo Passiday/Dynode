@@ -1,7 +1,7 @@
 import { VEventHandler, VEvent } from 'src/utils/vanillaEvent';
 import OutputSocket from './outputSocket';
 import Socket from './socket';
-import Value from './value';
+import { Value } from './value';
 
 /**
  * Socket class that handles inputs.

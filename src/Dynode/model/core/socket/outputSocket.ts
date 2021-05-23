@@ -1,6 +1,6 @@
 import type { Node } from 'src/Dynode/model/core';
 import Socket from './socket';
-import Value from './value';
+import { Value } from './value';
 
 /**
  * Socket class that handles output.

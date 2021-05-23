@@ -218,7 +218,7 @@ class Node extends VEventTarget {
     if (arguments.length > 1) {
       output.setValue(value);
     } else {
-      output.setValue();
+      output.setNothing();
     }
     // this.dispatchEvent(new VEvent('setOutputValue')); TODO event bubbling
   }
