@@ -1,5 +1,5 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { InputSocket, OutputSocket, SocketCollection } from './socket';
+import { InputSocket, OutputSocket, SocketCollection, Value } from './socket';
 import Engine from './engine';
 import type Network from './network';
 import type NodeType from './nodeType';
@@ -73,16 +73,9 @@ class Node extends VEventTarget {
    * @param inputType  Name of the ValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string, valueType?: string): InputSocket<unknown> {
+  addInput(name: string, value?: Value<unknown>): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
-
-    let socket;
-    if (valueType) {
-      if (!this.engine) throw Error('Engine is needed to specify a valueType!');
-      socket = new InputSocket(this.engine.getValueTypeDefinition(valueType));
-    } else {
-      socket = new InputSocket();
-    }
+    const socket = new InputSocket(value);
 
     socket.name = name;
     this.inputs.addSocket(socket);
@@ -174,18 +167,8 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, valueType?: string, storageMode?: boolean): OutputSocket<unknown> {
-    let socket;
-    if (valueType) {
-      if (!this.engine) throw Error('Engine is needed to specify a valueType!');
-      socket = new OutputSocket(
-        this,
-        this.engine.getValueTypeDefinition(valueType),
-        storageMode,
-      );
-    } else {
-      socket = new OutputSocket(this, undefined, storageMode);
-    }
+  addOutput(name: string, value?: Value<unknown>, storageMode?: boolean): OutputSocket<unknown> {
+    const socket = new OutputSocket(this, value, storageMode);
 
     socket.name = name;
     this.outputs.addSocket(socket);
@@ -213,7 +196,7 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to be found.
    * @param value  New value to be set.
    */
-  setOutputValue(name: string, value: unknown): void {
+  setOutputValue(name: string, value: Value<unknown>): void {
     const output = this.getOutput(name);
     if (arguments.length > 1) {
       output.setValue(value);
