@@ -235,7 +235,7 @@ test('StorageMode', (done) => {
   const nodeB = new Node('Node-B');
   network.addNode(nodeB);
   const inputB = nodeB.addInput('x');
-  const outputB = nodeB.addOutput('y', undefined, undefined, true);
+  const outputB = nodeB.addOutput('y', undefined, true);
   nodeB.action = () => {
     if (!nodeB.inputIsNothing('x')) {
       const inputOne = nodeB.getInputValue('x').value as number;

@@ -49,7 +49,7 @@ export default function multiCycleExample(network: Network, stage: StageView) : 
   network.addNode(ifNode);
   const delay = new Node('Delay');
   delay.addInput('x');
-  delay.addOutput('y', undefined, undefined, true);
+  delay.addOutput('y', undefined, true);
   delay.action = function () {
     if (this.inputIsNothing('x')) return;
     const input = this.getInputValue('x').value as number;

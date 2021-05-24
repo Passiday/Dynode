@@ -34,16 +34,11 @@ class Socket<T> extends VEventTarget {
    */
   public title: string | null = null;
 
-  constructor(value?: T, socketValueType?: SocketValueType<T>) {
+  constructor(socketValueType?: SocketValueType<T>) {
     super();
     this.SocketValueType = socketValueType || SocketValue;
-    if (value !== undefined) {
-      this.socketValue = new this.SocketValueType(value);
-      this.isSetVariable = true;
-    } else {
-      this.socketValue = null;
-      this.isSetVariable = false;
-    }
+    this.socketValue = null;
+    this.isSetVariable = false;
   }
 
   /**

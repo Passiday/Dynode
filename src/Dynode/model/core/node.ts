@@ -89,12 +89,12 @@ class Node extends VEventTarget {
    * Register a new input.
    *
    * @param name  Name of the inputSocket to generate
-   * @param inputType  Name of the ValueType which is defined in this node's engine
+   * @param socketValueType  Name of the SocketValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string, value?: unknown, valueType?: string): InputSocket<unknown> {
+  addInput(name: string, socketValueType?: string): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
-    const socket = new InputSocket(value, this.getValueType(valueType));
+    const socket = new InputSocket(this.getValueType(socketValueType));
 
     socket.name = name;
     this.inputs.addSocket(socket);
@@ -186,11 +186,9 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(
-    name: string, value?: unknown, valueType?: string, storageMode?: boolean,
-  ): OutputSocket<unknown> {
+  addOutput(name: string, socketValueType?: string, storageMode?: boolean): OutputSocket<unknown> {
     if (name in this.outputs) throw Error('Input name already exists');
-    const socket = new OutputSocket(this, value, this.getValueType(valueType), storageMode);
+    const socket = new OutputSocket(this, this.getValueType(socketValueType), storageMode);
 
     socket.name = name;
     this.outputs.addSocket(socket);
