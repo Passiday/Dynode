@@ -77,7 +77,7 @@ class Node extends VEventTarget {
    *
    * @param name ValueConstructor name that is stored in engine
    */
-  private valueTypeExtractor(name?: string): ValueConstructor<unknown> | undefined {
+  private getValueType(name?: string): ValueConstructor<unknown> | undefined {
     if (name === undefined) {
       return undefined;
     }
@@ -94,7 +94,7 @@ class Node extends VEventTarget {
    */
   addInput(name: string, value?: unknown, valueType?: string): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
-    const socket = new InputSocket(value, this.valueTypeExtractor(valueType));
+    const socket = new InputSocket(value, this.getValueType(valueType));
 
     socket.name = name;
     this.inputs.addSocket(socket);
@@ -190,7 +190,7 @@ class Node extends VEventTarget {
     name: string, value?: unknown, valueType?: string, storageMode?: boolean,
   ): OutputSocket<unknown> {
     if (name in this.outputs) throw Error('Input name already exists');
-    const socket = new OutputSocket(this, value, this.valueTypeExtractor(valueType), storageMode);
+    const socket = new OutputSocket(this, value, this.getValueType(valueType), storageMode);
 
     socket.name = name;
     this.outputs.addSocket(socket);
