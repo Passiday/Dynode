@@ -30,7 +30,7 @@ export default class NetworkController {
             title: socket.title,
           };
           if (socket.isDefaultSet() && !socket.isDefaultNothing()) {
-            result.value = socket.getValue().toJSON();
+            result.value = socket.getDefaultValue().toJSON();
           }
           return result;
         }),
