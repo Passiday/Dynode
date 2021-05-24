@@ -37,13 +37,24 @@ class InputSocket<T> extends Socket<T> {
     this.isDefaultSetVariable = true;
   }
 
+  public getSocketValue(): SocketValue<T> {
+    return this.linkedSocket ? super.getSocketValue() : this.getDefaultSocketValue();
+  }
+
+  /**
+   * Retrieve default socket value.
+   */
+  public getDefaultSocketValue(): SocketValue<T> {
+    // No need to check this.isDefaultSet because it's handled by this.isDefaultNothing
+    if (this.isDefaultNothing()) throw Error('Input socket default is nothing');
+    return this.defaultValue as SocketValue<T>; // Can be cast because of "nothing" check
+  }
+
   /**
    * Receive the default value that is set on the object.
    */
   public getDefaultValue(): T {
-    // No need to check this.isDefaultSet because it's handled by this.isDefaultNothing
-    if (this.isDefaultNothing()) throw Error('Input socket default is nothing');
-    return (this.defaultValue as SocketValue<T>).value; // Can be cast because of "nothing" check
+    return this.getDefaultSocketValue().value;
   }
 
   public setDefaultNothing(): void {
@@ -55,7 +66,7 @@ class InputSocket<T> extends Socket<T> {
    * Check whether object's default value is set to nothing.
    */
   public isDefaultNothing(): boolean {
-    if (!this.isDefaultSet) throw Error('Input socket has no default value set');
+    if (!this.isDefaultSet()) throw Error('Input socket has no default value set');
     return this.defaultValue === null;
   }
 

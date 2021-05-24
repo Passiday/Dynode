@@ -28,7 +28,7 @@ export default class NodeController {
       this.inputs.getAllSockets().forEach((input) => {
         if (!input.isNothing() && input.name !== null) {
           inputConfig[input.name] = {
-            value: input.getValue().toJSON(),
+            value: input.getSocketValue().toJSON(),
           };
         }
       });

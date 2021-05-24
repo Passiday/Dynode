@@ -79,12 +79,19 @@ class Socket<T> extends VEventTarget {
   }
 
   /**
-   * Object's getter for {@link value}
+   * Retrieve this socket's socketValue.
    */
-  public getValue(): T {
+  public getSocketValue(): SocketValue<T> {
     if (!this.isSet()) throw Error('Socket is not set');
     if (this.isNothing()) throw Error('Socket has no value');
-    return (this.socketValue as SocketValue<T>).value; // Can be cast because of "nothing" check
+    return this.socketValue as SocketValue<T>; // Can be cast because of "nothing" check
+  }
+
+  /**
+   * Retrieve this socket's value.
+   */
+  public getValue(): T {
+    return this.getSocketValue().value;
   }
 
   /**
