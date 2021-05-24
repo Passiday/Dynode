@@ -184,8 +184,8 @@ test('Multiple resolve test', (done) => {
   const outputB = nodeB.addOutput('one');
   nodeB.action = () => {
     if (!nodeB.inputIsNothing('one')) {
-      const inputOne = nodeB.getInputValue('one').value as number;
-      const inputTwo = nodeB.getInputValue('two').value as number;
+      const inputOne = nodeB.getInputValue('one') as number;
+      const inputTwo = nodeB.getInputValue('two') as number;
       nodeB.setOutputValue('one', inputOne + inputTwo);
     }
   };
@@ -224,7 +224,7 @@ test('StorageMode', (done) => {
   const outputA = nodeA.addOutput('y');
   nodeA.action = () => {
     if (!nodeA.inputIsNothing('x')) {
-      const inputOne = nodeA.getInputValue('x').value as number;
+      const inputOne = nodeA.getInputValue('x') as number;
       nodeA.setOutputValue('y', inputOne + 1);
     } else {
       nodeA.setOutputValue('y', 1);
@@ -238,7 +238,7 @@ test('StorageMode', (done) => {
   const outputB = nodeB.addOutput('y', undefined, true);
   nodeB.action = () => {
     if (!nodeB.inputIsNothing('x')) {
-      const inputOne = nodeB.getInputValue('x').value as number;
+      const inputOne = nodeB.getInputValue('x') as number;
       mockFn(inputOne);
       nodeB.setOutputValue('y', inputOne);
     }

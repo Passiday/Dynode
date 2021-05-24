@@ -13,8 +13,8 @@ export default function controllerExample(network: Network, stage: StageView): N
   sumNode.action = function (this: Node) {
     if (this.inputIsNothing('x')) return;
     if (this.inputIsNothing('y')) return;
-    const x = this.getInputValue('x').value as number;
-    const y = this.getInputValue('y').value as number;
+    const x = this.getInputValue('x') as number;
+    const y = this.getInputValue('y') as number;
     this.setOutputValue('result', x + y);
   };
   network.addNode(sumNode);

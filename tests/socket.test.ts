@@ -70,11 +70,3 @@ test('outputSocketTest', () => {
   socket.pull();
   expect(socket.isWaiting()).toBe(true);
 });
-
-test('getJsonDefaultValue', () => {
-  const s = new InputSocket();
-
-  s.setDefaultValue(5);
-  expect(s.isDefaultSet()).toBe(true);
-  expect(s.getValue().toJSON()).toBe(5);
-});

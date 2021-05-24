@@ -10,9 +10,9 @@ function createMathNode(node: Node): Node {
     if (this.inputIsNothing('lhs')) return;
     if (this.inputIsNothing('rhs')) return;
 
-    const operator = this.getInputValue('operator').value;
-    const lhs = this.getInputValue('lhs').value as number;
-    const rhs = this.getInputValue('rhs').value as number;
+    const operator = this.getInputValue('operator');
+    const lhs = this.getInputValue('lhs') as number;
+    const rhs = this.getInputValue('rhs') as number;
 
     let val: number;
     switch (operator) {

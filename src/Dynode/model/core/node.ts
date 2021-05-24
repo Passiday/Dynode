@@ -127,7 +127,7 @@ class Node extends VEventTarget {
    *
    * @param name  The name of the input of which the value will be retrieved.
    */
-  getInputValue(name: string): SocketValue<unknown> {
+  getInputValue(name: string): unknown {
     const input = this.getInput(name);
     return input.getValue();
   }
