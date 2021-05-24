@@ -6,7 +6,7 @@ import { SocketValue, SocketValueType } from './value';
  */
 class Socket<T> extends VEventTarget {
   /**
-   * ValueConstructor that is used to determine the type of value.
+   * Constructor that is used to build {@link socketValue}
    */
   protected SocketValueType: SocketValueType<T>;
 

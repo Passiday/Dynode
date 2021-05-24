@@ -45,7 +45,7 @@ class Engine {
     name: string, socketValueType: SocketValueType<unknown>,
   ): void {
     if (name in this.socketValueTypeDefinitions) {
-      throw Error(`ValueConstructor ${name} already exists!`);
+      throw Error(`SocketValueType ${name} already exists!`);
     }
     this.socketValueTypeDefinitions[name] = socketValueType;
   }

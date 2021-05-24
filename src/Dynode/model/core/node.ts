@@ -1,6 +1,6 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
 import {
-  InputSocket, OutputSocket, SocketCollection, SocketValue, SocketValueType,
+  InputSocket, OutputSocket, SocketCollection, SocketValueType,
 } from './socket';
 import Engine from './engine';
 import type Network from './network';
