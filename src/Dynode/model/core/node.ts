@@ -1,6 +1,6 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
 import {
-  InputSocket, OutputSocket, SocketCollection, Value, ValueConstructor,
+  InputSocket, OutputSocket, SocketCollection, SocketValue, SocketValueType,
 } from './socket';
 import Engine from './engine';
 import type Network from './network';
@@ -69,20 +69,20 @@ class Node extends VEventTarget {
   outputs = new SocketCollection<OutputSocket<unknown>>();
 
   /**
-   * A helper for retrieving an optional ValueConstructor.
+   * A helper for retrieving an optional SocketValueType.
    *
    * The main purpose is to provide an argument for socket which can take undefined and
    * assume the default or a name can be passed which then is extracted from engine. This
    * done so it is possible to add default type sockets without an engine.
    *
-   * @param name ValueConstructor name that is stored in engine
+   * @param name ValueSocketType name that is stored in engine
    */
-  private getValueType(name?: string): ValueConstructor<unknown> | undefined {
+  private getValueType(name?: string): SocketValueType<unknown> | undefined {
     if (name === undefined) {
       return undefined;
     }
     if (!this.engine) throw Error('Engine is not defined!');
-    return this.engine.getValueDefinition(name);
+    return this.engine.getSocketValueTypeDefinition(name);
   }
 
   /**
@@ -127,7 +127,7 @@ class Node extends VEventTarget {
    *
    * @param name  The name of the input of which the value will be retrieved.
    */
-  getInputValue(name: string): Value<unknown> {
+  getInputValue(name: string): SocketValue<unknown> {
     const input = this.getInput(name);
     return input.getValue();
   }

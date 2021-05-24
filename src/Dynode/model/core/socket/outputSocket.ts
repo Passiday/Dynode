@@ -1,6 +1,6 @@
 import type { Node } from 'src/Dynode/model/core';
 import Socket from './socket';
-import { Value, ValueConstructor } from './value';
+import { SocketValue, SocketValueType } from './value';
 
 /**
  * Socket class that handles output.
@@ -19,7 +19,7 @@ class OutputSocket<T> extends Socket<T> {
   /**
    * The Stored Value of the socket, will be pulled after the next network resolve.
    */
-  private storedValue: Value<T> | null;
+  private storedValue: SocketValue<T> | null;
 
   /**
    * An unique mode for the OutputSocket class.
@@ -32,10 +32,12 @@ class OutputSocket<T> extends Socket<T> {
    * @param parentNode  See {@link parent}
    * @param storageMode Option to enable StorageMode
    */
-  constructor(parentNode: Node, value?: T, ValueType?: ValueConstructor<T>, storageMode?: boolean) {
-    super(value, ValueType);
+  constructor(
+    parentNode: Node, value?: T, socketValueType?: SocketValueType<T>, storageMode?: boolean,
+  ) {
+    super(value, socketValueType);
     this.parent = parentNode;
-    this.storedValue = this.value;
+    this.storedValue = this.socketValue;
     if (storageMode !== undefined) this.storageMode = storageMode;
   }
 
@@ -49,7 +51,7 @@ class OutputSocket<T> extends Socket<T> {
     if (this.isSet()) return;
     if (this.isStoredNothing()) super.setNothing();
     // Can be cast because it's not nothing
-    else super.setValue((this.storedValue as Value<T>).value);
+    else super.setValue((this.storedValue as SocketValue<T>).value);
   }
 
   public clear(): void {
@@ -71,7 +73,7 @@ class OutputSocket<T> extends Socket<T> {
     this.waiting = false;
     if (this.storageMode) {
       this.pull();
-      this.storedValue = new this.ValueType(value);
+      this.storedValue = new this.SocketValueType(value);
     } else {
       super.setValue(value);
     }

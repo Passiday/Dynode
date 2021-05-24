@@ -12,18 +12,18 @@ function isJSON(value: unknown): boolean {
   return true;
 }
 
-interface ValueConstructor<T> {
-  new(value: T): Value<T>
+interface SocketValueType<T> {
+  new(value: T): SocketValue<T>
 }
 
-class Value<T> {
+class SocketValue<T> {
   /**
    * Actual value that this class wraps.
    */
   private realValue: T;
 
   constructor(value: T) {
-    if (!Value.check(value)) throw new Error('value does not belong to this class!');
+    if (!SocketValue.check(value)) throw new Error('value does not belong to this class!');
     this.realValue = value;
   }
 
@@ -32,7 +32,7 @@ class Value<T> {
   }
 
   set value(val: T) {
-    if (!Value.check(val)) throw new Error('value does not belong to this class!');
+    if (!SocketValue.check(val)) throw new Error('value does not belong to this class!');
     this.realValue = val;
   }
 
@@ -53,4 +53,4 @@ class Value<T> {
   }
 }
 
-export { Value, ValueConstructor };
+export { SocketValue, SocketValueType };

@@ -1,5 +1,5 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { Value, ValueConstructor } from './value';
+import { SocketValue, SocketValueType } from './value';
 
 /**
  * Class for dealing with Node values.
@@ -8,12 +8,12 @@ class Socket<T> extends VEventTarget {
   /**
    * ValueConstructor that is used to determine the type of value.
    */
-  protected ValueType: ValueConstructor<T>;
+  protected SocketValueType: SocketValueType<T>;
 
   /**
    * The Value of the socket. null means there is nothing.
    */
-  protected value: Value<T> | null;
+  protected socketValue: SocketValue<T> | null;
 
   /**
    * Denotes whether the object's value has been set.
@@ -34,14 +34,14 @@ class Socket<T> extends VEventTarget {
    */
   public title: string | null = null;
 
-  constructor(value?: T, ValueType?: ValueConstructor<T>) {
+  constructor(value?: T, socketValueType?: SocketValueType<T>) {
     super();
-    this.ValueType = ValueType || Value;
+    this.SocketValueType = socketValueType || SocketValue;
     if (value !== undefined) {
-      this.value = new this.ValueType(value);
+      this.socketValue = new this.SocketValueType(value);
       this.isSetVariable = true;
     } else {
-      this.value = null;
+      this.socketValue = null;
       this.isSetVariable = false;
     }
   }
@@ -52,7 +52,7 @@ class Socket<T> extends VEventTarget {
    * See {@link isSetVariable} on the difference between nothing and unset.
    */
   public clear(): void {
-    this.value = null;
+    this.socketValue = null;
     this.isSetVariable = false;
   }
 
@@ -70,7 +70,7 @@ class Socket<T> extends VEventTarget {
    */
   public setValue(value: T): void {
     if (this.isSet()) throw Error('Value already set');
-    this.value = new this.ValueType(value);
+    this.socketValue = new this.SocketValueType(value);
     this.isSetVariable = true;
     this.dispatchEvent(new VEvent('value'));
   }
@@ -79,17 +79,17 @@ class Socket<T> extends VEventTarget {
    * Remove value and thus setting value to nothing.
    */
   public setNothing(): void {
-    this.value = null;
+    this.socketValue = null;
     this.isSetVariable = true;
   }
 
   /**
    * Object's getter for {@link value}
    */
-  public getValue(): Value<T> {
+  public getValue(): SocketValue<T> {
     if (!this.isSet()) throw Error('Socket is not set');
     if (this.isNothing()) throw Error('Socket has no value');
-    return this.value as Value<T>; // Can be cast because of "nothing" check
+    return this.socketValue as SocketValue<T>; // Can be cast because of "nothing" check
   }
 
   /**
@@ -103,7 +103,7 @@ class Socket<T> extends VEventTarget {
    * Denotes whether the object's value is set to nothing.
    */
   public isNothing(): boolean {
-    return this.isSet() && (this.value === null);
+    return this.isSet() && (this.socketValue === null);
   }
 }
 

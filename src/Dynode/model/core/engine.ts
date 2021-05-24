@@ -1,8 +1,8 @@
-import type { ValueConstructor } from './socket/value';
+import type { SocketValueType } from './socket/value';
 import type NodeType from './nodeType';
 
 class Engine {
-  private valueDefinitions: Record<string, ValueConstructor<unknown>> = {};
+  private socketValueTypeDefinitions: Record<string, SocketValueType<unknown>> = {};
 
   /**
    * List of node types registered in this engine.
@@ -22,8 +22,8 @@ class Engine {
     throw Error(`Type ${name} does not exist!`);
   }
 
-  public getValueDefinition(name: string): ValueConstructor<unknown> {
-    if (name in this.valueDefinitions) return this.valueDefinitions[name];
+  public getSocketValueTypeDefinition(name: string): SocketValueType<unknown> {
+    if (name in this.socketValueTypeDefinitions) return this.socketValueTypeDefinitions[name];
     throw Error(`Type ${name} does not exist!`);
   }
 
@@ -34,14 +34,20 @@ class Engine {
    */
   public addNodeTypeDefinition(nodeType: NodeType): void {
     for (const n of this.nodeTypeDefinitions) {
-      if (n.name === nodeType.name) throw Error(`NodeType ${n.name} already exists!`);
+      if (n.name === nodeType.name) {
+        throw Error(`NodeType ${n.name} already exists!`);
+      }
     }
     this.nodeTypeDefinitions.push(nodeType);
   }
 
-  public addValueDefinition(name: string, valueConstructor: ValueConstructor<unknown>): void {
-    if (name in this.valueDefinitions) throw Error(`ValueConstructor ${name} already exists!`);
-    this.valueDefinitions[name] = valueConstructor;
+  public addSocketValueTypeDefinition(
+    name: string, socketValueType: SocketValueType<unknown>,
+  ): void {
+    if (name in this.socketValueTypeDefinitions) {
+      throw Error(`ValueConstructor ${name} already exists!`);
+    }
+    this.socketValueTypeDefinitions[name] = socketValueType;
   }
 }
 

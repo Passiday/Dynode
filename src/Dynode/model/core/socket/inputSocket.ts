@@ -1,7 +1,7 @@
 import { VEventHandler, VEvent } from 'src/utils/vanillaEvent';
 import OutputSocket from './outputSocket';
 import Socket from './socket';
-import { Value } from './value';
+import { SocketValue } from './value';
 
 /**
  * Socket class that handles inputs.
@@ -10,7 +10,7 @@ class InputSocket<T> extends Socket<T> {
   /**
    * Value used if the socket doesn't have a socket linked to it. null means there is nothing.
    */
-  private defaultValue: Value<T> | null = null;
+  private defaultValue: SocketValue<T> | null = null;
 
   /**
    * Marks whether socket can have a default value.
@@ -33,17 +33,17 @@ class InputSocket<T> extends Socket<T> {
    * @param value  The new value. If omitted, defaultValue is set to nothing.
    */
   public setDefaultValue(value: T): void {
-    this.defaultValue = new this.ValueType(value);
+    this.defaultValue = new this.SocketValueType(value);
     this.isDefaultSetVariable = true;
   }
 
   /**
    * Receive the default value that is set on the object.
    */
-  public getDefaultValue(): Value<T> {
+  public getDefaultValue(): SocketValue<T> {
     // No need to check this.isDefaultSet because it's handled by this.isDefaultNothing
     if (this.isDefaultNothing()) throw Error('Input socket default is nothing');
-    return this.defaultValue as Value<T>; // Can be cast because of "nothing" check
+    return this.defaultValue as SocketValue<T>; // Can be cast because of "nothing" check
   }
 
   public setDefaultNothing(): void {
@@ -113,7 +113,7 @@ class InputSocket<T> extends Socket<T> {
   /**
    * Receive object's stored value.
    */
-  public getValue(): Value<T> {
+  public getValue(): SocketValue<T> {
     if (this.linkedSocket) {
       return super.getValue();
     }

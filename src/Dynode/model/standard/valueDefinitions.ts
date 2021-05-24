@@ -1,21 +1,21 @@
 /* eslint class-methods-use-this: off */
-import { Value } from '../core/socket';
+import { SocketValue } from '../core/socket';
 
-class Number extends Value<number> {
+class Number extends SocketValue<number> {
   public check(value: unknown): boolean {
-    return Value.check(value) && typeof value === 'number';
+    return SocketValue.check(value) && typeof value === 'number';
   }
 }
 
-class Boolean extends Value<boolean> {
+class Boolean extends SocketValue<boolean> {
   public check(value: unknown): boolean {
-    return Value.check(value) && typeof value === 'boolean';
+    return SocketValue.check(value) && typeof value === 'boolean';
   }
 }
 
-class String extends Value<string> {
+class String extends SocketValue<string> {
   public check(value: unknown): boolean {
-    return Value.check(value) && typeof value === 'string';
+    return SocketValue.check(value) && typeof value === 'string';
   }
 }
 

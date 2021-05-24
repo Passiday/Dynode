@@ -1,5 +1,5 @@
 import { Engine } from '../core';
-import { ValueConstructor } from '../core/socket/value';
+import { SocketValueType } from '../core/socket/value';
 import * as V from './valueDefinitions';
 import NodeTypeDefinitions from './nodeTypeDefinitions';
 
@@ -13,7 +13,7 @@ class StandardEngine extends Engine {
       number: V.Number,
       boolean: V.Boolean,
       string: V.String,
-    } as Record<string, ValueConstructor<unknown>>)) this.addValueDefinition(name, value);
+    } as Record<string, SocketValueType<unknown>>)) this.addSocketValueTypeDefinition(name, value);
   }
 }
 
