@@ -2,14 +2,16 @@ import { JsonValue } from 'src/utils/objectUtils';
 
 function isJSON(value: unknown): boolean {
   if (value === null) return true;
-  if ((typeof value) in ['string', 'number', 'boolean']) return true;
+  if (['string', 'number', 'boolean'].includes(typeof value)) return true;
   if (typeof value === 'object' && value) {
     for (const [k, v] of Object.entries(value)) {
       if (typeof k !== 'string') return false;
       if (!isJSON(v)) return false;
     }
+    return true;
+  } else {
+    return false;
   }
-  return true;
 }
 
 interface SocketValueType<T> {
