@@ -39,6 +39,7 @@ class Socket extends VEventTarget {
   constructor(typeObject?: ValueType) {
     super();
     if (typeObject) this.typeObject = typeObject;
+    this.declareEvents(['value']);
     this.reset();
   }
 

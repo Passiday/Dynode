@@ -15,6 +15,7 @@ class Input extends VEventTarget {
 
   constructor(config: JsonObject) {
     super();
+    this.declareEvents(['change']);
     // Get the params
     this.name = 'name' in config ? <string> config.name : 'InputID';
     this.title = 'title' in config ? <string> config.title : 'InputTitle';
@@ -171,6 +172,7 @@ class Node extends VEventTarget {
 
   addInput(inputConfig: JsonObject): Input {
     const input = new Input(inputConfig);
+    input.declareEvent('change');
     input.addEventListener('change', (ev) => new VEvent('inputChange', {
       // TODO Fix VEvent, so that there's no need to type cast ev.target
       detail: {

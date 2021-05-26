@@ -12,17 +12,53 @@ class VEventTarget {
   events: { [key: string]: VEventHandler[]; } = {};
 
   /**
-  * An array of allowed events. If the array is undefined all events are allowed.
-  * Allowed events are declared using declareEvents method.
+  * An array of allowed events.
+  * Allowed events are declared using declareEvents or declareEvent method.
   */
-  allowedEvents: string[] | undefined;
+  private eventList: string[] = [];
 
   /**
-   * Sets allowed event types. If undefined is passed, then all event types are allowed.
+   * Sets allowed event types.
    * @param events An array of allowed event types.
    */
-  declareEvents(events?: string[]): void {
-    this.allowedEvents = events;
+  declareEvents(events: string[]): void {
+    events.forEach((event) => {
+      this.declareEvent(event);
+    });
+  }
+
+  /**
+   * Sets allowed event type.
+   * @param event An allowed event type.
+   */
+  declareEvent(event: string): void {
+    if (this.eventList.includes(event)) {
+      throw new Error(`EventList with the specified type ${event} already exists`);
+    } else {
+      this.eventList.push(event);
+    }
+  }
+
+  /**
+   * Removes allowed event types.
+   * @param event Events to be removed from allowed event types.
+   */
+  removeEvents(events: string[]): void {
+    events.forEach((event) => {
+      this.removeEvent(event);
+    });
+  }
+
+  /**
+   * Removes an allowed event type.
+   * @param event Event to be removed from allowed event types.
+   */
+  removeEvent(event: string): void {
+    const index = this.eventList.indexOf(event);
+    if (index === -1) {
+      throw new Error(`EventList with the specified type ${event} doesn't exist`);
+    }
+    this.eventList.splice(index, -1);
   }
 
   /**
@@ -32,8 +68,8 @@ class VEventTarget {
    * @param func  Function that will handle the provided event type.
    */
   addEventListener(type: string, func: VEventHandler): void {
-    if (this.allowedEvents !== undefined && !this.allowedEvents.includes(type)) {
-      throw new Error(`Event type (${type}) is not allowed. Currently allowed event types are ${this.allowedEvents}`);
+    if (!this.eventList.includes(type)) {
+      throw new Error(`Event type (${type}) is not allowed. Currently allowed event types are ${this.eventList}`);
     }
     if (type in this.events) {
       if (this.events[type].indexOf(func) !== -1) {
@@ -52,8 +88,8 @@ class VEventTarget {
    * @param e Event that is going to be sent.
    */
   dispatchEvent(e: VEvent<this>): void {
-    if (this.allowedEvents !== undefined && !this.allowedEvents.includes(e.type)) {
-      throw new Error(`Called event type (${e.type}) is not allowed. Currently allowed event types are ${this.allowedEvents}`);
+    if (!this.eventList.includes(e.type)) {
+      throw new Error(`Called event type (${e.type}) is not allowed. Currently allowed event types are ${this.eventList}`);
     }
     e.currentTarget = this;
     e.target = this;
