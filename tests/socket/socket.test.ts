@@ -70,3 +70,14 @@ test('outputSocketTest', () => {
   socket.pull();
   expect(socket.isWaiting()).toBe(true);
 });
+
+test('Socket with default type accepts various value types', () => {
+  const socket = new Socket();
+  expect(() => {
+    socket.setValue(123);
+    socket.clear();
+    socket.setValue(null);
+    socket.clear();
+    socket.setValue('example');
+  }).not.toThrow();
+});
