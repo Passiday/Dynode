@@ -20,7 +20,7 @@ test('simpleSocketTest', () => {
 });
 
 test('linkedInputSocketTest', () => {
-  const outputSocket = new Socket();
+  const outputSocket = new OutputSocket({} as any);
   const inputSocket = new InputSocket();
   const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
 
@@ -33,7 +33,7 @@ test('linkedInputSocketTest', () => {
   inputSocket.setDefaultValue(999);
   expect(inputSocket.getValue()).toBe(999);
 
-  inputSocket.linkSocket(outputSocket as any);
+  inputSocket.linkSocket(outputSocket);
   inputSocket.addEventListener('value', mockFun);
 
   outputSocket.setValue(123);

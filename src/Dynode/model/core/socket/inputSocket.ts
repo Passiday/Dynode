@@ -97,7 +97,7 @@ class InputSocket<T> extends Socket<T> {
       if (e.target.isNothing()) {
         this.setNothing();
       } else {
-        this.setValue(e.target.getValue().value);
+        this.setValue(e.target.getValue());
       }
     };
     this.linkedSocket.addEventListener('value', this.valueHandler);

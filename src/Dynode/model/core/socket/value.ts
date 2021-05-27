@@ -27,7 +27,7 @@ class SocketValue<T> {
 
   constructor(value: T) {
     if (!(this.constructor as typeof SocketValue).check(value)) {
-      throw new Error('value does not belong to this class!');
+      throw new Error(`value <${value}> does not belong to this class!`);
     }
     this.realValue = value;
   }
