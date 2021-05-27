@@ -2,7 +2,8 @@ import { JsonValue } from 'src/utils/objectUtils';
 
 function isJSON(value: unknown): boolean {
   if (value === null) return true;
-  if (['string', 'number', 'boolean'].includes(typeof value)) return true;
+  if (typeof value === 'number') return !(isNaN(value) || [Infinity, -Infinity].includes(value));
+  if (['string', 'boolean'].includes(typeof value)) return true;
   if (typeof value === 'object' && value) {
     for (const [k, v] of Object.entries(value)) {
       if (typeof k !== 'string') return false;
@@ -22,10 +23,12 @@ class SocketValue<T> {
   /**
    * Actual value that this class wraps.
    */
-  private realValue: T;
+  protected realValue: T;
 
   constructor(value: T) {
-    if (!SocketValue.check(value)) throw new Error('value does not belong to this class!');
+    if (!(this.constructor as typeof SocketValue).check(value)) {
+      throw new Error('value does not belong to this class!');
+    }
     this.realValue = value;
   }
 
@@ -34,7 +37,9 @@ class SocketValue<T> {
   }
 
   set value(val: T) {
-    if (!SocketValue.check(val)) throw new Error('value does not belong to this class!');
+    if (!(this.constructor as typeof SocketValue).check(val)) {
+      throw new Error('value does not belong to this class!');
+    }
     this.realValue = val;
   }
 

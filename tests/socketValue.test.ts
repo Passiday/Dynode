@@ -5,10 +5,6 @@ describe('Base SocketValue to accept only JSONifiable values', () => {
     expect(() => new SocketValue('example')).not.toThrow();
   });
 
-  test('Number is accepted', () => {
-    expect(() => new SocketValue(42)).not.toThrow();
-  });
-
   test('Boolean is accepted', () => {
     expect(() => new SocketValue(true)).not.toThrow();
   });
@@ -27,6 +23,33 @@ describe('Base SocketValue to accept only JSONifiable values', () => {
 
   test('Function is refused', () => {
     expect(() => new SocketValue(() => 'foo')).toThrow();
+  });
+
+  describe('Numbers', () => {
+    test('Positive number is accepted', () => {
+      expect(() => new SocketValue(72)).not.toThrow();
+    });
+
+    test('0 is accepted', () => {
+      expect(() => new SocketValue(0)).not.toThrow();
+    });
+
+    test('Negative number is accepted', () => {
+      expect(() => new SocketValue(-30)).not.toThrow();
+    });
+
+    // These values are accepted in number type but not here because these are not pure JSON
+    test('NaN is refused', () => {
+      expect(() => new SocketValue(NaN)).toThrow();
+    });
+
+    test('Infinity is refused', () => {
+      expect(() => new SocketValue(Infinity)).toThrow();
+    });
+
+    test('-Infinity is refused', () => {
+      expect(() => new SocketValue(-Infinity)).toThrow();
+    })
   });
 
   describe('Objects', () => {
