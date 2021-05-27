@@ -49,17 +49,17 @@ describe('Base SocketValue to accept only JSONifiable values', () => {
 
     test('-Infinity is refused', () => {
       expect(() => new SocketValue(-Infinity)).toThrow();
-    })
+    });
   });
 
   describe('Objects', () => {
     test('Simple object with accepted values is accepted', () => {
-      expect(() => new SocketValue({ a: 4, b: false, c: 'example'})).not.toThrow();
+      expect(() => new SocketValue({ a: 4, b: false, c: 'example' })).not.toThrow();
     });
 
     test('Nested object with accepted values is accepted', () => {
       expect(() => new SocketValue({
-        c: 20, item: { aKey: true, bKey: null }, d: 'foo'
+        c: 20, item: { aKey: true, bKey: null }, d: 'foo',
       })).not.toThrow();
     });
 

@@ -2,7 +2,7 @@ import { JsonValue } from 'src/utils/objectUtils';
 
 function isJSON(value: unknown): boolean {
   if (value === null) return true;
-  if (typeof value === 'number') return !(isNaN(value) || [Infinity, -Infinity].includes(value));
+  if (typeof value === 'number') return !(Number.isNaN(value) || [Infinity, -Infinity].includes(value));
   if (['string', 'boolean'].includes(typeof value)) return true;
   if (typeof value === 'object' && value) {
     for (const [k, v] of Object.entries(value)) {
@@ -10,9 +10,8 @@ function isJSON(value: unknown): boolean {
       if (!isJSON(v)) return false;
     }
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 interface SocketValueType<T> {
