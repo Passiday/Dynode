@@ -33,12 +33,12 @@ class Node extends VEventTarget {
    */
   constructor(name: string, network?: Network, nodeType?: NodeType) {
     super();
+    this.declareEvents(['addInput', 'addOutput', 'afterResolve', 'beforeResolve', 'dumpInputs', 'dumpOutputs', 'error', 'inputsReady', 'linkInput', 'log', 'nodeCreated', 'setOutputValue', 'unlinkInput', 'nodeRemoved']);
     this.name = name || 'Untitled';
     this.network = network || null;
     this.engine = network ? network.engine : null;
     this.nodeType = nodeType || null;
     if (nodeType) nodeType.createFunc(this);
-    this.declareEvents(['addInput', 'addOutput', 'afterResolve', 'beforeResolve', 'dumpInputs', 'dumpOutputs', 'error', 'inputsReady', 'linkInput', 'log', 'nodeCreated', 'setOutputValue', 'unlinkInput']);
     this.dispatchEvent(new VEvent('nodeCreated')); // Use with caution when using controller
   }
 
