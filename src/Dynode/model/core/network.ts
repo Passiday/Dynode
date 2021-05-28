@@ -45,7 +45,7 @@ class Network extends VEventTarget {
     this.nodes = [];
     this.engine = engine || null;
     this.name = name;
-    this.declareEvents(['nodeRemoved', 'addNode', 'afterResolve', 'log']);
+    this.declareEvents(['nodeRemoved', 'addNode', 'afterResolve', 'log', 'error']);
     this.init();
   }
 
