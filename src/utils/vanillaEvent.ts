@@ -13,12 +13,12 @@ class VEventTarget {
 
   /**
   * An array of allowed events.
-  * Allowed events are declared using declareEvents or declareEvent method.
+  * Allowed events are added using declareEvents or declareEvent method.
   */
   private eventList: string[] = [];
 
   /**
-   * Sets allowed event types.
+   * Adds allowed event types.
    * @param events An array of allowed event types.
    */
   declareEvents(events: string[]): void {
@@ -28,7 +28,7 @@ class VEventTarget {
   }
 
   /**
-   * Sets allowed event type.
+   * Adds allowed event type.
    * @param event An allowed event type.
    */
   declareEvent(event: string): void {
