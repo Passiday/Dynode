@@ -37,6 +37,7 @@ class Socket<T> extends VEventTarget {
   constructor(socketValueType?: SocketValueType<T>) {
     super();
     this.SocketValueType = socketValueType || SocketValue;
+    this.declareEvents(['value']);
     this.socketValue = null;
     this.$isSet = false;
   }
