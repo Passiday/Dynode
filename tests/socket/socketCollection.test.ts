@@ -53,7 +53,7 @@ describe('getSocketByIndex', () => {
 
   test('properly index socket collection with multiple inputs', () => {
     const sc = new SocketCollection();
-    const inputs: InputSocket[] = [];
+    const inputs: InputSocket<unknown>[] = [];
     for (let i = 0; i < 3; i++) {
       const socket = new InputSocket();
       socket.name = `s${i}`;
@@ -108,7 +108,7 @@ describe('getAllSockets', () => {
 
   test('given some sockets, ensure correctly ordered array', () => {
     const sc = new SocketCollection();
-    const expected: InputSocket[] = [];
+    const expected: InputSocket<unknown>[] = [];
     for (let i = 0; i < 5; i++) {
       const socket = new InputSocket();
       socket.name = `i${i}`;
@@ -121,7 +121,7 @@ describe('getAllSockets', () => {
 
   test('returned array is not a reference to an internal', () => {
     const sc = new SocketCollection();
-    const expected: InputSocket[] = [];
+    const expected: InputSocket<unknown>[] = [];
     for (const i of [1, 2, 3]) {
       const socket = new InputSocket();
       socket.name = `i${i}`;

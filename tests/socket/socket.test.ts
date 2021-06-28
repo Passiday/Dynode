@@ -2,12 +2,11 @@ import {
   Socket,
   InputSocket,
   OutputSocket,
-  ValueType,
 } from 'src/Dynode/model/core/socket';
 
 test('simpleSocketTest', () => {
   const socket = new Socket();
-  const mockFun = jest.fn(function (this: Socket) { return this; });
+  const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
   socket.addEventListener('value', mockFun);
 
   socket.setValue(123);
@@ -16,25 +15,25 @@ test('simpleSocketTest', () => {
   expect(() => socket.setValue(456)).toThrow();
 
   socket.reset();
-  socket.setValue();
+  socket.setNothing();
   expect(mockFun.mock.results.slice(-1)[0].value.isNothing()).toBe(true);
 });
 
 test('linkedInputSocketTest', () => {
-  const outputSocket = new Socket();
+  const outputSocket = new OutputSocket({} as any);
   const inputSocket = new InputSocket();
-  const mockFun = jest.fn(function (this: Socket) { return this; });
+  const mockFun = jest.fn(function (this: Socket<unknown>) { return this; });
 
   expect(inputSocket.isSet()).toBe(false);
 
-  inputSocket.setDefaultValue();
+  inputSocket.setDefaultNothing();
   expect(inputSocket.isSet()).toBe(true);
   expect(inputSocket.isNothing()).toBe(true);
 
   inputSocket.setDefaultValue(999);
   expect(inputSocket.getValue()).toBe(999);
 
-  inputSocket.linkSocket(outputSocket as any);
+  inputSocket.linkSocket(outputSocket);
   inputSocket.addEventListener('value', mockFun);
 
   outputSocket.setValue(123);
@@ -64,28 +63,21 @@ test('outputSocketTest', () => {
   // Post setValue test
   socket.addEventListener('value', () => {
     expect(socket.getValue).toBe(123);
-    expect(socket.waiting).toBe(false);
+    expect(socket.isWaiting()).toBe(false);
   });
 
-  expect(socket.waiting).toBe(false);
+  expect(socket.isWaiting()).toBe(false);
   socket.pull();
-  expect(socket.waiting).toBe(true);
+  expect(socket.isWaiting()).toBe(true);
 });
 
-test('setValue with a type', () => {
-  const vt = new ValueType('oddNumber', ((value: unknown): boolean => (typeof value === 'number') && (value % 2 === 1)), (value: unknown) => <number> value);
-  const s = new Socket(vt);
-
-  s.setValue(5);
-  expect(s.getValue()).toBe(5);
-  expect(() => s.setValue(10)).toThrow();
-});
-
-test('getJsonDefaultValue', () => {
-  const vt = new ValueType('number', ((value: unknown): boolean => (typeof value === 'number')), (value: unknown) => <number> value);
-  const s = new InputSocket(vt);
-
-  s.setDefaultValue(5);
-  expect(s.isDefaultSet()).toBe(true);
-  expect(s.getJsonDefaultValue()).toBe(5);
+test('Socket with default type accepts various value types', () => {
+  const socket = new Socket();
+  expect(() => {
+    socket.setValue(123);
+    socket.clear();
+    socket.setValue(null);
+    socket.clear();
+    socket.setValue('example');
+  }).not.toThrow();
 });

@@ -1,109 +1,111 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { JsonValue } from 'src/utils/objectUtils';
-import ValueType from './valueType';
+import { SocketValue, SocketValueType } from './value';
 
 /**
  * Class for dealing with Node values.
  */
-class Socket extends VEventTarget {
+class Socket<T> extends VEventTarget {
   /**
-   * The ValueType name of the socket.
+   * Constructor that is used to build {@link socketValue}
    */
-  protected typeObject: ValueType | null = null;
+  protected SocketValueType: SocketValueType<T>;
 
   /**
-   * The stored value.
+   * The Value of the socket. null means there is nothing.
    */
-  value: unknown;
+  protected socketValue: SocketValue<T> | null;
 
   /**
-   * Denotes whether the stored value is equal to nothing.
+   * Denotes whether the socket's state has been set.
+   *
+   * If the socket's state has not been set, it's state can not be assumed to be nothing or equal
+   * to specific value.
+   * Only when setValue(value) or setNothing() is called, the socket's state is considered set.
    */
-  nothing = false;
-
-  /**
-   * Denotes whether the object holds a value.
-   */
-  hasValue = false;
+  private $isSet: boolean;
 
   /**
    * Identifier used to retrieve the socket.
    */
-  name: string | null = null ;
+  public name: string | null = null ;
 
   /**
    * A name used for display.
    */
-  title: string | null = null;
+  public title: string | null = null;
 
-  constructor(typeObject?: ValueType) {
+  constructor(socketValueType?: SocketValueType<T>) {
     super();
-    if (typeObject) this.typeObject = typeObject;
-    this.reset();
+    this.SocketValueType = socketValueType || SocketValue;
+    this.socketValue = null;
+    this.$isSet = false;
   }
 
   /**
-   * Initialize the socket for clean run.
+   * Prepare the socket for the next step.
    */
-  init(): void {
-    this.reset();
+  public clear(): void {
+    this.socketValue = null;
+    this.$isSet = false;
   }
 
   /**
-   * Object's setup/reset.
+   * Prepare the socket for the first step.
+   *
+   * While for this base class the reset() is identical to the clear(),
+   * the distinction between clear() and reset() is used by subclasses.
    */
-  reset(): void {
-    this.value = undefined;
-    this.nothing = false;
-    this.hasValue = false;
+  public reset(): void {
+    this.clear();
   }
 
   /**
    * Object's setter for {@link value}
    */
-  setValue(value?: unknown): void {
-    if (this.hasValue) throw Error('Value already set');
-    if (arguments.length) {
-      if (this.typeObject !== null && !this.typeObject.check(value)) {
-        throw Error(`${value} is not of ${this.typeObject}`);
-      }
-      this.value = value;
-    } else {
-      this.nothing = true;
-    }
-    this.hasValue = true;
+  public setValue(value: T): void {
+    if (this.isSet()) throw Error('Value already set');
+    this.socketValue = new this.SocketValueType(value);
+    this.$isSet = true;
     this.dispatchEvent(new VEvent('value'));
   }
 
   /**
-   * Object's getter for {@link value}
+   * Remove value and thus setting value to nothing.
    */
-  getValue(): unknown {
-    if (!this.hasValue) throw Error('Socket is not set');
-    if (this.nothing) throw Error('Socket has no value');
-    return this.value;
+  public setNothing(): void {
+    this.socketValue = null;
+    this.$isSet = true;
+    this.dispatchEvent(new VEvent('value'));
   }
 
   /**
-   * Get {@link value} as a JSON-compatible object
+   * Retrieve this socket's socketValue.
    */
-  getJsonValue(): JsonValue {
-    if (this.typeObject === null) throw Error('Socket has no associated type');
-    return this.typeObject.toJson(this.getValue());
+  public getSocketValue(): SocketValue<T> {
+    if (!this.isSet()) throw Error('Socket is not set');
+    if (this.isNothing()) throw Error('Socket has no value');
+    return this.socketValue as SocketValue<T>; // Can be cast because of "nothing" check
   }
 
   /**
-   * Denotes whether the object's value has been set.
+   * Retrieve this socket's value.
    */
-  isSet(): boolean {
-    return this.hasValue;
+  public getValue(): T {
+    return this.getSocketValue().value;
   }
 
   /**
-   * Denotes whether the object's value is set to nothing.
+   * Denotes whether the socket's state is set to nothing or specific value.
    */
-  isNothing(): boolean {
-    return this.hasValue && this.nothing;
+  public isSet(): boolean {
+    return this.$isSet;
+  }
+
+  /**
+   * Denotes whether the socket's state is nothing.
+   */
+  public isNothing(): boolean {
+    return this.isSet() && (this.socketValue === null);
   }
 }
 

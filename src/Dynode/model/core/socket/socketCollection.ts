@@ -5,7 +5,7 @@ import Socket from './socket';
  *
  * @typeParam T  Class of sockets that will be managed.
  */
-class SocketCollection<T extends Socket> {
+class SocketCollection<T extends Socket<unknown>> {
   /**
    * Main storage for sockets.
    */
@@ -61,11 +61,11 @@ class SocketCollection<T extends Socket> {
   }
 
   /**
-   * Initialize all sockets in the collection for clean run
+   * Clear all sockets in the collection.
    */
-  public init(): void {
+  public clear(): void {
     for (const socket of this.sockets) {
-      socket.init();
+      socket.clear();
     }
   }
 
@@ -90,7 +90,7 @@ class SocketCollection<T extends Socket> {
   /**
    * Generator, that retrieves sockets
    */
-  * [Symbol.iterator]() {
+  * [Symbol.iterator](): Generator<T, void, unknown> {
     for (const socket of this.sockets) {
       yield socket;
     }

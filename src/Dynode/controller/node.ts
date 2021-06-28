@@ -27,8 +27,11 @@ export default class NodeController {
       const inputConfig: JsonObject = {};
       this.inputs.getAllSockets().forEach((input) => {
         if (!input.isNothing() && input.name !== null) {
+          // Doesn't play well with inputs that expect something else than a number
+          const val = `${input.getValue()}`;
+
           inputConfig[input.name] = {
-            value: input.getJsonValue(),
+            value: val,
           };
         }
       });
