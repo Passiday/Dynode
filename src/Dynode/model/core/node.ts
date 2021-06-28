@@ -100,7 +100,6 @@ class Node extends VEventTarget {
     this.inputs.addSocket(socket);
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
-      this.log('an input socket resolved!', this.resolvedInputs, this.inputCount);
       if (this.resolvedInputs === this.inputCount) {
         this.inputsReady();
       }
@@ -282,7 +281,6 @@ class Node extends VEventTarget {
     // basically, that is an error situtation that deserves to be treated as such.
     if (this.busy || this.resolved) return;
     this.dispatchEvent(new VEvent('beforeResolve'));
-    this.log('about to resolve');
     this.busy = true;
     this.resolvedInputs = 0;
     this.inputs.getAllSockets().forEach((input) => {
