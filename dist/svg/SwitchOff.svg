@@ -2,21 +2,21 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="110.71043mm"
    height="110.71043mm"
    viewBox="0 0 110.71043 110.71043"
    version="1.1"
    id="svg4814"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="SwitchOff.svg">
+   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
+   sodipodi:docname="SwitchOff.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4808">
     <linearGradient
@@ -69,17 +69,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="-118.66391"
-     inkscape:cy="151.88016"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="192.43406"
+     inkscape:cy="151.52288"
      inkscape:document-units="mm"
      inkscape:current-layer="layer2"
      showgrid="false"
-     inkscape:window-width="1853"
-     inkscape:window-height="1025"
-     inkscape:window-x="67"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="1054"
+     inkscape:window-height="1059"
+     inkscape:window-x="864"
+     inkscape:window-y="19"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0" />
   <metadata
      id="metadata4811">
     <rdf:RDF>
@@ -97,42 +98,37 @@
      id="layer2"
      inkscape:label="Layer 2"
      style="display:inline;opacity:1">
-    <rect
-       style="opacity:0.93000034;fill:#d7d7d7;fill-opacity:1;stroke:#ffffff;stroke-width:5.4000001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-       id="rect837"
-       width="107.72322"
-       height="106.96725"
-       x="1.5119047"
-       y="1.0973387"
-       ry="35.907738" />
-    <rect
-       style="opacity:0.93000034;fill:url(#linearGradient910);fill-opacity:1;stroke:#c3c3c3;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-       id="rect890"
-       width="76.540176"
-       height="61.988094"
-       x="16.252975"
-       y="31.146444" />
-    <rect
-       style="opacity:0.93000034;fill:url(#linearGradient918);fill-opacity:1;stroke:#c3c3c3;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-       id="rect892"
-       width="76.540176"
-       height="13.985119"
-       x="16.252975"
-       y="17.161327"
-       ry="3.2127976" />
-    <rect
-       style="opacity:0.93000022;fill:#ffffff;fill-opacity:1;stroke:#c3c3c3;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-       id="rect920"
-       width="3.4745038"
-       height="16.169806"
-       x="53.453903"
-       y="42.1558" />
-    <ellipse
-       style="opacity:0.93000034;fill:#ffffff;fill-opacity:0;stroke:#ffffff;stroke-width:2.20000005;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
-       id="path922"
-       ry="6.949008"
-       rx="6.8821907"
-       cy="76.767204"
-       cx="55.191154" />
+    <g
+       id="g839">
+      <rect
+         style="opacity:0.93;fill:url(#linearGradient910);fill-opacity:1;stroke:#c3c3c3;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect890"
+         width="76.540176"
+         height="61.988094"
+         x="16.252975"
+         y="31.146444" />
+      <rect
+         style="opacity:0.93;fill:url(#linearGradient918);fill-opacity:1;stroke:#c3c3c3;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect892"
+         width="76.540176"
+         height="13.985119"
+         x="16.252975"
+         y="17.161327"
+         ry="3.2127976" />
+      <rect
+         style="opacity:0.93;fill:#ffffff;fill-opacity:1;stroke:#c3c3c3;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect920"
+         width="3.4745038"
+         height="16.169806"
+         x="53.453903"
+         y="42.1558" />
+      <ellipse
+         style="opacity:0.93;fill:#ffffff;fill-opacity:0;stroke:#ffffff;stroke-width:2.2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+         id="path922"
+         ry="6.949008"
+         rx="6.8821907"
+         cy="76.767204"
+         cx="55.191154" />
+    </g>
   </g>
 </svg>

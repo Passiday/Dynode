@@ -20,6 +20,7 @@ class Stage extends VEventTarget {
     super();
     this.svgb = new SVGBuilder();
     this.svgb.insert(container);
+    this.declareEvents(['menuResolve']);
     this.createMenu(container);
   }
 

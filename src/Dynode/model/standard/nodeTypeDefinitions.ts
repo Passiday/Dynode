@@ -5,7 +5,7 @@ function createMathNode(node: Node): Node {
   n.addInput('operator', 'string');
   n.addInput('lhs', 'number');
   n.addInput('rhs', 'number');
-  n.addOutput('result');
+  n.addOutput('result', 'number');
   n.action = function (this: Node) {
     if (this.inputIsNothing('lhs')) return;
     if (this.inputIsNothing('rhs')) return;

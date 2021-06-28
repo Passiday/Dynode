@@ -45,7 +45,8 @@ class Network extends VEventTarget {
     this.nodes = [];
     this.engine = engine || null;
     this.name = name;
-    this.init();
+    this.declareEvents(['nodeRemoved', 'addNode', 'afterResolve', 'log', 'error']);
+    this.reset();
   }
 
   /**
@@ -77,19 +78,19 @@ class Network extends VEventTarget {
   /**
    * Initialize the network for clean run.
    */
-  init(): void {
+  reset(): void {
     this.halted = false;
-    this.reset();
-    this.nodes.forEach((node) => node.init());
+    this.clear();
+    this.nodes.forEach((node) => node.reset());
   }
 
   /**
    * Prepare network for resolving.
    */
-  reset(): void {
+  clear(): void {
     this.busy = false;
     this.resolved = false;
-    this.nodes.forEach((node) => node.reset());
+    this.nodes.forEach((node) => node.clear());
   }
 
   /**
@@ -105,9 +106,9 @@ class Network extends VEventTarget {
         pReject(new Error('Network halted'));
         return;
       }
-      this.reset();
+      this.clear();
       this.busy = true;
-      this.log(`Resolving newtork ${this.name}`);
+      this.log(`Resolving network ${this.name}`);
       this.nodes.forEach((node) => {
         if (node.isResolved()) {
           if (this.nodes.some((n) => !n.isResolved())) return;

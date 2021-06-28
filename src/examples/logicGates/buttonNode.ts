@@ -16,10 +16,15 @@ export default class ButtonUI extends NodeView {
       this.container.wipe();
       this.stage.svgb.draggable(this.container);
       const andNode = this.container.addGroup();
+      const button = this.container.addGroup();
+      button.scale(0.2, 0.2);
       andNode.scale(0.2, 0.2);
-      andNode.addSVGBFile({}, 'svg/SwitchOn.svg', () => {
+      andNode.addSVGBFile({}, 'svg/SwitchBackground.svg', () => {
       });
-      andNode.setAttributes({
+
+      button.addSVGBFile({}, 'svg/SwitchOn.svg', () => {
+      });
+      button.setAttributes({
         onclick: () => this.updateInputs({
           value: 0,
         }),
@@ -28,10 +33,14 @@ export default class ButtonUI extends NodeView {
       this.container.wipe();
       this.stage.svgb.draggable(this.container);
       const andNode = this.container.addGroup();
+      const button = this.container.addGroup();
+      button.scale(0.2, 0.2);
       andNode.scale(0.2, 0.2);
-      andNode.addSVGBFile({}, 'svg/SwitchOff.svg', () => {
+      andNode.addSVGBFile({}, 'svg/SwitchBackground.svg', () => {
       });
-      andNode.setAttributes({
+      button.addSVGBFile({}, 'svg/SwitchOff.svg', () => {
+      });
+      button.setAttributes({
         onclick: () => this.updateInputs({
           value: 1,
         }),

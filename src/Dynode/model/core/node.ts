@@ -1,5 +1,7 @@
 import { VEvent, VEventTarget } from 'src/utils/vanillaEvent';
-import { InputSocket, OutputSocket, SocketCollection } from './socket';
+import {
+  InputSocket, OutputSocket, SocketCollection, SocketValueType,
+} from './socket';
 import Engine from './engine';
 import type Network from './network';
 import type NodeType from './nodeType';
@@ -33,6 +35,7 @@ class Node extends VEventTarget {
    */
   constructor(name: string, network?: Network, nodeType?: NodeType) {
     super();
+    this.declareEvents(['addInput', 'addOutput', 'afterResolve', 'beforeResolve', 'dumpInputs', 'dumpOutputs', 'error', 'inputsReady', 'linkInput', 'log', 'nodeCreated', 'setOutputValue', 'unlinkInput', 'nodeRemoved']);
     this.name = name || 'Untitled';
     this.network = network || null;
     this.engine = network ? network.engine : null;
@@ -44,7 +47,7 @@ class Node extends VEventTarget {
   /**
    * A collection of InputSocket objects.
    */
-  inputs = new SocketCollection<InputSocket>();
+  inputs = new SocketCollection<InputSocket<unknown>>();
 
   /**
    * The size of stored inputs.
@@ -64,25 +67,35 @@ class Node extends VEventTarget {
   /**
    * A collection of OutputSocket objects.
    */
-  outputs = new SocketCollection<OutputSocket>();
+  outputs = new SocketCollection<OutputSocket<unknown>>();
+
+  /**
+   * A helper for retrieving an optional SocketValueType.
+   *
+   * The main purpose is to provide an argument for socket which can take undefined and
+   * assume the default or a name can be passed which then is extracted from engine. This
+   * done so it is possible to add default type sockets without an engine.
+   *
+   * @param name ValueSocketType name that is stored in engine
+   */
+  private getValueType(name?: string): SocketValueType<unknown> | undefined {
+    if (name === undefined) {
+      return undefined;
+    }
+    if (!this.engine) throw Error('Engine is not defined!');
+    return this.engine.getSocketValueTypeDefinition(name);
+  }
 
   /**
    * Register a new input.
    *
    * @param name  Name of the inputSocket to generate
-   * @param inputType  Name of the ValueType which is defined in this node's engine
+   * @param socketValueType  Name of the SocketValueType which is defined in this node's engine
    * @return  Newly created inputSocket object.
    */
-  addInput(name: string, valueType?: string): InputSocket {
+  addInput(name: string, socketValueType?: string): InputSocket<unknown> {
     if (name in this.inputs) throw Error('Input name already exists');
-
-    let socket;
-    if (valueType) {
-      if (!this.engine) throw Error('Engine is needed to specify a valueType!');
-      socket = new InputSocket(this.engine.getValueTypeDefinition(valueType));
-    } else {
-      socket = new InputSocket();
-    }
+    const socket = new InputSocket(this.getValueType(socketValueType));
 
     socket.name = name;
     this.inputs.addSocket(socket);
@@ -102,7 +115,7 @@ class Node extends VEventTarget {
    *
    * @param name  The name of the input to be found.
    */
-  getInput(name: string): InputSocket {
+  getInput(name: string): InputSocket<unknown> {
     return this.inputs.getSocketByName(name);
   }
 
@@ -136,7 +149,7 @@ class Node extends VEventTarget {
    * @param name  The name of the input to link from.
    * @param outputSocket  OutputSocket to link to.
    */
-  linkInput(name: string, outputSocket: OutputSocket): void {
+  linkInput(name: string, outputSocket: OutputSocket<unknown>): void {
     const input = this.getInput(name);
     input.linkSocket(outputSocket);
     this.dispatchEvent(new VEvent('linkInput', { detail: { inputName: name } }));
@@ -174,18 +187,9 @@ class Node extends VEventTarget {
    * @param name  Name of the OutputSocket object to generate
    * @return  Newly created OutputSocket object.
    */
-  addOutput(name: string, valueType?: string, storageMode?: boolean): OutputSocket {
-    let socket;
-    if (valueType) {
-      if (!this.engine) throw Error('Engine is needed to specify a valueType!');
-      socket = new OutputSocket(
-        this,
-        this.engine.getValueTypeDefinition(valueType),
-        storageMode,
-      );
-    } else {
-      socket = new OutputSocket(this, undefined, storageMode);
-    }
+  addOutput(name: string, socketValueType?: string, storageMode?: boolean): OutputSocket<unknown> {
+    if (name in this.outputs) throw Error('Input name already exists');
+    const socket = new OutputSocket(this, this.getValueType(socketValueType), storageMode);
 
     socket.name = name;
     this.outputs.addSocket(socket);
@@ -199,7 +203,7 @@ class Node extends VEventTarget {
    *
    * @param name  Name of the OutputSocket object to be found.
    */
-  getOutput(name: string): OutputSocket {
+  getOutput(name: string): OutputSocket<unknown> {
     return this.outputs.getSocketByName(name);
   }
 
@@ -218,7 +222,7 @@ class Node extends VEventTarget {
     if (arguments.length > 1) {
       output.setValue(value);
     } else {
-      output.setValue();
+      output.setNothing();
     }
     // this.dispatchEvent(new VEvent('setOutputValue')); TODO event bubbling
   }
@@ -229,9 +233,12 @@ class Node extends VEventTarget {
   dumpOutputs(): void {
     this.log('*** Output dump ***');
     this.outputs.getAllSockets().forEach((output) => {
+      const isStorageStr = output.isStorage() ? ' (storage)' : '';
+      const storedValueStr = output.isStorage() ? `(stored: ${output.isStoredNothing() ? 'nothing' : output.getStoredValue()})` : '';
       this.log(
-        `Output ${output.name}:`,
+        `Output ${output.name}${isStorageStr}:`,
         output.isNothing() ? 'nothing' : output.getValue(),
+        storedValueStr,
       );
     });
     this.dispatchEvent(new VEvent('dumpOutputs'));
@@ -248,23 +255,23 @@ class Node extends VEventTarget {
   private resolved = false;
 
   /**
-   * Initialize the node for clean run.
+   * Prepare the node for the first step.
    */
-  init(): void {
-    this.reset();
+  public reset(): void {
+    this.clear();
     this.state = {};
-    this.inputs.init();
-    this.outputs.init();
+    this.inputs.reset();
+    this.outputs.reset();
   }
 
   /**
-   * Prepare node for resolving.
+   * Prepare the node for the next step.
    */
-  reset(): void {
+  public clear(): void {
     this.busy = false;
     this.resolved = false;
-    this.inputs.reset();
-    this.outputs.reset();
+    this.inputs.clear();
+    this.outputs.clear();
   }
 
   /**
@@ -293,7 +300,6 @@ class Node extends VEventTarget {
 
   inputsReady(): void | Promise<void> {
     return new Promise<void>((pResolve) => {
-      this.log('Node action:', this.name);
       this.dumpInputs();
       this.dispatchEvent(new VEvent('inputsReady'));
       let p;
@@ -322,7 +328,7 @@ class Node extends VEventTarget {
   actionReady(): void {
     // Set all unset outputs
     this.outputs.getAllSockets().forEach((output) => {
-      if (!output.isSet()) output.setValue();
+      if (!output.isSet()) output.setNothing();
     });
     this.dumpOutputs();
     this.busy = false;

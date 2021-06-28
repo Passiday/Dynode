@@ -3,6 +3,7 @@ import { applyMixins } from 'src/utils/objectUtils';
 
 test('Adding duplicates causes an error', () => {
   const target = new VEventTarget();
+  target.declareEvent('test');
   const func = () => {};
 
   target.addEventListener('test', func);
@@ -11,6 +12,7 @@ test('Adding duplicates causes an error', () => {
 
 test('Removing a function that was not added causes an error', () => {
   const target = new VEventTarget();
+  target.declareEvent('test');
   const func = () => {};
   const otherFunc = () => {};
 
@@ -22,6 +24,7 @@ test('Removing a function that was not added causes an error', () => {
 
 test('Event fires', () => {
   const target = new VEventTarget();
+  target.declareEvent('test');
   let eventFired = false;
   const func = () => { eventFired = true; };
 
@@ -33,6 +36,7 @@ test('Event fires', () => {
 
 test('Event fires correctly', () => {
   const target = new VEventTarget();
+  target.declareEvents(['test', 'other']);
   let eventFired = false;
   const func = () => { eventFired = true; };
 
@@ -47,6 +51,7 @@ test('Event fires correctly', () => {
 
 test('Removing an event works', () => {
   const target = new VEventTarget();
+  target.declareEvent('test');
   let counter = 0;
   const func = () => { counter++; };
 
@@ -61,6 +66,7 @@ test('Removing an event works', () => {
 
 test('Events fire correctly', () => {
   const target = new VEventTarget();
+  target.declareEvents(['test', 'other']);
   let message1 = '';
   let message2 = '';
   const func1 = () => { message1 += 'this'; };
@@ -93,6 +99,7 @@ test('Events fire correctly', () => {
 
 test('Owner of the called function is the target', () => {
   const target = new VEventTarget();
+  target.declareEvent('test');
   let fuctionThis:unknown;
   function test(this: void) {
     fuctionThis = this;
@@ -111,6 +118,7 @@ test('Inheritance example', () => {
     constructor(name: string) {
       super();
       this.name = name;
+      this.declareEvent('update');
     }
 
     feed() {
@@ -143,6 +151,7 @@ test('Multiple class inheritance example', () => {
   class Cat {
     constructor(name: string) {
       this.name = name;
+      this.declareEvent('update');
     }
 
     play() {
@@ -167,4 +176,28 @@ test('Multiple class inheritance example', () => {
   expect(hungerLevels.Kitty).toBe(2);
   cat.feed();
   expect(hungerLevels.Kitty).toBe(1);
+});
+test('Generics', () => {
+  class Cat extends VEventTarget {
+    name: string;
+
+    constructor(name:string) {
+      super();
+      this.name = name;
+      this.declareEvent('test');
+    }
+  }
+  const cat = new Cat('Kitty');
+  cat.addEventListener('test', (e: VEvent<Cat>) => {
+    expect(e.currentTarget?.name).not.toBe(undefined);
+  });
+});
+
+test('Allowed events', () => {
+  const target = new VEventTarget();
+  target.declareEvents(['test']);
+  expect(() => target.addEventListener('notTest', () => {})).toThrow(Error);
+  expect(() => target.addEventListener('test', () => {})).not.toThrow(Error);
+  expect(() => target.dispatchEvent(new VEvent('notTest'))).toThrow(Error);
+  expect(() => target.dispatchEvent(new VEvent('test'))).not.toThrow(Error);
 });

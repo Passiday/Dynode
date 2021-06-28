@@ -48,6 +48,7 @@ export default function logicNodeExample(network: Network, stage: StageView, nam
       const button = node;
       // button.addInput('value', 'number');
       button.addOutput('result');
+      button.addInput('value').setDefaultValue(0);
       button.action = function (this: Node) {
         if (this.inputIsNothing('value')) return;
         this.setOutputValue('result', this.getInputValue('value') as number);
@@ -68,9 +69,6 @@ export default function logicNodeExample(network: Network, stage: StageView, nam
   */
   const button1 = new Node('button1', network, network.engine.getNodeTypeDefinition('button'));
   const button2 = new Node('button2', network, network.engine.getNodeTypeDefinition('button'));
-
-  button1.addInput('value', 'number').setDefaultValue(0);
-  button2.addInput('value', 'number').setDefaultValue(1);
 
   logicNode.linkInput('x', button1.getOutput('result'));
   logicNode.linkInput('y', button2.getOutput('result'));
