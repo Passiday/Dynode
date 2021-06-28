@@ -214,37 +214,38 @@ test('Multiple resolve test', (done) => {
 test('StorageMode', (done) => {
   const mockFn = jest.fn();
 
-  const nodeA = new Node('Node-A');
   const network = new Network();
 
-  // nodeA: one input x, one output y. Outputs 1, if x is nothing, else x + 1.
-  network.addNode(nodeA);
-  const inputA = nodeA.addInput('x');
-  inputA.setDefaultValue(1);
-  const outputA = nodeA.addOutput('y');
-  nodeA.action = () => {
-    if (!nodeA.inputIsNothing('x')) {
-      const inputOne = nodeA.getInputValue('x') as number;
-      nodeA.setOutputValue('y', inputOne + 1);
+  // nodeIncrement: one input x, one output y. Outputs 1, if x is nothing, else x + 1.
+  const nodeIncrement = new Node('Increment');
+  network.addNode(nodeIncrement);
+  const inputIncrement = nodeIncrement.addInput('x');
+  inputIncrement.setDefaultValue(1); // Default is used when the linked output's state is nothing.
+  const outputIncrement = nodeIncrement.addOutput('y');
+  nodeIncrement.action = () => {
+    if (!nodeIncrement.inputIsNothing('x')) {
+      const inputOne = nodeIncrement.getInputValue('x') as number;
+      nodeIncrement.setOutputValue('y', inputOne + 1);
     } else {
-      nodeA.setOutputValue('y', 1);
+      nodeIncrement.setOutputValue('y', 1);
     }
   };
 
   // nodeB one input x, one storage-mode output y. Pass the value of x to the output y.
-  const nodeB = new Node('Node-B');
-  network.addNode(nodeB);
-  const inputB = nodeB.addInput('x');
-  const outputB = nodeB.addOutput('y', undefined, true);
-  nodeB.action = () => {
-    if (!nodeB.inputIsNothing('x')) {
-      const inputOne = nodeB.getInputValue('x') as number;
+  const nodeStore = new Node('Store');
+  network.addNode(nodeStore);
+  const inputStore = nodeStore.addInput('x');
+  const outputStore = nodeStore.addOutput('y', undefined, true);
+  nodeStore.action = () => {
+    if (!nodeStore.inputIsNothing('x')) {
+      const inputOne = nodeStore.getInputValue('x') as number;
       mockFn(inputOne);
-      nodeB.setOutputValue('y', inputOne);
+      nodeStore.setOutputValue('y', inputOne);
     }
   };
-  inputB.linkSocket(outputA);
-  inputA.linkSocket(outputB);
+
+  inputStore.linkSocket(outputIncrement);
+  inputIncrement.linkSocket(outputStore);
 
   // Resolve (asynchronously!) the network 5 times
   let step = 0;

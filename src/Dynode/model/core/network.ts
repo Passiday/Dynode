@@ -105,9 +105,9 @@ class Network extends VEventTarget {
         pReject(new Error('Network halted'));
         return;
       }
-      this.reset();
+      this.clear();
       this.busy = true;
-      this.log(`Resolving newtork ${this.name}`);
+      this.log(`Resolving network ${this.name}`);
       this.nodes.forEach((node) => {
         if (node.isResolved()) {
           if (this.nodes.some((n) => !n.isResolved())) return;

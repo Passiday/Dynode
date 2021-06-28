@@ -16,13 +16,13 @@ class Socket<T> extends VEventTarget {
   protected socketValue: SocketValue<T> | null;
 
   /**
-   * Denotes whether the object's value has been set.
+   * Denotes whether the socket's state has been set.
    *
-   * Although it may seem that when value = null the value has not been set, that is not
-   * the case. When value = null and isSetVariable = true it's an explicit signal that there
-   * is no value.
+   * If the socket's state has not been set, it's state can not be assumed to be nothing or equal
+   * to specific value.
+   * Only when setValue(value) or setNothing() is called, the socket's state is considered set.
    */
-  private isSetVariable: boolean;
+  private $isSet: boolean;
 
   /**
    * Identifier used to retrieve the socket.
@@ -38,23 +38,22 @@ class Socket<T> extends VEventTarget {
     super();
     this.SocketValueType = socketValueType || SocketValue;
     this.socketValue = null;
-    this.isSetVariable = false;
+    this.$isSet = false;
   }
 
   /**
-   * Throw away the stored value making the value unset.
-   *
-   * See {@link isSetVariable} on the difference between nothing and unset.
+   * Prepare the socket for the next step.
    */
   public clear(): void {
     this.socketValue = null;
-    this.isSetVariable = false;
+    this.$isSet = false;
   }
 
   /**
-   * Revert socket to a fresh state.
+   * Prepare the socket for the first step.
    *
-   * It is used for resetting the socket for a clean run for a network.
+   * While for this base class the reset() is identical to the clear(),
+   * the distinction between clear() and reset() is used by subclasses.
    */
   public reset(): void {
     this.clear();
@@ -66,7 +65,7 @@ class Socket<T> extends VEventTarget {
   public setValue(value: T): void {
     if (this.isSet()) throw Error('Value already set');
     this.socketValue = new this.SocketValueType(value);
-    this.isSetVariable = true;
+    this.$isSet = true;
     this.dispatchEvent(new VEvent('value'));
   }
 
@@ -75,7 +74,8 @@ class Socket<T> extends VEventTarget {
    */
   public setNothing(): void {
     this.socketValue = null;
-    this.isSetVariable = true;
+    this.$isSet = true;
+    this.dispatchEvent(new VEvent('value'));
   }
 
   /**
@@ -95,14 +95,14 @@ class Socket<T> extends VEventTarget {
   }
 
   /**
-   * Denotes whether the object's value has been set.
+   * Denotes whether the socket's state is set to nothing or specific value.
    */
   public isSet(): boolean {
-    return this.isSetVariable;
+    return this.$isSet;
   }
 
   /**
-   * Denotes whether the object's value is set to nothing.
+   * Denotes whether the socket's state is nothing.
    */
   public isNothing(): boolean {
     return this.isSet() && (this.socketValue === null);

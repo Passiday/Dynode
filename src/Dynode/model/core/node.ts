@@ -100,6 +100,7 @@ class Node extends VEventTarget {
     this.inputs.addSocket(socket);
     socket.addEventListener('value', (e) => {
       this.resolvedInputs++;
+      this.log('an input socket resolved!', this.resolvedInputs, this.inputCount);
       if (this.resolvedInputs === this.inputCount) {
         this.inputsReady();
       }
@@ -232,9 +233,12 @@ class Node extends VEventTarget {
   dumpOutputs(): void {
     this.log('*** Output dump ***');
     this.outputs.getAllSockets().forEach((output) => {
+      const isStorageStr = output.isStorage() ? ' (storage)' : '';
+      const storedValueStr = output.isStorage() ? `(stored: ${output.isStoredNothing() ? 'nothing' : output.getStoredValue()})` : '';
       this.log(
-        `Output ${output.name}:`,
+        `Output ${output.name}${isStorageStr}:`,
         output.isNothing() ? 'nothing' : output.getValue(),
+        storedValueStr,
       );
     });
     this.dispatchEvent(new VEvent('dumpOutputs'));
@@ -251,7 +255,7 @@ class Node extends VEventTarget {
   private resolved = false;
 
   /**
-   * Initialize the node for clean run.
+   * Prepare the node for the first step.
    */
   public reset(): void {
     this.clear();
@@ -261,7 +265,7 @@ class Node extends VEventTarget {
   }
 
   /**
-   * Prepare node for resolving.
+   * Prepare the node for the next step.
    */
   public clear(): void {
     this.busy = false;
@@ -278,6 +282,7 @@ class Node extends VEventTarget {
     // basically, that is an error situtation that deserves to be treated as such.
     if (this.busy || this.resolved) return;
     this.dispatchEvent(new VEvent('beforeResolve'));
+    this.log('about to resolve');
     this.busy = true;
     this.resolvedInputs = 0;
     this.inputs.getAllSockets().forEach((input) => {
@@ -296,7 +301,6 @@ class Node extends VEventTarget {
 
   inputsReady(): void | Promise<void> {
     return new Promise<void>((pResolve) => {
-      this.log('Node action:', this.name);
       this.dumpInputs();
       this.dispatchEvent(new VEvent('inputsReady'));
       let p;
