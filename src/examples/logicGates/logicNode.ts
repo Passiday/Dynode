@@ -9,7 +9,7 @@ export default class LogicGateUI extends NodeView {
       this.stage.svgb.draggable(this.container);
       const andNode = this.container.addGroup();
       andNode.scale(0.2, 0.2);
-      andNode.addSVGBFile({}, `svg/${this.name}.svg`, () => {
+      andNode.addSVGBFile({}, `example-logicGates/svg/${this.name}.svg`, () => {
       });
       return;
     }

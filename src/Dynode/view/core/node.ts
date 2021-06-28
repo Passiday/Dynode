@@ -193,13 +193,6 @@ class Node extends VEventTarget {
     return null;
   }
 
-  /* getOutput(name: string): Input | null {
-    for (const output of this.outputs) {
-      if (output.name === name) return output;
-    }
-    return null;
-  } */
-
   updateInputs(inputStates: JsonObject): void {
     // TODO: Update input values and enabled states
     for (const inputName of Object.keys(inputStates)) {

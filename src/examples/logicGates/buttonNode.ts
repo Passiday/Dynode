@@ -19,10 +19,10 @@ export default class ButtonUI extends NodeView {
       const button = this.container.addGroup();
       button.scale(0.2, 0.2);
       andNode.scale(0.2, 0.2);
-      andNode.addSVGBFile({}, 'svg/SwitchBackground.svg', () => {
+      andNode.addSVGBFile({}, 'example-logicGates/svg/SwitchBackground.svg', () => {
       });
 
-      button.addSVGBFile({}, 'svg/SwitchOn.svg', () => {
+      button.addSVGBFile({}, 'example-logicGates/svg/SwitchOn.svg', () => {
       });
       button.setAttributes({
         onclick: () => this.updateInputs({
@@ -36,9 +36,9 @@ export default class ButtonUI extends NodeView {
       const button = this.container.addGroup();
       button.scale(0.2, 0.2);
       andNode.scale(0.2, 0.2);
-      andNode.addSVGBFile({}, 'svg/SwitchBackground.svg', () => {
+      andNode.addSVGBFile({}, 'example-logicGates/svg/SwitchBackground.svg', () => {
       });
-      button.addSVGBFile({}, 'svg/SwitchOff.svg', () => {
+      button.addSVGBFile({}, 'example-logicGates/svg/SwitchOff.svg', () => {
       });
       button.setAttributes({
         onclick: () => this.updateInputs({

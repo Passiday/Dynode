@@ -32,7 +32,7 @@ class Stage extends VEventTarget {
     const optionOne = document.createElement('li');
     optionOne.className = 'menu-option';
     optionOne.innerHTML = 'Resolve';
-    optionOne.onclick = () => { this.dispatchEvent(new VEvent('menuResolve')); };
+    optionOne.onclick = () => { this.dispatchEvent(new VEvent('menu', { detail: 'core.network.resolve' })); };
     menuOption.append(optionOne);
 
     menu.append(menuOption);
@@ -44,11 +44,11 @@ class Stage extends VEventTarget {
       menuVisible = !menuVisible;
     };
 
-    window.addEventListener('click', (e) => {
+    container.addEventListener('click', (e) => {
       if (menuVisible) toggleMenu('hide');
     });
 
-    window.addEventListener('contextmenu', (e) => {
+    container.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       menu.style.left = `${e.pageX}px`;
       menu.style.top = `${e.pageY}px`;

@@ -2,6 +2,7 @@ import { Network } from 'src/Dynode/model/core';
 import { StageView } from 'src/Dynode/view';
 import { JsonValue } from 'src/utils/objectUtils';
 import { InputSocket } from 'src/Dynode/model/core/socket';
+import { VEvent } from 'src/utils/vanillaEvent';
 import NodeController from './node';
 
 export default class NetworkController {
@@ -42,7 +43,18 @@ export default class NetworkController {
       stage.debug[`node-${nodeModel.name}`] = nodeUI; // References to NodeUI instances for debugging purposes
     }
     this.model.addEventListener('addNode', addNode);
-    this.view.addEventListener('menuResolve', () => {
+    this.view.addEventListener('menu', (e: VEvent<StageView>) => {
+      if (e.detail === undefined) throw new Error('Menu command was not given.');
+      switch (e.detail) {
+        case 'core.network.resolve': {
+          this.model.resolve();
+          break;
+        }
+        default: {
+          throw new Error(`Command ${e.detail} not found.`);
+          break;
+        }
+      }
       this.model.resolve();
     });
   }

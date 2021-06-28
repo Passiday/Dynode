@@ -3,4 +3,5 @@
 !/dist/index.html
 !/dist/SVGBuilder.js
 !/dist/svg
+!/dist/example-logicGates/
 /docs/
