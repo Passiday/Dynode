@@ -51,11 +51,9 @@ export default class NetworkController {
           break;
         }
         default: {
-          throw new Error(`Command ${e.detail} not found.`);
           break;
         }
       }
-      this.model.resolve();
     });
   }
 }
